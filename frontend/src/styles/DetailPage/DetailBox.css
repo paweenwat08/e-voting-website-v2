@@ -1,0 +1,162 @@
+/* กล่องรายละเอียดหลัก */
+.detail-box {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eaeaea;
+  max-width: 500px;
+  margin: 20px auto;
+  position: relative;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ปุ่มย้อนกลับ */
+.back-btn {
+  background: #f1f5f9;
+  border: none;
+  color: #475569;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.back-btn:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+  transform: translateX(-4px);
+}
+
+/* หัวข้อชื่อพรรค / ชื่อผู้สมัคร */
+.detail-box h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.5rem;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* หัวข้อนโยบาย */
+.detail-box h4 {
+  margin: 20px 0 10px 0;
+  font-size: 1.1rem;
+  color: #64748b;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 8px;
+}
+
+/* รายการนโยบาย (UL) */
+.detail-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.detail-box li {
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  color: #334155;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  border-left: 4px solid #3b82f6; /* เพิ่มแถบสีข้างหน้านโยบาย */
+}
+
+/* ข้อมูลผู้สมัคร (P / Strong) */
+.detail-box p {
+  margin: 12px 0;
+  font-size: 1.05rem;
+  color: #475569;
+}
+
+.detail-box p strong {
+  color: #94a3b8;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+/* Animation เวลาปรากฏ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* เอฟเฟกต์สำหรับพรรคการเมือง */
+.party-info-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.party-info-card:hover {
+    transform: translateY(-5px) scale(1.01); /* ขยายขึ้น 1% และยกตัวขึ้น */
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ดูเหมือนลอย */
+    border-color: #3b82f6; /* เปลี่ยนสีขอบเป็นสีฟ้า */
+}
+
+/* เอฟเฟกต์สำหรับผู้สมัคร สส. */
+.candidate-info-card {
+    transition: all 0.25s ease-out;
+    cursor: pointer;
+}
+
+.candidate-info-card:hover {
+    transform: translateY(-3px); /* ยกตัวขึ้นเล็กน้อย */
+    background: #ffffff; /* เปลี่ยนพื้นหลังเป็นขาวล้วนให้เด่นขึ้น */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+    border-color: #3b82f6;
+}
+
+/* แถม: เอฟเฟกต์ให้ไอคอนขยับนิดๆ เวลา Hover */
+.candidate-info-card:hover .candidate-avatar {
+    background: #3b82f6;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.candidate-list {
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.mini-candidate-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f1f5ff;
+  transition: 0.2s;
+}
+
+.mini-candidate-card:hover {
+  transform: translateX(4px);
+  background: #e0ecff;
+}
+
+.district {
+  font-size: 12px;
+  color: #666;
+}
+
+.link-text {
+  cursor: pointer;
+}
+
+.link-text:hover {
+  opacity: 0.7;
+}

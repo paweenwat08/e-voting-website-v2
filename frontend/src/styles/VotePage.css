@@ -1,0 +1,286 @@
+.vote-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family:Arial, Helvetica, sans-serif
+}
+
+.vote-container h2 {
+    text-align: center;
+}
+
+/* จัดปุ่มเป็นตาราง Grid */
+.selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.vote-btn {
+    padding: 15px;
+    border: 2px solid #eee;
+    background: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.candidate-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #f1f5f9;
+  color: #334155;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 8px; /* หรือ 50% ถ้าอยากได้แบบวงกลม */
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.candidate-name {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.vote-btn, .op-btn {
+  transition: all 0.2s ease;
+}
+.vote-btn.active, .op-btn.active {
+  font-weight: 600; /* ไม่ต้อง bold มาก */
+  transform: scale(1.05); /* 👈 ทำให้ดูเด่นขึ้น */
+}
+
+/* จัดปุ่มเป็นแนวเดียวกันหมด */
+.opinion-box {
+    display: flex;
+    gap: 15px;
+}
+.op-btn {
+    flex: 1;
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px solid #eee;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.vote-btn.active, .op-btn.agree.active { 
+    background: #dcfce7; 
+    border-color: #22c55e; 
+    color: #166534;
+}
+.op-btn.disagree.active { 
+    background: #fee2e2; 
+    border-color: #ef4444; 
+    color: #991b1b;
+}
+.op-btn.abstain.active {
+    background: #cfcfcf; 
+    border-color: #8f8f8f; 
+    color: #3e3e3e;
+}
+
+/* ปุ่มกดยืนยัน */
+.confirm-submit-btn {
+    width: 100%;
+    margin-top: 30px;
+    padding: 18px;
+    background-color: #2563eb;
+    color: white;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.confirm-submit-btn:active {
+    transform: scale(0.98); /* กดแล้วมีเอฟเฟกต์ยุบตัวเล็กน้อย */
+}
+.confirm-submit-btn:hover:not(:disabled) {
+    background-color: #1d4ed8;
+}
+.confirm-submit-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(3px); /* พื้นหลังเบลอ */
+}
+
+.modal-card {
+    background-color: white;
+    width: 90%;
+    max-width: 480px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 20px 25px;
+    text-align: center;
+}
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.modal-body {
+    padding: 10px 30px;
+}
+.modal-body p {
+    margin: 0 0 20px 0;
+    color: #555;
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+.confirm-summary {
+    background-color: #f1f5f9;
+    border-radius: 12px;
+    padding: 15px 20px;
+}
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+.summary-item .label {
+    color: #555;
+    font-weight: 500;
+}
+.summary-item .value {
+    color: #111;
+    font-weight: 600;
+}
+
+/* ปุ่มกดใน Modal */
+.modal-footer {
+    display: flex;
+    gap: 15px;
+    padding: 20px 25px;
+    background-color: #f8fafc;
+}
+
+.modal-footer button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn-back {
+    background-color: #f1f5f9;
+    color: #555;
+}
+.btn-back:hover {
+    background-color: #eee;
+}
+
+.btn-confirm {
+    background-color: #22c55e; /* สีเขียว */
+    color: white;
+}
+.btn-confirm:hover {
+    background-color: #16a34a;
+}
+
+/* โหมดทดลอง (Test Mode) */
+
+.test-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.vote-container.test-mode .test-title {
+    background: #fffbeb;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px dashed #f59e0b;
+    color: #92400e;
+}
+
+.test-mode .confirm-submit-btn {
+    background-color: #f59e0b; /* สีส้ม Amber */
+}
+
+.test-mode .confirm-submit-btn:hover:not(:disabled) {
+    background-color: #d97706;
+}
+
+/* ปุ่มยืนยันใน Modal สำหรับโหมดทดสอบ (ถ้าต้องการสีส้ม) */
+.test-mode .btn-confirm {
+    background-color: #f59e0b;
+}
+
+/* ตกแต่ง Container หลักของหน้าเสร็จสิ้น */
+.complete-body {
+    text-align: center;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.complete-body h3 {
+    color: #1e293b;
+    font-size: 1.5rem;
+    margin: 0;
+    font-weight: 700;
+}
+
+.complete-body p {
+    color: #64748b;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 10px 0;
+    max-width: 320px; /* จำกัดความกว้างให้อ่านง่าย */
+}
+
+/* ปรับแต่งปุ่ม กลับหน้าหลัก */
+.go-home-btn {
+    width: 100%;
+    max-width: 250px;
+    padding: 14px;
+    background-color: #f59e0b; /* สีส้ม Amber ตามธีมทดลอง */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+.go-home-btn:hover {
+    background-color: #d97706;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(217, 119, 6, 0.3);
+}
+
+.go-home-btn:active {
+    transform: translateY(0);
+}

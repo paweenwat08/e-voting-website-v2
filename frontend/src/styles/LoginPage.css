@@ -1,0 +1,82 @@
+/* จัดให้ Login Card อยู่กลางหน้าจอเสมอ */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+}
+
+.login-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 380px;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); /* เงาจางๆ ดูนุ่มนวล */
+    text-align: center;
+}
+.login-card h2 {
+    margin-bottom: 1.5rem;
+    color: #2c2c2c;
+    font-size: 1.5rem;
+}
+
+
+/* กล่องข้อความแจ้งเตือน */
+.alert-box {
+    background: #fff0f0;
+    color: #d93025;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: bolder;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ffdada;
+}
+
+.input-field {
+    text-align: left;
+    margin-bottom: 1.2rem;
+}
+.input-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: bold;
+}
+
+.input-field input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1.5px solid #eee;
+    border-radius: 10px;
+    font-size: 1rem;
+    box-sizing: border-box; /* สำคัญ: เพื่อให้ padding ไม่เพิ่ม width */
+    transition: 0.2s;
+}
+.input-field input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* ปุ่มกด */
+.btn-login {
+    width: 100%;
+    padding: 14px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.2s;
+    margin-top: 10px;
+}
+.btn-login:hover {
+    background: #0056b3;
+}
+.btn-login:active {
+    transform: scale(0.98); /* กดแล้วมีเอฟเฟกต์ยุบตัวเล็กน้อย */
+}

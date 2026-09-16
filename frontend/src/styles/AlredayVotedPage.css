@@ -1,0 +1,57 @@
+.voted-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh; /* ให้ลอยอยู่ช่วงกลางๆ จอ */
+    padding: 20px;
+}
+
+.voted-card {
+    background: #ffffff;
+    padding: 40px 30px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* เงาบางๆ นุ่มๆ */
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.status-icon {
+    font-size: 50px;
+    margin-bottom: 20px;
+}
+
+.voted-card h2 {
+    color: #1e293b;
+    margin-bottom: 10px;
+    font-size: 1.6rem;
+}
+
+.voted-card p {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.btn-results {
+    background-color: #3b82f6; /* สีฟ้าสะอาดตา */
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%; /* ให้ปุ่มกว้างเต็มการ์ด */
+}
+
+.btn-results:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px); /* ลอยขึ้นนิดหน่อยเวลาชี้ */
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+}
+
+.btn-results:active {
+    transform: translateY(0);
+}

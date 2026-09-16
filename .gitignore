@@ -1,0 +1,77 @@
+# ==========================================
+# Dependencies (ครอบคลุมทั้ง root, frontend, backend)
+# ==========================================
+node_modules/
+jspm_packages/
+bower_components/
+
+# ==========================================
+# Build & Output (ทั้ง Frontend และ Backend)
+# ==========================================
+dist/
+dist-ssr/
+build/
+.next/
+out/
+.nuxt/
+.svelte-kit/
+.vuepress/dist/
+.docusaurus/
+
+# ==========================================
+# Environment Variables (เพิกถอนไฟล์ความลับทั้งหมด)
+# ==========================================
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# Logs & Diagnostic Reports
+# ==========================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+pnpm-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# ==========================================
+# Runtime & Caches
+# ==========================================
+pids
+*.pid
+*.seed
+*.pid.lock
+.nyc_output/
+coverage/
+*.lcov
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+.cache/
+.parcel-cache/
+.temp/
+.webpack/
+
+# ==========================================
+# Editor & IDE Configs
+# ==========================================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ==========================================
+# Operating System Files
+# ==========================================
+.DS_Store
+Thumbs.db
+
+**/secrets.h
