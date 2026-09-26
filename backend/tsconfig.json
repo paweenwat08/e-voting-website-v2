@@ -9,6 +9,6 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "legacy/models/party.model.ts", "legacy/models/vote.model.ts", "legacy/models/voter.model.ts", "legacy/models/district.model.ts"],
   "exclude": ["node_modules", "dist"]
 }

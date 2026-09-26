@@ -1,4 +1,4 @@
-import { Voter } from "../models/voter.model.js";
+import { Voter } from "../../legacy/models/voter.model.js";
 import { Request, Response } from "express";
 
 const registerVoter = async (req: Request, res: Response) => {

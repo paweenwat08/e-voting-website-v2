@@ -1,4 +1,4 @@
-import { Party } from "../models/party.model.js";
+import { Party } from "../../legacy/models/party.model.js";
 import { Request, Response } from "express";
 
 const addParty = async (req: Request, res: Response) => {

@@ -4,10 +4,10 @@ import { Request, Response } from "express";
 const addCandidate = async (req: Request, res: Response) => {
     try {
 
-        const { number, firstname, lastname, party, district } = req.body;
+        const { electionId, candidateNumber, firstname, lastname, description } = req.body;
 
         //basic validation
-        if (!number || !firstname || !lastname || !party || !district) {
+        if (!electionId || !candidateNumber || !firstname || !description) {
             return res.status(400).json({ message: "All fields are important!" })
         }
 
@@ -18,15 +18,22 @@ const addCandidate = async (req: Request, res: Response) => {
         }
 
         const candidate = await Candidate.create({
-            number,
+            electionId,
+            candidateNumber,
             firstname,
             lastname,
-            party,
-            district
+            description
         })
         res.status(201).json({
             message: "Candidate added",
-            voter: { id: candidate._id, number: candidate.number, firstname: candidate.firstname, party: candidate.party }
+            candidate: { 
+                id: candidate._id, 
+                electionId: candidate.electionId,
+                candidateNumber: candidate.candidateNumber,
+                firstname: candidate.firstname,
+                lastname: candidate.lastname,
+                description: candidate.description
+            }
         })
 
     } catch (error) {
@@ -39,16 +46,7 @@ const addCandidate = async (req: Request, res: Response) => {
 const getCandidates = async (req: Request, res: Response) => {
     try {
 
-        const { district } = req.query;
-
-        const filter: any = {};
-
-        if (district) {
-            filter.district = Number(district);
-        }
-
-        const candidates = await Candidate.find(filter)
-            .populate("party");
+        const candidates = await Candidate.find()
 
         res.status(200).json({
             success: true,

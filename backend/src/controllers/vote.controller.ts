@@ -1,5 +1,5 @@
-import { Vote } from "../models/vote.model.js";
-import { Voter } from "../models/voter.model.js";
+import { Vote } from "../../legacy/models/vote.model.js";
+import { Voter } from "../../legacy/models/voter.model.js";
 import { Candidate } from "../models/candidate.model.js";
 import { Request, Response } from "express";
 
