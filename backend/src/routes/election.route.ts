@@ -5,7 +5,8 @@ import roleMiddleware from "../middleware/role.middleware.js";
 
 import {
     createElectionController,
-    openElectionController
+    openElectionController,
+    closeElectionController
 } from "../controllers/election.controller.js";
 
 const router = Router();
@@ -22,6 +23,13 @@ router.patch(
     authMiddleware,
     roleMiddleware("admin"),
     openElectionController
+);
+
+router.patch(
+    "/:electionId/close",
+    authMiddleware,
+    roleMiddleware("admin"),
+    closeElectionController
 );
 
 export default router;

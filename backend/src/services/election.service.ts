@@ -69,3 +69,30 @@ export const openElection = async (
 
     return result.rows[0] ?? null;
 };
+
+export const closeElection = async (
+    electionId: string
+) => {
+    const result = await connection.query(
+        `
+        UPDATE elections
+        SET
+            status = 'closed',
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = $1
+          AND status = 'open'
+        RETURNING
+            id,
+            title,
+            description,
+            start_at,
+            end_at,
+            status,
+            created_at,
+            updated_at
+        `,
+        [electionId]
+    );
+
+    return result.rows[0] ?? null;
+};

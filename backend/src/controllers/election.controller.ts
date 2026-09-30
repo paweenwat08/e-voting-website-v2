@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 
 import {
     createElection,
-    openElection
+    openElection,
+    closeElection
 } from "../services/election.service.js";
 
 const createElectionController = async (
@@ -96,52 +97,110 @@ const createElectionController = async (
 };
 
 const openElectionController = async (
-  req: Request,
-  res: Response
+    req: Request,
+    res: Response
 ) => {
-  try {
-    if (!req.identity) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized"
-      });
+    try {
+        if (!req.identity) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+
+        const { electionId } = req.params;
+
+        if (
+            typeof electionId !== "string" ||
+            electionId.trim() === ""
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid election ID"
+            });
+        }
+
+        const election = await openElection(
+            electionId
+        );
+
+        if (!election) {
+            return res.status(409).json({
+                success: false,
+                message: "Election cannot be opened"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Election opened successfully",
+            election
+        });
+    } catch (error) {
+        console.error("Open election error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
     }
+};
 
-    const electionId = req.params.electionId as string;
+const closeElectionController = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        if (!req.identity) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
 
-    if (!electionId) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid election ID"
-      });
+        const { electionId } = req.params;
+
+        if (
+            typeof electionId !== "string" ||
+            electionId.trim() === ""
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid election ID"
+            });
+        }
+
+        const election = await closeElection(
+            electionId
+        );
+
+        if (!election) {
+            return res.status(409).json({
+                success: false,
+                message: "Election cannot be closed"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Election closed successfully",
+            election
+        });
+
+    } catch (error) {
+        console.error(
+            "Close election error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
     }
-
-    const election = await openElection(
-      electionId
-    );
-
-    if (!election) {
-      return res.status(409).json({
-        success: false,
-        message: "Election cannot be opened"
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Election opened successfully",
-      election
-    });
-  } catch (error) {
-    console.error("Open election error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error"
-    });
-  }
 };
 
 export {
     createElectionController,
-    openElectionController
+    openElectionController,
+    closeElectionController
 }
