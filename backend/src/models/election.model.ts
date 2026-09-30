@@ -1,41 +1,16 @@
-import mongoose, {Schema} from "mongoose";
+export type ElectionStatus =
+    | "draft"
+    | "scheduled"
+    | "open"
+    | "closed";
 
-const electionSchema = new Schema(
-    {
-        title: {
-            type: String,
-            required: true,
-            trim: true,
-            minlength: 5,
-            maxlength: 100
-        },
-        description: {
-            type: String,
-            required: true,
-            trim: true,
-            minlength: 10
-        },
-        startAt: {
-            type: Date,
-            required: true
-        },
-        endAt: {
-            type: Date,
-            required: true
-        },
-        status: {
-            type: String,
-            enum: ["draft", "scheduled", "open", "closed"],
-            required: true,
-            default: "draft"
-        }
-    },
-    {
-        timestamps: true
-    }
-)
-
-// Optional: Add indexes for performance
-electionSchema.index({ status: 1});
-
-export const Election = mongoose.model("Election", electionSchema)
+export interface Election {
+    id: number;
+    title: string;
+    description: string;
+    startAt: Date;
+    endAt: Date;
+    status: ElectionStatus;
+    createdAt: Date;
+    updatedAt: Date;
+}

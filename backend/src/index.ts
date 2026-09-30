@@ -1,16 +1,11 @@
-import dotenv from "dotenv";
-dotenv.config({
-    path: './.env'
-});
-
-import connectDB from "./config/database.js";
+import connection from "./config/database.js";
 import app from "./app.js";
 
 const startServer = async () => {
     try {
-        await connectDB();
+        await connection.connect();
 
-        const PORT = process.env.PORT || 4000
+        const PORT = process.env.PORT || 4000;
 
         const server = app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
@@ -23,7 +18,7 @@ const startServer = async () => {
         })
 
     } catch (error) {
-        console.log("MongoDB connection failed !!!", error);
+        console.log("PostgreSQL connection failed", error);
         
     }
 }

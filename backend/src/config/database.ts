@@ -1,13 +1,17 @@
-import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-const connectDB = async () => {
-    try {
-        const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}`);
-        console.log(`\n MongoDB connected ${connectionInstance.connection.host}`)
-    } catch (error) {
-        console.log("MongoDB connection failed", error);
-        process.exit(1);
-    }
-}
+dotenv.config({
+    path: "./.env"
+});
 
-export default connectDB;
+import { Client } from "pg";
+
+const connection = new Client({
+    user: "postgres",
+    host: "localhost",
+    database: "evoting_v2",
+    password: process.env.DB_PASSWORD,
+    port: 5432,
+});
+
+export default connection;
