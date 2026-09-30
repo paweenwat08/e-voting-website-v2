@@ -7,6 +7,7 @@ import {
   createUser,
   findIdentityByUserId
 } from "../services/auth.service.js";
+import { createAuditLog } from "../services/auditLog.service.js";
 
 import connection from "../config/database.js";
 
@@ -71,63 +72,94 @@ const registerUser = async (
 };
 
 const loginUser = async (
-  req: Request,
-  res: Response
+    req: Request,
+    res: Response
 ) => {
-  try {
-    const { userId, password } = req.body;
+    try {
+        const { userId, password } = req.body;
 
-    // Validate request body
-    if (
-      typeof userId !== "string" ||
-      typeof password !== "string" ||
-      userId.trim() === "" ||
-      password === ""
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid login credentials"
-      });
+        // Validate request body
+        if (
+            typeof userId !== "string" ||
+            typeof password !== "string" ||
+            userId.trim() === "" ||
+            password === ""
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid login credentials"
+            });
+        }
+
+        // Authenticate user
+        const identity = await authenticateUser(
+            userId,
+            password
+        );
+
+        if (!identity) {
+
+            try {
+                await createAuditLog(
+                    "LOGIN_FAILED",
+                    null,
+                    {
+                        userId: userId.trim()
+                    }
+                );
+            } catch (auditError) {
+                console.error(
+                    "Failed to create login audit log:",
+                    auditError
+                );
+            }
+
+            return res.status(401).json({
+                success: false,
+                message: "Invalid login credentials"
+            });
+        }
+
+        // Create session
+        const { sessionToken, session } =
+            await createSession(identity.id);
+
+        // Set session cookie
+        res.cookie("session", sessionToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            expires: session.expires_at
+        });
+
+        try {
+            await createAuditLog(
+                "LOGIN_SUCCESS",
+                identity.id
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to create login audit log:",
+                auditError
+            );
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Login successful"
+        });
+
+    } catch (error) {
+        console.error(
+            "Login error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
     }
-
-    // Authenticate user
-    const identity = await authenticateUser(
-      userId,
-      password
-    );
-
-    if (!identity) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid login credentials"
-      });
-    }
-
-    // Create session
-    const { sessionToken, session } =
-      await createSession(identity.id);
-
-    // Set session cookie
-    res.cookie("session", sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      expires: session.expires_at
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "Login successful"
-    });
-
-  } catch (error) {
-    console.error("Login error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error"
-    });
-  }
 };
 
 
