@@ -5,9 +5,10 @@ export type AuditEventType =
     | "ELECTION_CREATED"
     | "ELECTION_OPENED"
     | "ELECTION_CLOSED"
+    | "VOTE_CAST"
     | "VOTE_REJECTED"
-    | "UNAUTHORIZED_ACCESS"
-    | "DUPLICATE_REQUEST_REJECTED";
+    | "DUPLICATE_REQUEST_REJECTED"
+    | "UNAUTHORIZED_ACCESS";
 
 export interface AuditLog {
     id: number;

@@ -1,5 +1,10 @@
 import connection from "../config/database.js";
 
+import {
+    createAuditLog
+} from "./auditLog.service.js";
+
+
 export const castVote = async (
     identityId: string,
     electionId: string,
@@ -270,6 +275,21 @@ export const castVote = async (
         // ==========================================
 
         await connection.query("COMMIT");
+
+        try {
+            await createAuditLog(
+                "VOTE_CAST",
+                null,
+                {
+                    electionId: electionId
+                }
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to create vote audit log:",
+                auditError
+            );
+        }
 
         return {
             success: true,
