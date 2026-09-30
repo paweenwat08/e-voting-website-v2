@@ -1,14 +1,27 @@
 import { Router } from "express";
-import { createElection, getElections, getElectionById, updateElection, deleteElection } from "../controllers/election.controller.js";
+
+import authMiddleware from "../middleware/auth.middleware.js";
+import roleMiddleware from "../middleware/role.middleware.js";
+
+import {
+    createElectionController,
+    openElectionController
+} from "../controllers/election.controller.js";
+
 const router = Router();
 
-router.route("/elections")
-  .post(createElection)
-  .get(getElections);
+router.post(
+    "/",
+    authMiddleware,
+    roleMiddleware("admin"),
+    createElectionController
+);
 
-router.route("/elections/:id")
-  .get(getElectionById)
-  .patch(updateElection)
-  .delete(deleteElection);
+router.patch(
+    "/:electionId/open",
+    authMiddleware,
+    roleMiddleware("admin"),
+    openElectionController
+);
 
 export default router;
