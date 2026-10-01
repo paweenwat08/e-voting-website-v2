@@ -162,7 +162,6 @@ const loginUser = async (
     }
 };
 
-
 const getCurrentUser = async (
   req: Request,
   res: Response
@@ -189,7 +188,6 @@ const getCurrentUser = async (
     });
   }
 };
-
 
 const logoutUser = async (
   req: Request,
