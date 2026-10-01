@@ -1,8 +1,8 @@
 export interface Candidate {
     id: number;
-    electionId: number;
-    identity_id: number;
-    candidateNumber: number;
+    electionId: string;
+    identity_id: string;
+    candidateNumber: string;
     description: string | null;
     createdAt: Date;
     updatedAt: Date;

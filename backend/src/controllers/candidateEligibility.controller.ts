@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import connection from "../config/database.js";
+import { createAuditLog } from "../services/auditLog.service.js";
 
 import {
     createCandidateEligibility,
@@ -8,6 +9,7 @@ import {
     getCandidateEligibilitiesByElection,
     revokeCandidateEligibility
 } from "../services/candidateEligibility.service.js";
+
 
 const createCandidateEligibilityController = async (
     req: Request,
@@ -28,8 +30,8 @@ const createCandidateEligibilityController = async (
 
         // 1. Validate identityId
         if (
-            typeof identityId !== "number" ||
-            !Number.isInteger(identityId)
+            typeof identityId !== "string" ||
+            identityId.trim() === ""
         ) {
             return res.status(400).json({
                 success: false,
@@ -39,8 +41,8 @@ const createCandidateEligibilityController = async (
 
         // 2. Validate electionId
         if (
-            typeof electionId !== "number" ||
-            !Number.isInteger(electionId)
+            typeof electionId !== "string" ||
+            electionId.trim() === ""
         ) {
             return res.status(400).json({
                 success: false,
@@ -105,6 +107,23 @@ const createCandidateEligibilityController = async (
                 electionId
             );
 
+        try {
+            await createAuditLog(
+                "ADMIN_ACTION",
+                req.identity.id,
+                {
+                    action: "CREATE_CANDIDATE_ELIGIBILITY",
+                    identityId,
+                    electionId
+                }
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to create candidate eligibility audit log:",
+                auditError
+            );
+        }
+
         return res.status(201).json({
             success: true,
             message: "Candidate eligibility created successfully",
@@ -123,6 +142,7 @@ const createCandidateEligibilityController = async (
         });
     }
 };
+
 
 const getCandidateEligibilitiesByElectionController = async (
     req: Request,
@@ -155,7 +175,7 @@ const getCandidateEligibilitiesByElectionController = async (
             WHERE id = $1
             LIMIT 1
             `,
-            [Number(electionId)]
+            [electionId]
         );
 
         if (!electionResult.rows[0]) {
@@ -167,7 +187,7 @@ const getCandidateEligibilitiesByElectionController = async (
 
         const eligibilities =
             await getCandidateEligibilitiesByElection(
-                Number(electionId)
+                electionId
             );
 
         return res.status(200).json({
@@ -188,6 +208,7 @@ const getCandidateEligibilitiesByElectionController = async (
     }
 };
 
+
 const revokeCandidateEligibilityController = async (
     req: Request,
     res: Response
@@ -200,29 +221,30 @@ const revokeCandidateEligibilityController = async (
             });
         }
 
-        const { identityId, electionId } = req.body;
+        const {
+            identityId,
+            electionId
+        } = req.body;
 
         // Validate identityId
         if (
-            typeof identityId !== "number" ||
-            !Number.isInteger(identityId) ||
-            identityId <= 0
+            typeof identityId !== "string" ||
+            identityId.trim() === ""
         ) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid identityId"
+                message: "Invalid identity ID"
             });
         }
 
         // Validate electionId
         if (
-            typeof electionId !== "number" ||
-            !Number.isInteger(electionId) ||
-            electionId <= 0
+            typeof electionId !== "string" ||
+            electionId.trim() === ""
         ) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid electionId"
+                message: "Invalid election ID"
             });
         }
 
@@ -263,17 +285,36 @@ const revokeCandidateEligibilityController = async (
         }
 
         // Revoke eligibility
-        const result = await revokeCandidateEligibility(
-            identityId,
-            electionId
-        );
+        const result =
+            await revokeCandidateEligibility(
+                identityId,
+                electionId
+            );
 
         // No eligible record found
         if (!result) {
             return res.status(404).json({
                 success: false,
-                message: "Candidate eligibility not found or already revoked"
+                message:
+                    "Candidate eligibility not found or already revoked"
             });
+        }
+
+        try {
+            await createAuditLog(
+                "ADMIN_ACTION",
+                req.identity.id,
+                {
+                    action: "REVOKE_CANDIDATE_ELIGIBILITY",
+                    identityId,
+                    electionId
+                }
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to revoke candidate eligibility audit log:",
+                auditError
+            );
         }
 
         return res.status(200).json({
@@ -295,8 +336,9 @@ const revokeCandidateEligibilityController = async (
     }
 };
 
+
 export {
     createCandidateEligibilityController,
     getCandidateEligibilitiesByElectionController,
     revokeCandidateEligibilityController
-}
+};

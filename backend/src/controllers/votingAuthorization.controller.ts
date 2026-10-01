@@ -6,6 +6,9 @@ import {
     canVote
 } from "../services/votingAuthorization.service.js";
 
+import { createAuditLog } from "../services/auditLog.service.js";
+
+
 const createAuthorization = async (
     req: Request,
     res: Response
@@ -18,7 +21,20 @@ const createAuthorization = async (
             });
         }
 
-        const { electionId } = req.body;
+        const {
+            identityId,
+            electionId
+        } = req.body;
+
+        if (
+            typeof identityId !== "string" ||
+            identityId.trim() === ""
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid identity ID"
+            });
+        }
 
         if (
             typeof electionId !== "string" ||
@@ -32,7 +48,7 @@ const createAuthorization = async (
 
         const existingAuthorization =
             await findVotingAuthorization(
-                String(req.identity.id),
+                identityId,
                 electionId
             );
 
@@ -45,9 +61,26 @@ const createAuthorization = async (
 
         const authorization =
             await createVotingAuthorization(
-                String(req.identity.id),
+                identityId,
                 electionId
             );
+
+        try {
+            await createAuditLog(
+                "ADMIN_ACTION",
+                req.identity.id,
+                {
+                    action: "CREATE_VOTING_AUTHORIZATION",
+                    identityId,
+                    electionId
+                }
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to create voting authorization audit log:",
+                auditError
+            );
+        }
 
         return res.status(201).json({
             success: true,
@@ -68,6 +101,7 @@ const createAuthorization = async (
     }
 };
 
+
 const getAuthorization = async (
     req: Request,
     res: Response
@@ -80,9 +114,10 @@ const getAuthorization = async (
             });
         }
 
-        const electionId = String(req.params.electionId);
+        const electionId =
+            String(req.params.electionId);
 
-        if (!electionId) {
+        if (electionId.trim() === "") {
             return res.status(400).json({
                 success: false,
                 message: "Invalid election ID"
@@ -120,6 +155,7 @@ const getAuthorization = async (
     }
 };
 
+
 const checkCanVote = async (
     req: Request,
     res: Response
@@ -132,9 +168,10 @@ const checkCanVote = async (
             });
         }
 
-        const electionId = String(req.params.electionId);
+        const electionId =
+            String(req.params.electionId);
 
-        if (!electionId) {
+        if (electionId.trim() === "") {
             return res.status(400).json({
                 success: false,
                 message: "Invalid election ID"
@@ -164,8 +201,9 @@ const checkCanVote = async (
     }
 };
 
+
 export {
     createAuthorization,
     getAuthorization,
     checkCanVote
-}
+};

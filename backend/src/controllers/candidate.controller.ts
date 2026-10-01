@@ -1,10 +1,14 @@
 import { Request, Response } from "express";
 
+import connection from "../config/database.js";
+import { createAuditLog } from "../services/auditLog.service.js";
+
 import {
     createCandidate,
     getCandidatesByElection,
     getCandidateById
 } from "../services/candidate.service.js";
+
 
 const createCandidateController = async (
     req: Request,
@@ -27,8 +31,8 @@ const createCandidateController = async (
 
         // 1. Validate identityId
         if (
-            typeof identityId !== "number" ||
-            !Number.isInteger(identityId)
+            typeof identityId !== "string" ||
+            identityId.trim() === ""
         ) {
             return res.status(400).json({
                 success: false,
@@ -38,8 +42,8 @@ const createCandidateController = async (
 
         // 2. Validate electionId
         if (
-            typeof electionId !== "number" ||
-            !Number.isInteger(electionId)
+            typeof electionId !== "string" ||
+            electionId.trim() === ""
         ) {
             return res.status(400).json({
                 success: false,
@@ -49,9 +53,8 @@ const createCandidateController = async (
 
         // 3. Validate candidateNumber
         if (
-            typeof candidateNumber !== "number" ||
-            !Number.isInteger(candidateNumber) ||
-            candidateNumber <= 0
+            typeof candidateNumber !== "string" ||
+            candidateNumber.trim() === ""
         ) {
             return res.status(400).json({
                 success: false,
@@ -105,6 +108,24 @@ const createCandidateController = async (
             }
         }
 
+        try {
+            await createAuditLog(
+                "ADMIN_ACTION",
+                req.identity.id,
+                {
+                    action: "CREATE_CANDIDATE",
+                    identityId,
+                    electionId,
+                    candidateNumber
+                }
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to create candidate audit log:",
+                auditError
+            );
+        }
+
         return res.status(201).json({
             success: true,
             message: "Candidate created successfully",
@@ -123,6 +144,7 @@ const createCandidateController = async (
         });
     }
 };
+
 
 const getCandidatesByElectionController = async (
     req: Request,
@@ -150,7 +172,7 @@ const getCandidatesByElectionController = async (
 
         const candidates =
             await getCandidatesByElection(
-                Number(electionId)
+                electionId
             );
 
         return res.status(200).json({
@@ -170,6 +192,7 @@ const getCandidatesByElectionController = async (
         });
     }
 };
+
 
 const getCandidateByIdController = async (
     req: Request,
@@ -197,7 +220,7 @@ const getCandidateByIdController = async (
 
         const candidate =
             await getCandidateById(
-                Number(candidateId)
+                candidateId
             );
 
         if (!candidate) {
@@ -225,8 +248,9 @@ const getCandidateByIdController = async (
     }
 };
 
+
 export {
     createCandidateController,
     getCandidatesByElectionController,
     getCandidateByIdController
-}
+};

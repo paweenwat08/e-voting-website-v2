@@ -4,8 +4,8 @@ export type CandidateEligibilityStatus =
 
 export interface CandidateEligibility {
     id: number;
-    identityId: number;
-    electionId: number;
+    identityId: string;
+    electionId: string;
     status: CandidateEligibilityStatus;
     createdAt: Date;
     updatedAt: Date;

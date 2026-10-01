@@ -1,8 +1,8 @@
 import connection from "../config/database.js";
 
 export const createCandidateEligibility = async (
-    identityId: number,
-    electionId: number
+    identityId: string,
+    electionId: string
 ) => {
     const result = await connection.query(
         `
@@ -34,8 +34,8 @@ export const createCandidateEligibility = async (
 };
 
 export const findCandidateEligibility = async (
-    identityId: number,
-    electionId: number
+    identityId: string,
+    electionId: string
 ) => {
     const result = await connection.query(
         `
@@ -61,8 +61,8 @@ export const findCandidateEligibility = async (
 };
 
 export const checkCandidateEligibility = async (
-    identityId: number,
-    electionId: number
+    identityId: string,
+    electionId: string
 ) => {
     const result = await connection.query(
         `
@@ -89,7 +89,7 @@ export const checkCandidateEligibility = async (
 };
 
 export const getCandidateEligibilitiesByElection = async (
-    electionId: number
+    electionId: string
 ) => {
     const result = await connection.query(
         `
@@ -116,8 +116,8 @@ export const getCandidateEligibilitiesByElection = async (
 };
 
 export const revokeCandidateEligibility = async (
-    identityId: number,
-    electionId: number
+    identityId: string,
+    electionId: string
 ) => {
     const result = await connection.query(
         `

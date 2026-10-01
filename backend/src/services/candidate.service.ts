@@ -5,9 +5,9 @@ import {
 } from "./candidateEligibility.service.js";
 
 export const createCandidate = async (
-    identityId: number,
-    electionId: number,
-    candidateNumber: number,
+    identityId: string,
+    electionId: string,
+    candidateNumber: string,
     description: string | null
 ) => {
     // 1. Check candidate eligibility
@@ -37,7 +37,8 @@ export const createCandidate = async (
         [electionId]
     );
 
-    const election = electionResult.rows[0] ?? null;
+    const election =
+        electionResult.rows[0] ?? null;
 
     if (!election) {
         return {
@@ -111,8 +112,9 @@ export const createCandidate = async (
     };
 };
 
+
 export const getCandidatesByElection = async (
-    electionId: number
+    electionId: string
 ) => {
     const result = await connection.query(
         `
@@ -138,8 +140,9 @@ export const getCandidatesByElection = async (
     return result.rows;
 };
 
+
 export const getCandidateById = async (
-    candidateId: number
+    candidateId: string
 ) => {
     const result = await connection.query(
         `

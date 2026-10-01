@@ -6,6 +6,8 @@ import {
     closeElection
 } from "../services/election.service.js";
 
+import { createAuditLog } from "../services/auditLog.service.js";
+
 const createElectionController = async (
     req: Request,
     res: Response
@@ -77,6 +79,21 @@ const createElectionController = async (
             endDate
         );
 
+        try {
+            await createAuditLog(
+                "ELECTION_CREATED",
+                req.identity.id,
+                {
+                    electionId: election.id
+                }
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to create election audit log:",
+                auditError
+            );
+        }
+
         return res.status(201).json({
             success: true,
             message: "Election created successfully",
@@ -131,6 +148,21 @@ const openElectionController = async (
             });
         }
 
+        try {
+            await createAuditLog(
+                "ELECTION_OPENED",
+                req.identity.id,
+                {
+                    electionId: election.id
+                }
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to create election open audit log:",
+                auditError
+            );
+        }
+
         return res.status(200).json({
             success: true,
             message: "Election opened successfully",
@@ -178,6 +210,21 @@ const closeElectionController = async (
                 success: false,
                 message: "Election cannot be closed"
             });
+        }
+
+        try {
+            await createAuditLog(
+                "ELECTION_CLOSED",
+                req.identity.id,
+                {
+                    electionId: election.id
+                }
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to create election close audit log:",
+                auditError
+            );
         }
 
         return res.status(200).json({
