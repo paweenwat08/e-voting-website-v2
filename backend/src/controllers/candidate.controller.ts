@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 
-import connection from "../config/database.js";
 import { createAuditLog } from "../services/auditLog.service.js";
 
 import {

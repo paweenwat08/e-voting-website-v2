@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 
+import { createAuditLog } from "../services/auditLog.service.js";
+
 import {
     castVote
 } from "../services/voting.service.js";
@@ -61,6 +63,15 @@ export const vote = async (
         // ==========================================
 
         if (!result.success) {
+
+            await createAuditLog(
+                "VOTE_REJECTED",
+                null,
+                {
+                    electionId,
+                    reason: result.reason
+                }
+            );
 
             switch (result.reason) {
 
