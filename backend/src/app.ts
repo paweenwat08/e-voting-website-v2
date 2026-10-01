@@ -8,10 +8,7 @@ import votingAuthorizationRouter from "./routes/votingAuthorization.route.js";
 import votingRouter from "./routes/voting.route.js";
 import candidateRouter from "./routes/candidate.route.js";
 import candidateEligibilityRouter from "./routes/candidateEligibility.route.js";
-
-// import testRouter from './routes/test.route.js'
-
-
+import voterEligibilityRouter from "./routes/voterEligibility.route.js"
 
 const app = express(); // create an express app
 
@@ -44,7 +41,10 @@ app.use(
     candidateEligibilityRouter
 );
 
-// app.use("/api/v2/test", testRouter);
+app.use(
+    "/api/v2/voter-eligibilities",
+    voterEligibilityRouter
+)
 
 // example routes: http://localhost:5432/api/v1/voters/register
 

@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import {
     findVotingAuthorization,
     createVotingAuthorization,
+    revokeVotingAuthorization,
     canVote
 } from "../services/votingAuthorization.service.js";
 
@@ -155,6 +156,93 @@ const getAuthorization = async (
     }
 };
 
+const revokeAuthorization = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        if (!req.identity) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+
+        const {
+            identityId,
+            electionId
+        } = req.body;
+
+        if (
+            typeof identityId !== "string" ||
+            identityId.trim() === ""
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid identity ID"
+            });
+        }
+
+        if (
+            typeof electionId !== "string" ||
+            electionId.trim() === ""
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid election ID"
+            });
+        }
+
+        const result =
+            await revokeVotingAuthorization(
+                identityId,
+                electionId
+            );
+
+        if (!result) {
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Voting authorization not found or cannot be revoked"
+            });
+        }
+
+        try {
+            await createAuditLog(
+                "ADMIN_ACTION",
+                req.identity.id,
+                {
+                    action: "REVOKE_VOTING_AUTHORIZATION",
+                    identityId,
+                    electionId
+                }
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to revoke voting authorization audit log:",
+                auditError
+            );
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Voting authorization revoked successfully",
+            authorization: result
+        });
+
+    } catch (error) {
+        console.error(
+            "Revoke voting authorization error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+};
+
 
 const checkCanVote = async (
     req: Request,
@@ -205,5 +293,6 @@ const checkCanVote = async (
 export {
     createAuthorization,
     getAuthorization,
+    revokeAuthorization,
     checkCanVote
 };

@@ -6,6 +6,7 @@ import roleMiddleware from "../middleware/role.middleware.js";
 import {
     createAuthorization,
     getAuthorization,
+    revokeAuthorization,
     checkCanVote
 } from "../controllers/votingAuthorization.controller.js";
 
@@ -28,6 +29,13 @@ router.get(
     "/:electionId/can-vote",
     authMiddleware,
     checkCanVote
+);
+
+router.patch(
+    "/revoke",
+    authMiddleware,
+    roleMiddleware("admin"),
+    revokeAuthorization
 );
 
 export default router;
