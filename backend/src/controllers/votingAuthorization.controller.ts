@@ -6,8 +6,7 @@ import {
     canVote
 } from "../services/votingAuthorization.service.js";
 
-
-export const createAuthorization = async (
+const createAuthorization = async (
     req: Request,
     res: Response
 ) => {
@@ -69,8 +68,7 @@ export const createAuthorization = async (
     }
 };
 
-
-export const getAuthorization = async (
+const getAuthorization = async (
     req: Request,
     res: Response
 ) => {
@@ -122,8 +120,7 @@ export const getAuthorization = async (
     }
 };
 
-
-export const checkCanVote = async (
+const checkCanVote = async (
     req: Request,
     res: Response
 ) => {
@@ -166,3 +163,9 @@ export const checkCanVote = async (
         });
     }
 };
+
+export {
+    createAuthorization,
+    getAuthorization,
+    checkCanVote
+}
