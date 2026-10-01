@@ -134,7 +134,7 @@ export const canVote = async (
             status,
             created_at,
             updated_at
-        FROM eligibility
+        FROM voter_eligibilities
         WHERE identity_id = $1
           AND election_id = $2
         LIMIT 1

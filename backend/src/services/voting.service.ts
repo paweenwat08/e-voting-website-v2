@@ -92,7 +92,7 @@ export const castVote = async (
                 identity_id,
                 election_id,
                 status
-            FROM eligibility
+            FROM voter_eligibilities
             WHERE identity_id = $1
               AND election_id = $2
             LIMIT 1
@@ -133,10 +133,9 @@ export const castVote = async (
             SELECT
                 id,
                 election_id,
-                firstname,
-                lastname,
                 candidate_number,
-                description
+                description,
+                identity_id
             FROM candidates
             WHERE id = $1
               AND election_id = $2
