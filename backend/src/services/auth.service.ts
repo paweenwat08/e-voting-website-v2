@@ -53,7 +53,7 @@ export const createSession = async (
         .digest("hex");
 
     const expiresAt = new Date(
-        Date.now() + 3 * 60 * 1000
+        Date.now() + 30 * 60 * 1000 //30 นาที
     );
 
     const result = await connection.query(

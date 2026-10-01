@@ -5,7 +5,8 @@ import roleMiddleware from "../middleware/role.middleware.js";
 
 import {
     createCandidateEligibilityController,
-    getCandidateEligibilitiesByElectionController
+    getCandidateEligibilitiesByElectionController,
+    revokeCandidateEligibilityController
 } from "../controllers/candidateEligibility.controller.js";
 
 const router = Router();
@@ -22,6 +23,13 @@ router.get(
     authMiddleware,
     roleMiddleware("admin"),
     getCandidateEligibilitiesByElectionController
+);
+
+router.patch(
+    "/revoke",
+    authMiddleware,
+    roleMiddleware("admin"),
+    revokeCandidateEligibilityController
 );
 
 export default router;

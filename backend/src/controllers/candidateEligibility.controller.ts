@@ -5,7 +5,8 @@ import connection from "../config/database.js";
 import {
     createCandidateEligibility,
     findCandidateEligibility,
-    getCandidateEligibilitiesByElection
+    getCandidateEligibilitiesByElection,
+    revokeCandidateEligibility
 } from "../services/candidateEligibility.service.js";
 
 const createCandidateEligibilityController = async (
@@ -187,7 +188,115 @@ const getCandidateEligibilitiesByElectionController = async (
     }
 };
 
+const revokeCandidateEligibilityController = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        if (!req.identity) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+
+        const { identityId, electionId } = req.body;
+
+        // Validate identityId
+        if (
+            typeof identityId !== "number" ||
+            !Number.isInteger(identityId) ||
+            identityId <= 0
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid identityId"
+            });
+        }
+
+        // Validate electionId
+        if (
+            typeof electionId !== "number" ||
+            !Number.isInteger(electionId) ||
+            electionId <= 0
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid electionId"
+            });
+        }
+
+        // Check identity exists
+        const identityResult = await connection.query(
+            `
+            SELECT id
+            FROM identities
+            WHERE id = $1
+            LIMIT 1
+            `,
+            [identityId]
+        );
+
+        if (!identityResult.rows[0]) {
+            return res.status(404).json({
+                success: false,
+                message: "Identity not found"
+            });
+        }
+
+        // Check election exists
+        const electionResult = await connection.query(
+            `
+            SELECT id
+            FROM elections
+            WHERE id = $1
+            LIMIT 1
+            `,
+            [electionId]
+        );
+
+        if (!electionResult.rows[0]) {
+            return res.status(404).json({
+                success: false,
+                message: "Election not found"
+            });
+        }
+
+        // Revoke eligibility
+        const result = await revokeCandidateEligibility(
+            identityId,
+            electionId
+        );
+
+        // No eligible record found
+        if (!result) {
+            return res.status(404).json({
+                success: false,
+                message: "Candidate eligibility not found or already revoked"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Candidate eligibility revoked successfully",
+            eligibility: result
+        });
+
+    } catch (error) {
+        console.error(
+            "Revoke candidate eligibility controller error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+};
+
 export {
     createCandidateEligibilityController,
-    getCandidateEligibilitiesByElectionController
+    getCandidateEligibilitiesByElectionController,
+    revokeCandidateEligibilityController
 }

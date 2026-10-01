@@ -114,3 +114,33 @@ export const getCandidateEligibilitiesByElection = async (
 
     return result.rows;
 };
+
+export const revokeCandidateEligibility = async (
+    identityId: number,
+    electionId: number
+) => {
+    const result = await connection.query(
+        `
+        UPDATE candidate_eligibilities
+        SET
+            status = 'ineligible',
+            updated_at = CURRENT_TIMESTAMP
+        WHERE identity_id = $1
+          AND election_id = $2
+          AND status = 'eligible'
+        RETURNING
+            id,
+            identity_id,
+            election_id,
+            status,
+            created_at,
+            updated_at
+        `,
+        [
+            identityId,
+            electionId
+        ]
+    );
+
+    return result.rows[0] ?? null;
+};
