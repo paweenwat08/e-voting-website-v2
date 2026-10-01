@@ -7,6 +7,7 @@ import authRouter from './routes/auth.route.js'
 import votingAuthorizationRouter from "./routes/votingAuthorization.route.js";
 import votingRouter from "./routes/voting.route.js";
 import candidateRouter from "./routes/candidate.route.js";
+import candidateEligibilityRouter from "./routes/candidateEligibility.route.js";
 
 // import testRouter from './routes/test.route.js'
 
@@ -37,6 +38,11 @@ app.use(
 app.use(
     "/api/v2/candidates",
     candidateRouter);
+
+app.use(
+    "/api/v2/candidate-eligibilities",
+    candidateEligibilityRouter
+);
 
 // app.use("/api/v2/test", testRouter);
 

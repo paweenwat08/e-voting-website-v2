@@ -87,3 +87,30 @@ export const checkCandidateEligibility = async (
 
     return result.rows[0] ?? null;
 };
+
+export const getCandidateEligibilitiesByElection = async (
+    electionId: number
+) => {
+    const result = await connection.query(
+        `
+        SELECT
+            ce.id,
+            ce.identity_id,
+            ce.election_id,
+            ce.status,
+            ce.created_at,
+            ce.updated_at,
+            i.user_id,
+            i.firstname,
+            i.lastname
+        FROM candidate_eligibilities ce
+        INNER JOIN identities i
+            ON ce.identity_id = i.id
+        WHERE ce.election_id = $1
+        ORDER BY ce.id ASC
+        `,
+        [electionId]
+    );
+
+    return result.rows;
+};
