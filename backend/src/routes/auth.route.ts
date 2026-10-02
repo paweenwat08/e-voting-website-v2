@@ -8,10 +8,16 @@ import {
 } from "../controllers/auth.controller.js";
 
 import authMiddleware from "../middleware/auth.middleware.js";
+import roleMiddleware from "../middleware/role.middleware.js";
 
 const router = Router();
 
-router.route("/register").post(registerUser);
+router.post(
+    "/register",
+    authMiddleware,
+    roleMiddleware("admin"),
+    registerUser
+);
 
 router.route("/login").post(loginUser);
 
