@@ -1,1 +1,0 @@
-export type Page = "login" | "vote" | "results" | "already" | "details" | "test"
