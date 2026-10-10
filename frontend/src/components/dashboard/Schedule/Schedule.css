@@ -248,10 +248,19 @@
     border-color: #fecaca;
 }
 
-.calendar-day.has-event:hover {
-    background: #fee2e2;
+/* ป้องกันไม่ให้ช่องที่ถูกเลือก เปลี่ยนสีเวลาเอาเมาส์ไปชี้ */
+.calendar-day:hover:not(.selected) {
+    background: #f1f5f9;
+    border-color: #94a3b8;
 }
 
+/* ป้องกันไม่ให้ช่องที่มีอีเวนต์ที่ถูกเลือก เปลี่ยนสีแดงอ่อนเวลาเอาเมาส์ไปชี้ */
+.calendar-day.has-event:hover:not(.selected) {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}
+
+/* สถานะตอนถูกเลือก (ทับทุกอย่าง) */
 .calendar-day.selected {
     color: white;
     background: #1e293b;

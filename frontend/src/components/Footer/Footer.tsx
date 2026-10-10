@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import "./Footer.css";
 
 export default function Footer() {
@@ -19,17 +18,17 @@ export default function Footer() {
                 <nav className="footer-nav">
                     <h3>ELECTION</h3>
 
-                    <Link to="/elections">Elections</Link>
+                    <a href="#elections">Elections</a>
                     <a href="#schedule">Timeline</a>
                     <a href="#how-to-vote">How to vote</a>
-                    <a href="#results">Results</a>
+                    <a href="#faq">FAQ</a>
                 </nav>
 
                 <nav className="footer-nav">
                     <h3>RESOURCES</h3>
 
-                    <a href="#rules">Campaign rules</a>
-                    <a href="#accessibility">Accessibility</a>
+                    <a href="##election-rules">Rules</a>
+                    <a href="/">Accessibility</a>
                     <a href="/">Student hub</a>
                     <a href="/">Contact board</a>
                 </nav>
@@ -52,7 +51,7 @@ export default function Footer() {
                 <div>
                     <a href="/">Public privacy</a>
                     <a href="/">Election policy</a>
-                    <a href="#accessibility">Accessibility</a>
+                    <a href="/">Accessibility</a>
                 </div>
             </div>
         </footer>
