@@ -1,0 +1,60 @@
+import { Link } from "react-router-dom";
+import "./Footer.css";
+
+export default function Footer() {
+    return (
+        <footer className="footer">
+            <div className="footer-main">
+
+                <div className="footer-brand">
+                    <strong>NORTHWOOD HIGH SCHOOL</strong>
+                    <h2>STUDENT VOTE '26</h2>
+
+                    <p>
+                        A fair, accessible student council election
+                        organized by the school.
+                    </p>
+                </div>
+
+                <nav className="footer-nav">
+                    <h3>ELECTION</h3>
+
+                    <Link to="/elections">Elections</Link>
+                    <a href="#schedule">Timeline</a>
+                    <a href="#how-to-vote">How to vote</a>
+                    <a href="#results">Results</a>
+                </nav>
+
+                <nav className="footer-nav">
+                    <h3>RESOURCES</h3>
+
+                    <a href="#rules">Campaign rules</a>
+                    <a href="#accessibility">Accessibility</a>
+                    <a href="/">Student hub</a>
+                    <a href="/">Contact board</a>
+                </nav>
+
+                <div className="footer-contact">
+                    <h3>ELECTION BOARD</h3>
+
+                    <p>elections@northwoodhs.edu</p>
+                    <p>Room 102 · 425 Cedar Avenue</p>
+                    <p>Mon–Fri · 7:45 AM–4:00 PM</p>
+                </div>
+
+            </div>
+
+            <div className="footer-bottom">
+                <p>
+                    © 2026 Northwood High School · Student Election Board
+                </p>
+
+                <div>
+                    <a href="/">Public privacy</a>
+                    <a href="/">Election policy</a>
+                    <a href="#accessibility">Accessibility</a>
+                </div>
+            </div>
+        </footer>
+    );
+}

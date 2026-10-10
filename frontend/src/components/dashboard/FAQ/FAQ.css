@@ -1,0 +1,136 @@
+#faq {
+    background-color: #fffbf0; /* สีพื้นหลังโทนครีมตามแบบ */
+    padding: 60px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #121826;
+}
+
+.faq-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.faq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.faq-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: 1px;
+    color: #121826;
+    margin-bottom: 12px;
+}
+
+.tag-line {
+    display: inline-block;
+    width: 16px;
+    height: 3px;
+    background-color: #ff5733; /* ขีดสีส้มแดงเล็กๆ ด้านหน้า */
+}
+
+.faq-header h2 {
+    font-size: 38px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 8px 0;
+}
+
+.faq-subtitle {
+    font-size: 15px;
+    color: #4b5563;
+    margin: 0;
+}
+
+.faq-contact {
+    display: flex;
+    align-items: center;
+    align-self: center;
+}
+
+.email-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.email-link:hover {
+    text-decoration: underline;
+}
+
+.mail-icon {
+    stroke: #2563eb;
+}
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(540px, 1fr));
+    gap: 24px;
+}
+
+.faq-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.faq-card-content {
+    padding-right: 16px;
+}
+
+.faq-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 10px 0;
+}
+
+.faq-card p {
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.faq-icon-btn {
+    background-color: #fbbf24; /* สีปุ่มวงกลมสีเหลือง */
+    color: #ffffff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Responsive สำหรับหน้าจอขนาดเล็ก */
+@media (max-width: 768px) {
+    .faq-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .faq-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

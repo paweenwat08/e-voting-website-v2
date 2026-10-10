@@ -1,0 +1,90 @@
+#election-rules {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 32px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+#election-rules .rules-header {
+    margin-bottom: 24px;
+}
+
+#election-rules .rules-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #3b82f6;
+    background: #eff6ff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+#election-rules h2 {
+    margin: 0 0 6px 0;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+#election-rules .rules-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+#election-rules .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+#election-rules .rule-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+#election-rules .rule-card:hover {
+    transform: translateY(-2px);
+    border-color: #cbd5e1;
+}
+
+#election-rules .rule-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #dcfce7;
+    color: #15803d;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+#election-rules .rule-text {
+    margin: 0;
+    color: #334155;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* Responsive สำหรับหน้าจอเล็ก */
+@media (max-width: 600px) {
+    #election-rules {
+        padding: 20px 16px;
+    }
+    
+    #election-rules .rules-grid {
+        grid-template-columns: 1fr;
+    }
+}

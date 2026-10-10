@@ -1,0 +1,88 @@
+
+/* =========================
+   General Sections
+========================= */
+
+#dashboard-main > section {
+    padding: 100px 8%;
+}
+
+#dashboard-main > section h2 {
+    margin: 0 0 40px;
+
+    font-size: clamp(2rem, 4vw, 4rem);
+    letter-spacing: -0.04em;
+}
+
+
+/* =========================
+   Elections
+========================= */
+
+#elections {
+    background: white;
+}
+
+#elections > div {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* =========================
+   How to Vote
+========================= */
+
+#how-to-vote {
+    background: #f5f5f2;
+}
+
+#how-to-vote > div {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+#how-to-vote article {
+    padding: 30px;
+
+    min-height: 180px;
+
+    background: white;
+    border-radius: 20px;
+}
+
+#how-to-vote article h3 {
+    margin: 0;
+
+    font-size: 3rem;
+}
+
+#how-to-vote article h4 {
+    margin-top: 50px;
+    font-size: 1.2rem;
+}
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 768px) {
+
+    dashboard-main > section {
+        padding: 70px 6%;
+    }
+
+    dashboard-main > section:first-child {
+        min-height: 70vh;
+        padding: 80px 6%;
+    }
+
+    #how-to-vote > div {
+        grid-template-columns: 1fr;
+    }
+
+    dashboard-main > section:first-child button {
+        margin-bottom: 10px;
+    }
+}
