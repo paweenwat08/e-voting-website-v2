@@ -1,6 +1,7 @@
 
 import { Link, useParams } from "react-router-dom";
 import Navigation from "../../components/Navigation/Navigation";
+import ResultsPodium from "../../components/elections/ResultsPodium/ResultsPodium";
 import ElectionRules from "../../components/dashboard/ElectionRules/ElectionRules";
 import Footer from "../../components/Footer/Footer";
 import './ElectionDetail.css';
@@ -29,10 +30,10 @@ export default function ElectionDetail() {
         );
     }
 
-    const totalVotes = election.candidates.reduce(
-        (total: number, candidate: any) => total + candidate.votes,
-        0
-    );
+    // const totalVotes = election.candidates.reduce(
+    //     (total: number, candidate: any) => total + candidate.votes,
+    //     0
+    // );
 
     const formatDate = (date: string) =>
         new Date(date).toLocaleString("en-GB", {
@@ -54,7 +55,7 @@ export default function ElectionDetail() {
                         <span className="election-tag">ELECTION #{election.id}</span>
                         <h1>{election.title}</h1>
                         <p className="election-subtitle">{election.description}</p>
-                        
+
                         <div className="hero-meta-row">
                             <span className={`status-badge ${election.status}`}>
                                 {election.status.toUpperCase()}
@@ -71,39 +72,10 @@ export default function ElectionDetail() {
                    ========================================================= */}
                 {election.status === "closed" && (
                     <>
-                        <section className="content-section results-block">
-                            <div className="election-container">
-                                <div className="section-header-flex">
-                                    <h2>Election Results</h2>
-                                    <span className="total-badge">Total Votes: {totalVotes}</span>
-                                </div>
-                                <div className="results-grid">
-                                    {election.candidates
-                                        .slice()
-                                        .sort((a: any, b: any) => b.votes - a.votes)
-                                        .map((candidate: any, index: number) => {
-                                            const percentage = totalVotes > 0 
-                                                ? ((candidate.votes / totalVotes) * 100).toFixed(1) 
-                                                : "0";
-                                            return (
-                                                <article key={candidate.id} className={`result-card ${index === 0 ? 'winner' : ''}`}>
-                                                    <div className="result-info">
-                                                        <h3>
-                                                            <span className="num">#{candidate.candidateNumber}</span> 
-                                                            {candidate.name}
-                                                            {index === 0 && <span className="winner-tag">Winner 🏆</span>}
-                                                        </h3>
-                                                        <p>{candidate.votes} votes ({percentage}%)</p>
-                                                    </div>
-                                                    <div className="progress-track">
-                                                        <div className="progress-fill" style={{ width: `${percentage}%` }}></div>
-                                                    </div>
-                                                </article>
-                                            );
-                                        })}
-                                </div>
-                            </div>
-                        </section>
+                        <ResultsPodium
+                            candidates={election.candidates}
+                            electionStatus={election.status}
+                        />
 
                         <CandidatesSection election={election} />
                     </>
@@ -114,13 +86,10 @@ export default function ElectionDetail() {
                    ========================================================= */}
                 {election.status === "open" && (
                     <>
-                        {/* โชว์ผลเลือกตั้งล่าสุด (Live Status / Summary) */}
-                        <section className="content-section live-results-block">
-                            <div className="election-container">
-                                <h2>Live Election Status</h2>
-                                <p>Voting is currently active. Total votes cast so far: <strong>{totalVotes}</strong></p>
-                            </div>
-                        </section>
+                        <ResultsPodium
+                            candidates={election.candidates}
+                            electionStatus={election.status}
+                        />
 
                         {/* ปุ่มกดโหวต */}
                         <section className="content-section action-block">

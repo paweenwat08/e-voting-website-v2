@@ -56,6 +56,13 @@ export const elections: Election[] = [
                 description: "Promoting new ideas and more opportunities for students.",
                 votes: 72,
             },
+            {
+                id: 104,
+                candidateNumber: 4,
+                name: "Candidate Four",
+                description: "sdadasdasdsa",
+                votes: 59,
+            },
         ],
     },
     {

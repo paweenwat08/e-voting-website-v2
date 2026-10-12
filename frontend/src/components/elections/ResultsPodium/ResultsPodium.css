@@ -1,0 +1,302 @@
+:root {
+  --bg-rank-1: #ffffff;
+  --border-rank-1: #f59e0b;
+  --glow-rank-1: rgba(245, 158, 11, 0.15);
+  
+  --bg-rank-2: #ffffff;
+  --border-rank-2: #cbd5e1;
+  
+  --bg-rank-3: #ffffff;
+  --border-rank-3: #fdba74;
+  
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+}
+
+.modern-results-section {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+
+/* ================= TOP 3 HERO PODIUM ================= */
+.podium-hero-container {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.hero-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 28px 20px 24px;
+  text-align: center;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.08);
+}
+
+/* --- RANK 1 (HERO FOCUS) --- */
+.hero-card.rank-1 {
+  border-color: var(--border-rank-1);
+  box-shadow: 0 20px 35px -10px var(--glow-rank-1);
+  background: linear-gradient(180deg, #fffdfa 0%, #ffffff 100%);
+  padding-top: 36px;
+  padding-bottom: 32px;
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.hero-card.rank-1:hover {
+  transform: scale(1.05) translateY(-6px);
+}
+
+/* --- RANK 2 & 3 --- */
+.hero-card.rank-2 {
+  border-color: var(--border-rank-2);
+}
+
+.hero-card.rank-3 {
+  border-color: var(--border-rank-3);
+}
+
+/* --- BADGES & AVATAR --- */
+.rank-badge-floating {
+  position: absolute;
+  top: -18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 50px;
+  padding: 4px 14px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.rank-1 .rank-badge-floating {
+  font-size: 26px;
+  top: -22px;
+  border-color: #fde047;
+  background: #fffbeb;
+}
+
+.avatar-container {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+/* --- DETAILS & STATS --- */
+.candidate-details {
+  width: 100%;
+}
+
+.candidate-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 8px 0 4px;
+  line-height: 1.3;
+}
+
+.rank-1 .candidate-name {
+  font-size: 18px;
+}
+
+.leading-pill {
+  display: inline-block;
+  background: #fef3c7;
+  color: #b45309;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.vote-hero-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin: 10px 0 12px;
+}
+
+.vote-number {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.rank-1 .vote-number {
+  font-size: 26px;
+  color: #d97706;
+}
+
+.vote-unit {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.vote-percent {
+  font-size: 12px;
+  font-weight: 600;
+  color: #3b82f6;
+  margin-left: 2px;
+}
+
+/* --- PROGRESS BAR --- */
+.modern-progress-track {
+  width: 100%;
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.modern-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: #3b82f6;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rank-1 .modern-progress-fill {
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.rank-2 .modern-progress-fill {
+  background: linear-gradient(90deg, #94a3b8, #64748b);
+}
+
+.rank-3 .modern-progress-fill {
+  background: linear-gradient(90deg, #fb923c, #ea580c);
+}
+
+/* ================= OTHERS LIST ================= */
+.others-section {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid #f1f5f9;
+}
+
+.others-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.others-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.other-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: background 0.2s;
+}
+
+.other-card:hover {
+  background: #f1f5f9;
+}
+
+.other-rank {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  width: 28px;
+}
+
+.other-avatar-sm {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.other-main-info {
+  flex: 1;
+}
+
+.other-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.other-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.other-num {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.other-stats {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.other-votes {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.other-percent {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.results-empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .podium-hero-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .hero-card.rank-1 {
+    transform: none;
+    order: -1; /* ให้คนชนะขึ้นบนสุดในมือถือ */
+  }
+
+  .hero-card.rank-1:hover {
+    transform: translateY(-4px);
+  }
+
+  .vote-number {
+    font-size: 20px;
+  }
+}
