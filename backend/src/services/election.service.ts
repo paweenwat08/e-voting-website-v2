@@ -96,3 +96,44 @@ export const closeElection = async (
 
     return result.rows[0] ?? null;
 };
+
+export const getAllElections = async () => {
+    const result = await connection.query(`
+        SELECT
+            id,
+            title,
+            description,
+            start_at AS "startAt",
+            end_at AS "endAt",
+            status,
+            created_at AS "createdAt",
+            updated_at AS "updatedAt"
+        FROM elections
+        ORDER BY start_at DESC
+    `);
+
+    return result.rows;
+};
+
+export const getElectionById = async (
+    electionId: number
+) => {
+    const result = await connection.query(
+        `
+        SELECT
+            id,
+            title,
+            description,
+            start_at AS "startAt",
+            end_at AS "endAt",
+            status,
+            created_at AS "createdAt",
+            updated_at AS "updatedAt"
+        FROM elections
+        WHERE id = $1
+    `,
+        [electionId]
+    );
+
+    return result.rows[0] ?? null;
+};

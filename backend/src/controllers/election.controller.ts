@@ -3,7 +3,9 @@ import { Request, Response } from "express";
 import {
     createElection,
     openElection,
-    closeElection
+    closeElection,
+    getAllElections,
+    getElectionById
 } from "../services/election.service.js";
 
 import { createAuditLog } from "../services/auditLog.service.js";
@@ -246,8 +248,71 @@ const closeElectionController = async (
     }
 };
 
+const getAllElectionsController = async (
+    _req: Request,
+    res: Response
+) => {
+    try {
+        const elections = await getAllElections();
+
+        return res.status(200).json({
+            success: true,
+            elections,
+        });
+    } catch (error) {
+        console.error("Get all elections error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
+const getElectionByIdController = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const electionId = req.params.electionId;
+
+        if (
+            typeof electionId !== "string" ||
+            !/^[1-9]\d*$/.test(electionId)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid election ID",
+            });
+        }
+
+        const election = await getElectionById(Number(electionId));
+
+        if (!election) {
+            return res.status(404).json({
+                success: false,
+                message: "Election not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            election,
+        });
+    } catch (error) {
+        console.error("Get election by ID error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
 export {
     createElectionController,
     openElectionController,
-    closeElectionController
+    closeElectionController,
+    getAllElectionsController,
+    getElectionByIdController
 }
