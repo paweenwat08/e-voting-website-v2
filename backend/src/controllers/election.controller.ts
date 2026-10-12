@@ -9,6 +9,7 @@ import {
 } from "../services/election.service.js";
 
 import { createAuditLog } from "../services/auditLog.service.js";
+import { getCandidatesByElection } from "../services/candidate.service.js";
 
 const createElectionController = async (
     req: Request,
@@ -286,7 +287,9 @@ const getElectionByIdController = async (
             });
         }
 
-        const election = await getElectionById(Number(electionId));
+        const election = await getElectionById(
+            Number(electionId)
+        );
 
         if (!election) {
             return res.status(404).json({
@@ -295,12 +298,22 @@ const getElectionByIdController = async (
             });
         }
 
+        const candidates = await getCandidatesByElection(
+            electionId
+        );
+
         return res.status(200).json({
             success: true,
-            election,
+            election: {
+                ...election,
+                candidates,
+            },
         });
     } catch (error) {
-        console.error("Get election by ID error:", error);
+        console.error(
+            "Get election by ID error:",
+            error
+        );
 
         return res.status(500).json({
             success: false,

@@ -1,39 +1,69 @@
-
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Navigation from "../../components/Navigation/Navigation";
-import ResultsPodium from "../../components/elections/ResultsPodium/ResultsPodium";
 import ElectionRules from "../../components/dashboard/ElectionRules/ElectionRules";
 import Footer from "../../components/Footer/Footer";
-import './ElectionDetail.css';
+import {
+    getElectionById,
+    type Election,
+    type Candidate,
+} from "../../services/electionService";
+import "./ElectionDetail.css";
 
-import { elections } from "../../data/mockElections";
+type ElectionWithCandidates = Election & {
+    candidates: Candidate[];
+};
 
 export default function ElectionDetail() {
     const { electionId } = useParams();
 
-    const election = elections.find(
-        (item: any) => item.id === Number(electionId)
-    );
+    const [election, setElection] =
+        useState<ElectionWithCandidates | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    if (!election) {
-        return (
-            <div className="election-page-wrapper">
-                <Navigation action="VOTE" />
-                <main className="election-not-found">
-                    <div className="not-found-box">
-                        <h1>Election Not Found</h1>
-                        <p>The election you are looking for does not exist.</p>
-                        <Link to="/" className="btn-primary">Back to Home</Link>
-                    </div>
-                </main>
-            </div>
-        );
-    }
+    useEffect(() => {
+        let cancelled = false;
 
-    // const totalVotes = election.candidates.reduce(
-    //     (total: number, candidate: any) => total + candidate.votes,
-    //     0
-    // );
+        const loadElection = async () => {
+            if (
+                !electionId ||
+                !/^[1-9]\d*$/.test(electionId)
+            ) {
+                setError("NOT_FOUND");
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const data = await getElectionById(
+                    Number(electionId)
+                );
+
+                if (!cancelled) {
+                    setElection(data);
+                }
+            } catch (err) {
+                if (!cancelled) {
+                    setError(
+                        err instanceof Error
+                            ? err.message
+                            : "UNKNOWN"
+                    );
+                }
+            } finally {
+                if (!cancelled) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        loadElection();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [electionId]);
 
     const formatDate = (date: string) =>
         new Date(date).toLocaleString("en-GB", {
@@ -44,61 +74,111 @@ export default function ElectionDetail() {
             minute: "2-digit",
         });
 
+    if (loading || error || !election) {
+        const notFound =
+            error === "NOT_FOUND" ||
+            (!loading && !error && !election);
+
+        return (
+            <div className="election-page-wrapper">
+                <Navigation action="VOTE" />
+
+                <main className="election-not-found">
+                    <div className="not-found-box">
+                        <h1>
+                            {loading
+                                ? "Loading Election..."
+                                : notFound
+                                  ? "Election Not Found"
+                                  : "Unable to Load Election"}
+                        </h1>
+
+                        <p>
+                            {loading
+                                ? "Please wait while we load the election details."
+                                : notFound
+                                  ? "The election you are looking for does not exist."
+                                  : "Something went wrong while loading this election. Please try again."}
+                        </p>
+
+                        {!loading && (
+                            <Link
+                                to="/"
+                                className="btn-primary"
+                            >
+                                Back to Home
+                            </Link>
+                        )}
+                    </div>
+                </main>
+
+                <Footer />
+            </div>
+        );
+    }
+
     return (
         <div className="election-page-wrapper">
             <Navigation action="VOTE" />
 
             <main className="election-main-content">
-                {/* --- ส่วนหัวข้อหลัก (Hero Section) --- */}
                 <section className="election-hero-section">
                     <div className="election-container">
-                        <span className="election-tag">ELECTION #{election.id}</span>
+                        <span className="election-tag">
+                            ELECTION #{election.id}
+                        </span>
+
                         <h1>{election.title}</h1>
-                        <p className="election-subtitle">{election.description}</p>
+
+                        <p className="election-subtitle">
+                            {election.description}
+                        </p>
 
                         <div className="hero-meta-row">
-                            <span className={`status-badge ${election.status}`}>
+                            <span
+                                className={`status-badge ${election.status}`}
+                            >
                                 {election.status.toUpperCase()}
                             </span>
+
                             <span className="hero-date-text">
-                                📅 {formatDate(election.startAt)} — {formatDate(election.endAt)}
+                                📅 {formatDate(election.startAt)}
+                                {" — "}
+                                {formatDate(election.endAt)}
                             </span>
                         </div>
                     </div>
                 </section>
 
-                {/* =========================================================
-                    1. CLOSED: โชว์ผลเลือกตั้ง -> โชว์แคนดิเดต
-                   ========================================================= */}
                 {election.status === "closed" && (
                     <>
-                        <ResultsPodium
-                            candidates={election.candidates}
-                            electionStatus={election.status}
-                        />
+                        <section className="content-section">
+                            <div className="election-container">
+                                <h2>Election Closed</h2>
+                                <p>
+                                    Voting for this election has ended.
+                                </p>
+                            </div>
+                        </section>
 
                         <CandidatesSection election={election} />
                     </>
                 )}
 
-                {/* =========================================================
-                    2. OPEN: โชว์ผลเลือกตั้งล่าสุด -> ปุ่มกดโหวต -> โชว์แคนดิเดต -> โชว์ Rules
-                   ========================================================= */}
                 {election.status === "open" && (
                     <>
-                        <ResultsPodium
-                            candidates={election.candidates}
-                            electionStatus={election.status}
-                        />
-
-                        {/* ปุ่มกดโหวต */}
                         <section className="content-section action-block">
                             <div className="election-container">
                                 <div className="vote-action-card">
                                     <div>
                                         <h2>Ready to vote?</h2>
-                                        <p>You need to log in before casting your ballot in this election.</p>
+                                        <p>
+                                            You need to log in before
+                                            casting your ballot in
+                                            this election.
+                                        </p>
                                     </div>
+
                                     <Link
                                         to={`/auth/login?redirect=/vote/${election.id}`}
                                         className="btn-primary btn-large"
@@ -109,25 +189,25 @@ export default function ElectionDetail() {
                             </div>
                         </section>
 
-                        {/* โชว์แคนดิเดต */}
                         <CandidatesSection election={election} />
-
-                        {/* โชว์ Rules */}
                         <ElectionRules />
                     </>
                 )}
 
-                {/* =========================================================
-                    3. SCHEDULED: โชว์วันเวลา -> โชว์แคนดิเดต
-                   ========================================================= */}
                 {election.status === "scheduled" && (
                     <>
-                        {/* โชว์วันเวลา */}
                         <section className="content-section schedule-block">
                             <div className="election-container">
                                 <div className="schedule-info-card">
-                                    <h2>Voting Has Not Started Yet</h2>
-                                    <p>This election is scheduled to begin on:</p>
+                                    <h2>
+                                        Voting Has Not Started Yet
+                                    </h2>
+
+                                    <p>
+                                        This election is scheduled
+                                        to begin on:
+                                    </p>
+
                                     <div className="schedule-date-pill">
                                         📅 {formatDate(election.startAt)}
                                     </div>
@@ -135,7 +215,6 @@ export default function ElectionDetail() {
                             </div>
                         </section>
 
-                        {/* โชว์แคนดิเดต */}
                         <CandidatesSection election={election} />
                     </>
                 )}
@@ -143,38 +222,57 @@ export default function ElectionDetail() {
                 {election.status === "draft" && (
                     <section className="content-section">
                         <div className="election-container">
-                            <h2>This election is not yet published.</h2>
+                            <h2>
+                                This election is not yet published.
+                            </h2>
                         </div>
                     </section>
                 )}
             </main>
+
             <Footer />
         </div>
     );
 }
 
-// คอมโพเนนต์ย่อยสำหรับแสดงรายชื่อแคนดิเดต เพื่อความเป็นระเบียบ
-function CandidatesSection({ election }: { election: any }) {
+function CandidatesSection({
+    election,
+}: {
+    election: ElectionWithCandidates;
+}) {
     return (
         <section className="content-section candidates-block">
             <div className="election-container">
                 <h2>Candidates</h2>
-                <div className="candidates-grid">
-                    {election.candidates.map((candidate: any) => (
-                        <article key={candidate.id} className="candidate-card">
-                            <div className="candidate-header">
-                                <span className="cand-num">#{candidate.candidateNumber}</span>
-                                <h3>{candidate.name}</h3>
-                            </div>
-                            <p className="candidate-desc">{candidate.description}</p>
-                            {election.status === "closed" && (
-                                <div className="cand-votes-footer">
-                                    <span>Final Votes:</span> <strong>{candidate.votes}</strong>
+
+                {election.candidates.length === 0 ? (
+                    <p>No candidates have been added yet.</p>
+                ) : (
+                    <div className="candidates-grid">
+                        {election.candidates.map((candidate) => (
+                            <article
+                                key={candidate.id}
+                                className="candidate-card"
+                            >
+                                <div className="candidate-header">
+                                    <span className="cand-num">
+                                        #{candidate.candidate_number}
+                                    </span>
+
+                                    <h3>
+                                        {candidate.firstname}{" "}
+                                        {candidate.lastname}
+                                    </h3>
                                 </div>
-                            )}
-                        </article>
-                    ))}
-                </div>
+
+                                <p className="candidate-desc">
+                                    {candidate.description ||
+                                        "No description provided."}
+                                </p>
+                            </article>
+                        ))}
+                    </div>
+                )}
             </div>
         </section>
     );
