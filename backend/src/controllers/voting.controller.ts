@@ -13,7 +13,8 @@ import {
     createVoterEligibility,
     findVoterEligibility,
     checkVoterEligibility,
-    getVoterEligibilitiesByElection
+    getVoterEligibilitiesByElection,
+    getElectionResults
 } from "../services/voting.service.js";
 
 const vote = async (
@@ -722,6 +723,67 @@ const getVoterEligibilitiesByElectionController = async (
     }
 };
 
+const getElectionResultsController = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const { electionId } = req.params;
+
+        // 1. Validate election ID
+        if (
+            typeof electionId !== "string" ||
+            !/^[1-9]\d*$/.test(electionId)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid election ID",
+            });
+        }
+
+        // 2. Get election results
+        const result = await getElectionResults(electionId);
+
+        // 3. Handle failure
+        if (!result.success) {
+            if (result.reason === "Election not found") {
+                return res.status(404).json({
+                    success: false,
+                    message: result.reason,
+                });
+            }
+
+            if (
+                result.reason ===
+                "Results are available only after the election closes"
+            ) {
+                return res.status(403).json({
+                    success: false,
+                    message: result.reason,
+                });
+            }
+
+            return res.status(500).json({
+                success: false,
+                message: "Internal Server Error",
+            });
+        }
+
+        // 4. Success
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error(
+            "Get election results controller error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
 export {
     vote,
     createAuthorization,
@@ -731,5 +793,6 @@ export {
     createVoterEligibilityController,
     getVoterEligibilityController,
     checkVoterEligibilityController,
-    getVoterEligibilitiesByElectionController
+    getVoterEligibilitiesByElectionController,
+    getElectionResultsController
 }

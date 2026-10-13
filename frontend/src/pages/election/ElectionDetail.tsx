@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Navigation from "../../components/Navigation/Navigation";
+import ResultsPodium from "../../components/elections/ResultsPodium/ResultsPodium";
 import ElectionRules from "../../components/dashboard/ElectionRules/ElectionRules";
 import Footer from "../../components/Footer/Footer";
+
 import {
     getElectionById,
     type Election,
-    type Candidate,
 } from "../../services/electionService";
+import type { Candidate } from "../../types/Candidate";
+
 import "./ElectionDetail.css";
 
 type ElectionWithCandidates = Election & {
@@ -160,7 +163,7 @@ export default function ElectionDetail() {
                                 </p>
                             </div>
                         </section>
-
+                        <ResultsPodium candidates={election.candidates} electionStatus={election.status} />
                         <CandidatesSection election={election} />
                     </>
                 )}
@@ -188,7 +191,7 @@ export default function ElectionDetail() {
                                 </div>
                             </div>
                         </section>
-
+                        <ResultsPodium candidates={election.candidates} electionStatus={election.status} />
                         <CandidatesSection election={election} />
                         <ElectionRules />
                     </>

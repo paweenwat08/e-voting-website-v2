@@ -64,13 +64,13 @@ export default function ResultsPodium({
                     candidate.image ||
                     "/images/candidates/default-avatar.png"
                   }
-                  name={candidate.name}
+                  name={candidate.firstname}
                   rank={rank}
                 />
               </div>
 
               <div className="candidate-details">
-                <h3 className="candidate-name">{candidate.name}</h3>
+                <h3 className="candidate-name">{candidate.firstname} {candidate.lastname}</h3>
 
                 {isLeadingCandidate && !isClosed && (
                   <span className="leading-pill">
@@ -82,7 +82,7 @@ export default function ResultsPodium({
 
                 <div className="vote-hero-stat">
                   <span className="vote-number">
-                    {candidate.votes.toLocaleString()}
+                    {(candidate.votes ?? 0).toLocaleString()}
                   </span>
                   <span className="vote-unit">votes</span>
                 </div>

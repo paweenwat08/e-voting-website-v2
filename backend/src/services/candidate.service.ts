@@ -267,11 +267,24 @@ export const getCandidatesByElection = async (
             c.created_at,
             c.updated_at,
             i.firstname,
-            i.lastname
+            i.lastname,
+            COUNT(b.candidate_id)::int AS votes
         FROM candidates c
         INNER JOIN identities i
             ON c.identity_id = i.id
+        LEFT JOIN ballots b
+            ON b.candidate_id = c.id
         WHERE c.election_id = $1
+        GROUP BY
+            c.id,
+            c.identity_id,
+            c.election_id,
+            c.candidate_number,
+            c.description,
+            c.created_at,
+            c.updated_at,
+            i.firstname,
+            i.lastname
         ORDER BY c.candidate_number ASC
         `,
         [electionId]

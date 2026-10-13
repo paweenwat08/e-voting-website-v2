@@ -85,79 +85,6 @@
     margin-bottom: 16px;
 }
 
-/* Results Block */
-.section-header-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.total-badge {
-    font-size: 13px;
-    font-weight: 600;
-    color: #475569;
-    background: #f1f5f9;
-    padding: 4px 12px;
-    border-radius: 6px;
-}
-
-.results-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.result-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 16px 20px;
-}
-
-.result-card.winner {
-    border-color: #f59e0b;
-    background: #fffbeb;
-}
-
-.result-info h3 {
-    font-size: 16px;
-    font-weight: 700;
-    margin: 0 0 6px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.num { color: #64748b; font-size: 14px; }
-.winner-tag {
-    font-size: 11px;
-    background: #f59e0b;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-}
-
-.result-info p {
-    font-size: 13px;
-    color: #64748b;
-    margin: 0 0 10px 0;
-}
-
-.progress-track {
-    height: 8px;
-    background: #e2e8f0;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    background: #3b82f6;
-    border-radius: 4px;
-}
-.result-card.winner .progress-fill { background: #f59e0b; }
-
 /* Vote Action Box (Open) */
 .vote-action-card {
     background: #eff6ff;
@@ -237,4 +164,51 @@
         width: 100%;
         text-align: center;
     }
+}
+
+/* ==========================================
+   Election Not Found / Loading State
+   ========================================== */
+.election-page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.election-not-found {
+    flex: 1; /* ดัน Footer ลงไปด้านล่างสุดของจอ */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.not-found-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 48px 32px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+.not-found-box h1 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 12px 0;
+}
+
+.not-found-box p {
+    font-size: 15px;
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0 0 24px 0;
+}
+
+.not-found-box .btn-primary {
+    display: inline-block;
+    width: auto;
 }

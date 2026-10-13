@@ -8,8 +8,12 @@ import {
     openElectionController,
     closeElectionController,
     getAllElectionsController,
-    getElectionByIdController
+    getElectionByIdController,
 } from "../controllers/election.controller.js";
+
+import {
+    getElectionResultsController
+} from "../controllers/voting.controller.js";
 
 const router = Router();
 

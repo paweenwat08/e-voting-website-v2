@@ -28,23 +28,23 @@ export default function OtherCandidates({
                     candidate.image ||
                     "/images/candidates/default-avatar.png"
                   }
-                  name={candidate.name}
+                  name={candidate.firstname}
                   rank={rank}
                 />
               </div>
 
               <div className="other-main-info">
                 <div className="other-name-row">
-                  <span className="other-name">{candidate.name}</span>
+                  <span className="other-name">{candidate.firstname} {candidate.lastname}</span>
                   <span className="other-num">
-                    Candidate #{candidate.candidateNumber}
+                    Candidate #{candidate.candidate_number}
                   </span>
                 </div>
               </div>
 
               <div className="other-stats">
                 <span className="other-votes">
-                  {candidate.votes.toLocaleString()} votes
+                  {(candidate.votes ?? 0).toLocaleString()} votes
                 </span>
               </div>
             </article>
