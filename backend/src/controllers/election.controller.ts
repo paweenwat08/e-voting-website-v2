@@ -10,6 +10,7 @@ import {
 
 import { createAuditLog } from "../services/auditLog.service.js";
 import { getCandidatesByElection } from "../services/candidate.service.js";
+import { getElectionResults } from "../services/voting.service.js";
 
 const createElectionController = async (
     req: Request,
@@ -275,8 +276,9 @@ const getElectionByIdController = async (
     res: Response
 ) => {
     try {
-        const electionId = req.params.electionId;
+        const { electionId } = req.params;
 
+        // 1. Validate election ID
         if (
             typeof electionId !== "string" ||
             !/^[1-9]\d*$/.test(electionId)
@@ -287,6 +289,7 @@ const getElectionByIdController = async (
             });
         }
 
+        // 2. Get election details
         const election = await getElectionById(
             Number(electionId)
         );
@@ -298,16 +301,61 @@ const getElectionByIdController = async (
             });
         }
 
-        const candidates = await getCandidatesByElection(
-            electionId
-        );
+        // 3. Get candidates and live vote counts
+        const result = await getElectionResults(electionId);
 
-        return res.status(200).json({
-            success: true,
-            election: {
-                ...election,
-                candidates,
-            },
+        if (result.success) {
+            // Election is closed: use official results
+            return res.status(200).json({
+                success: true,
+                election: {
+                    ...election,
+                    totalVotes: result.totalVotes,
+                    candidates: (result.candidates ?? []).map(
+                        (candidate) => ({
+                            ...candidate,
+                            votes: Number(candidate.total_votes),
+                        })
+                    ),
+                },
+            });
+        }
+
+        if (result.reason === "Election not found") {
+            return res.status(404).json({
+                success: false,
+                message: result.reason,
+            });
+        }
+
+        if (
+            result.reason ===
+            "Results are available only after the election closes"
+        ) {
+
+            const candidates = await getCandidatesByElection(
+                electionId
+            );
+
+            const totalVotes = candidates.reduce(
+                (total, candidate) => total + Number(candidate.votes),
+                0
+            );
+
+            return res.status(200).json({
+                success: true,
+                election: {
+                    ...election,
+                    totalVotes,
+                    candidates,
+                },
+            });
+
+        }
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
         });
     } catch (error) {
         console.error(

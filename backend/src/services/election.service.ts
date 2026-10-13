@@ -1,7 +1,5 @@
 import connection from "../config/database.js";
 
-import { getCandidatesByElection } from "./candidate.service.js";
-
 export const createElection = async (
     title: string,
     description: string,
@@ -137,18 +135,5 @@ export const getElectionById = async (
         [electionId]
     );
 
-    const election = result.rows[0] ?? null;
-
-    if (!election) {
-        return null;
-    }
-
-    const candidates = await getCandidatesByElection(
-        String(electionId)
-    );
-
-    return {
-        ...election,
-        candidates,
-    };
+    return result.rows[0] ?? null;
 };

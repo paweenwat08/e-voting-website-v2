@@ -11,10 +11,6 @@ import {
     getElectionByIdController,
 } from "../controllers/election.controller.js";
 
-import {
-    getElectionResultsController
-} from "../controllers/voting.controller.js";
-
 const router = Router();
 
 router.post(
