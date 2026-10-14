@@ -1,0 +1,161 @@
+
+.account-page {
+    max-width: 1000px;
+    min-height: 70vh;
+    margin: 0 auto;
+    padding: 64px 24px;
+    color: #171717;
+}
+
+.account-heading {
+    margin-bottom: 32px;
+}
+
+.account-eyebrow {
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.account-heading h1 {
+    margin: 12px 0;
+    font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.account-heading > p:last-child {
+    color: #666;
+    line-height: 1.7;
+}
+
+.account-card {
+    margin-bottom: 24px;
+    padding: 32px;
+    border: 1px solid #e5e5e5;
+    border-radius: 20px;
+    background: #fff;
+}
+
+.account-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #f0efff;
+    color: #100b70;
+}
+
+.account-avatar .material-symbols-outlined {
+    font-size: 42px;
+}
+
+.account-card h2 {
+    margin: 20px 0 8px;
+}
+
+.account-user-id {
+    color: #666;
+}
+
+.account-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+}
+
+.account-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #f7f7f7;
+}
+
+.account-detail span {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.account-section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.account-section-title h2 {
+    margin: 0;
+}
+
+.account-section-title .material-symbols-outlined {
+    color: #100b70;
+    font-size: 30px;
+}
+
+.account-card > p {
+    margin: 20px 0;
+    color: #666;
+    line-height: 1.7;
+}
+
+.account-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.account-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #100b70;
+    color: #fff;
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.account-button:hover {
+    opacity: 0.88;
+}
+
+.account-button-secondary {
+    background: #eee;
+    color: #171717;
+}
+
+.account-button-danger {
+    background: #b42318;
+    color: #fff;
+}
+
+@media (max-width: 600px) {
+    .account-page {
+        padding: 36px 16px;
+    }
+
+    .account-card {
+        padding: 24px 20px;
+    }
+
+    .account-details {
+        grid-template-columns: 1fr;
+    }
+
+    .account-actions {
+        flex-direction: column;
+    }
+
+    .account-button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}

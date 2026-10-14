@@ -8,6 +8,7 @@ import ElectionDetail from "./pages/election/ElectionDetail";
 import Login from "./pages/login/Login";
 import CandidateSelection from "./pages/vote/CandidateSelection";
 import VoteConfirmation from "./pages/vote/VoteConfirmation";
+import Account from "./pages/account/Account";
 
 function App() {
   return (
@@ -24,6 +25,11 @@ function App() {
           <Route
             path="/auth/login"
             element={<Login />}
+          />
+
+          <Route
+            path="/auth/account"
+            element={<Account />}
           />
 
           <Route

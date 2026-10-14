@@ -8,19 +8,7 @@ interface NavigationProps {
 }
 
 export default function Navigation({ action }: NavigationProps) {
-    const { isLoggedIn, user, logout, isLoading } = useAuth();
-
-    const username = user
-        ? `${user.firstname} ${user.lastname}`
-        : undefined;
-
-    const handleLogout = async () => {
-        try {
-            await logout();
-        } catch (error) {
-            console.error("Logout failed:", error);
-        }
-    };
+    const { isLoggedIn, isLoading } = useAuth();
 
     return (
         <header>
@@ -62,16 +50,11 @@ export default function Navigation({ action }: NavigationProps) {
                         {isLoading ? (
                             <span>Loading...</span>
                         ) : isLoggedIn ? (
-                            <>
-                                <span>{username ?? "My Account"}</span>
-
-                                <button
-                                    type="button"
-                                    onClick={handleLogout}
-                                >
-                                    LOGOUT
-                                </button>
-                            </>
+                            <Link to="auth/account">
+                                <span className="material-symbols-outlined">
+                                    account_circle
+                                </span>
+                            </Link>
                         ) : (
                             <Link to="/auth/login">
                                 LOGIN
