@@ -1,4 +1,4 @@
-
+import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
 import {
     Link,
@@ -16,6 +16,8 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
+    const { refreshUser } = useAuth();
 
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -38,6 +40,7 @@ export default function Login() {
                 return;
             }
 
+            await refreshUser();
             navigate(redirect);
         } catch (error) {
             setError(
@@ -158,4 +161,5 @@ export default function Login() {
             </main>
         </>
     );
+
 }
