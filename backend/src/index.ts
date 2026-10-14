@@ -1,6 +1,8 @@
 import connection from "./config/database.js";
 import app from "./app.js";
 
+import { closeExpiredElections } from "./services/closeExpiredElections.js";
+
 const startServer = async () => {
     try {
         await connection.connect();
@@ -16,6 +18,8 @@ const startServer = async () => {
             console.log("Server ERROR:", error);
             
         })
+
+        setInterval(closeExpiredElections, 30 * 1000);
 
     } catch (error) {
         console.log("PostgreSQL connection failed", error);

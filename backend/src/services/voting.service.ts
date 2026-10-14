@@ -264,8 +264,17 @@ export const castVote = async (
             };
         }
 
-        if (now > endAt) {
-            await connection.query("ROLLBACK");
+        if (now >= endAt) {
+            await connection.query(
+                `
+                UPDATE elections
+                SET
+                    status = 'closed',
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE status = 'open'
+                AND end_at <= CURRENT_TIMESTAMP;
+                `
+            );
 
             return {
                 success: false,
