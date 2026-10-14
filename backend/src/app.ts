@@ -10,7 +10,10 @@ import candidateRouter from "./routes/candidate.route.js";
 const app = express(); // create an express app
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: process.env.website,
+    credentials: true
+}));
 
 // routes declaration
 app.use(

@@ -6,23 +6,49 @@ import {
     useSearchParams,
 } from "react-router-dom";
 
+import { userLogin } from "../../services/Login";
+
 import Navigation from "../../components/Navigation/Navigation";
 import "./Login.css";
 
 export default function Login() {
     const [userId, setUserId] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
     const redirect = searchParams.get("redirect") || "/";
 
-    const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handleSubmit = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
         e.preventDefault();
-        navigate(redirect);
-    };
 
+        setError("");
+        setIsLoading(true);
+
+        try {
+            const success = await userLogin(userId, password);
+
+            if (!success) {
+                setError("Login failed. Please try again.");
+                return;
+            }
+
+            navigate(redirect);
+        } catch (error) {
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "Unable to login. Please try again."
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const characters = [
         "/images/characters/character-1.png",
@@ -39,14 +65,11 @@ export default function Login() {
         return characters[randomIndex];
     });
 
-
     return (
         <>
             <Navigation action="LOGIN" />
 
             <main className="login-page">
-                {/* Character Section */}
-
                 <section
                     className="login-visual"
                     aria-label="Student election illustration"
@@ -57,8 +80,6 @@ export default function Login() {
                     />
                 </section>
 
-
-                {/* Login Section */}
                 <section className="login-form-section">
                     <div className="login-card">
                         <h1>USER LOGIN</h1>
@@ -102,11 +123,20 @@ export default function Login() {
                                 />
                             </div>
 
+                            {error && (
+                                <p role="alert" aria-live="polite">
+                                    {error}
+                                </p>
+                            )}
+
                             <button
                                 className="login-submit"
                                 type="submit"
+                                disabled={isLoading}
                             >
-                                <span>LOGIN</span>
+                                <span>
+                                    {isLoading ? "LOGGING IN..." : "LOGIN"}
+                                </span>
 
                                 <span
                                     className="material-symbols-outlined"
