@@ -6,7 +6,8 @@ import roleMiddleware from "../middleware/role.middleware.js";
 import {
     vote,
     createVoterEligibilityController,
-    getVoterEligibilitiesByElectionController
+    getVoterEligibilitiesByElectionController,
+    getMyVoterEligibilitiesController
 } from "../controllers/voting.controller.js";
 
 const router = Router();
@@ -35,5 +36,11 @@ router.get(
     getVoterEligibilitiesByElectionController
 );
 
+router.get(
+    "/eligibility/me",
+    authMiddleware,
+    roleMiddleware("voter"),
+    getMyVoterEligibilitiesController
+);
 
 export default router;

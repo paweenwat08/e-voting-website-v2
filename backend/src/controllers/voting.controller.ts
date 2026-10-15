@@ -14,7 +14,8 @@ import {
     findVoterEligibility,
     checkVoterEligibility,
     getVoterEligibilitiesByElection,
-    getElectionResults
+    getElectionResults,
+    getVoterEligibilitiesByIdentity
 } from "../services/voting.service.js";
 
 const vote = async (
@@ -784,6 +785,41 @@ const getElectionResultsController = async (
     }
 };
 
+const getMyVoterEligibilitiesController = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        if (!req.identity) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+
+        const eligibilities =
+            await getVoterEligibilitiesByIdentity(
+                String(req.identity.id)
+            );
+
+        return res.status(200).json({
+            success: true,
+            eligibilities
+        });
+
+    } catch (error) {
+        console.error(
+            "Get my voter eligibilities error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+};
+
 export {
     vote,
     createAuthorization,
@@ -794,5 +830,6 @@ export {
     getVoterEligibilityController,
     checkVoterEligibilityController,
     getVoterEligibilitiesByElectionController,
-    getElectionResultsController
+    getElectionResultsController,
+    getMyVoterEligibilitiesController
 }
