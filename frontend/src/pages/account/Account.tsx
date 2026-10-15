@@ -63,7 +63,7 @@ export default function Account() {
     const handleLogout = async () => {
         try {
             await logout();
-            navigate("/auth/login");
+            navigate("/");
         } catch (error) {
             console.error("Logout failed:", error);
         }
@@ -136,10 +136,22 @@ export default function Account() {
                             <strong>{user.role}</strong>
                         </div>
                     </div>
+                    <div className="account-actions">
+                        <button
+                            type="button"
+                            className="account-button account-button-danger"
+                            onClick={handleLogout}
+                        >
+                            <span className="material-symbols-outlined account-logo">
+                                logout
+                            </span>
+                            Logout
+                        </button>
+                    </div>
                 </section>
 
                 <section className="account-card">
-                    <h2>Elections you can vote</h2>
+                    <h2>you are eligible to these elections</h2>
                     <ElectionList
                         elections={elections}
                         loading={loadingElections}
@@ -147,25 +159,6 @@ export default function Account() {
                     />
                 </section>
 
-                <section className="account-actions">
-                    <Link
-                        to="/"
-                        className="account-button account-button-secondary"
-                    >
-                        Back to Home
-                    </Link>
-
-                    <button
-                        type="button"
-                        className="account-button account-button-danger"
-                        onClick={handleLogout}
-                    >
-                        <span className="material-symbols-outlined account-logo">
-                            logout
-                        </span>
-                        Logout
-                    </button>
-                </section>
             </main>
         </>
     );

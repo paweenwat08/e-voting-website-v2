@@ -1,0 +1,29 @@
+#how-to-vote {
+    background: #f5f5f2;
+}
+
+#how-to-vote > div {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+#how-to-vote article {
+    padding: 30px;
+
+    min-height: 180px;
+
+    background: white;
+    border-radius: 20px;
+}
+
+#how-to-vote article h3 {
+    margin: 0;
+
+    font-size: 3rem;
+}
+
+#how-to-vote article h4 {
+    margin-top: 50px;
+    font-size: 1.2rem;
+}

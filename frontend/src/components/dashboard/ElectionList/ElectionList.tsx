@@ -59,17 +59,17 @@ export default function ElectionList(props: ElectionListProps) {
 
     const items = usesProvidedElections
         ? props.elections!.map((election) => ({
-              id: election.election_id,
-              title: election.title,
-              description: election.description,
-              status: election.election_status,
-          }))
+            id: election.election_id,
+            title: election.title,
+            description: election.description,
+            status: election.election_status,
+        }))
         : allElections.map((election) => ({
-              id: String(election.id),
-              title: election.title,
-              description: election.description,
-              status: election.status,
-          }));
+            id: String(election.id),
+            title: election.title,
+            description: election.description,
+            status: election.status,
+        }));
 
     const loading = usesProvidedElections
         ? props.loading ?? false
@@ -81,10 +81,6 @@ export default function ElectionList(props: ElectionListProps) {
 
     return (
         <section id="elections">
-            <header className="election-section-header">
-                <h2>OPEN ELECTIONS</h2>
-            </header>
-
             {loading && <p role="status">Loading elections...</p>}
 
             {!loading && error && (

@@ -1,3 +1,13 @@
+.election-section-header h2 {
+    margin: 0 0 6px;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+}
+
+
 
 /* =========================
    General Sections
@@ -12,55 +22,6 @@
 
     font-size: clamp(2rem, 4vw, 4rem);
     letter-spacing: -0.04em;
-}
-
-
-/* =========================
-   Elections
-========================= */
-
-#elections {
-    background: white;
-}
-
-#elections > div {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-/* =========================
-   How to Vote
-========================= */
-
-#how-to-vote {
-    background: #f5f5f2;
-}
-
-#how-to-vote > div {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-#how-to-vote article {
-    padding: 30px;
-
-    min-height: 180px;
-
-    background: white;
-    border-radius: 20px;
-}
-
-#how-to-vote article h3 {
-    margin: 0;
-
-    font-size: 3rem;
-}
-
-#how-to-vote article h4 {
-    margin-top: 50px;
-    font-size: 1.2rem;
 }
 
 /* =========================

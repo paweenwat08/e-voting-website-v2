@@ -1,3 +1,5 @@
+import './HowToVote.css'
+
 export default function HowToVote() {
     return (
         <section id="how-to-vote">

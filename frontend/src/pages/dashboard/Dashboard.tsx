@@ -4,7 +4,7 @@ import Footer from "../../components/Footer/Footer";
 import AnnouncementBanner from "../../components/dashboard/AnnouncementBanner/AnnouncementBanner";
 import ElectionList from "../../components/dashboard/ElectionList/ElectionList";
 import ElectionCalendar from "../../components/dashboard/Schedule/Schedule";
-import HowToVote from "../../components/dashboard/HowToVote";
+import HowToVote from "../../components/dashboard/HowToVote/HowToVote";
 import ElectionRules from "../../components/dashboard/ElectionRules/ElectionRules";
 import FAQ from "../../components/dashboard/FAQ/FAQ";
 
@@ -18,7 +18,10 @@ function Dashboard() {
             <div id="dashboard-main">
                 <AnnouncementBanner />
 
-                <ElectionList />
+                <section className="election-section-header">
+                    <h2>Elections</h2>
+                    <ElectionList />
+                </section>
 
                 <ElectionCalendar />
 
