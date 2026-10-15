@@ -24,7 +24,7 @@ export default function Navigation({ action }: NavigationProps) {
             </Link>
 
             <nav>
-                {action === "VOTE" && (
+                {(action === "VOTE" || action === "account") && (
                     <>
                         <Link to="/#elections">Elections</Link>
                         <Link to="/#schedule">Schedule</Link>

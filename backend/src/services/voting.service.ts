@@ -265,16 +265,7 @@ export const castVote = async (
         }
 
         if (now >= endAt) {
-            await connection.query(
-                `
-                UPDATE elections
-                SET
-                    status = 'closed',
-                    updated_at = CURRENT_TIMESTAMP
-                WHERE status = 'open'
-                AND end_at <= CURRENT_TIMESTAMP;
-                `
-            );
+            await connection.query("ROLLBACK");
 
             return {
                 success: false,
@@ -619,7 +610,6 @@ export const findVoterEligibility = async (
     return result.rows[0] ?? null;
 };
 
-
 export const checkVoterEligibility = async (
     identityId: string,
     electionId: string
@@ -646,6 +636,32 @@ export const checkVoterEligibility = async (
     return result.rows[0] ?? null;
 };
 
+export const getVoterEligibilitiesByIdentity = async (
+    identityId: string
+) => {
+    const result = await connection.query(
+        `
+        SELECT
+            ve.id,
+            ve.identity_id,
+            ve.election_id,
+            ve.status AS eligibility_status,
+            ve.created_at,
+            ve.updated_at,
+            e.title,
+            e.description,
+            e.status AS election_status
+        FROM voter_eligibilities ve
+        INNER JOIN elections e
+            ON e.id = ve.election_id
+        WHERE ve.identity_id = $1
+        ORDER BY ve.created_at DESC
+        `,
+        [identityId]
+    );
+
+    return result.rows;
+};
 
 export const getVoterEligibilitiesByElection = async (
     electionId: string

@@ -47,7 +47,7 @@ export default function Account() {
 
     return (
         <>
-            <Navigation action="DASHBOARD" />
+            <Navigation action="account" />
 
             <main className="account-page">
                 <section className="account-heading">
@@ -89,17 +89,9 @@ export default function Account() {
                         <span className="material-symbols-outlined">
                             how_to_vote
                         </span>
-                        <h2>Voting Eligibility</h2>
+                        <h2>Elections you can vote</h2>
                     </div>
-
-                    <p>
-                        Your voting eligibility must be verified by the
-                        election system before you can vote.
-                    </p>
-
-                    <Link to="/vote" className="account-button">
-                        Go to Voting
-                    </Link>
+                    {/* create a list of elections that user can vote using eligibility  -> use electionList */} 
                 </section>
 
                 <section className="account-actions">
@@ -112,7 +104,7 @@ export default function Account() {
                         className="account-button account-button-danger"
                         onClick={handleLogout}
                     >
-                        <span className="material-symbols-outlined">
+                        <span className="material-symbols-outlined account-logo">
                             logout
                         </span>
                         Logout
