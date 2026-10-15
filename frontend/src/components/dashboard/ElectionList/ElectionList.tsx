@@ -4,29 +4,40 @@ import {
     getAllElections,
     type Election,
 } from "../../../services/electionService";
+import type { EligibleElection } from "../../../services/VoterEligibility";
 import "./ElectionList.css";
 
-export default function ElectionList() {
-    const [elections, setElections] = useState<Election[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+interface ElectionListProps {
+    elections?: EligibleElection[];
+    loading?: boolean;
+    error?: string | null;
+}
+
+export default function ElectionList(props: ElectionListProps) {
+    const [allElections, setAllElections] = useState<Election[]>([]);
+    const [loadingAll, setLoadingAll] = useState(true);
+    const [errorAll, setErrorAll] = useState<string | null>(null);
+
+    const usesProvidedElections = props.elections !== undefined;
 
     useEffect(() => {
+        if (usesProvidedElections) return;
+
         let cancelled = false;
 
         async function fetchElections() {
             try {
-                setLoading(true);
-                setError(null);
+                setLoadingAll(true);
+                setErrorAll(null);
 
                 const data = await getAllElections();
 
                 if (!cancelled) {
-                    setElections(data);
+                    setAllElections(data);
                 }
             } catch (err) {
                 if (!cancelled) {
-                    setError(
+                    setErrorAll(
                         err instanceof Error
                             ? err.message
                             : "Failed to load elections."
@@ -34,17 +45,39 @@ export default function ElectionList() {
                 }
             } finally {
                 if (!cancelled) {
-                    setLoading(false);
+                    setLoadingAll(false);
                 }
             }
         }
 
-        fetchElections();
+        void fetchElections();
 
         return () => {
             cancelled = true;
         };
-    }, []);
+    }, [usesProvidedElections]);
+
+    const items = usesProvidedElections
+        ? props.elections!.map((election) => ({
+              id: election.election_id,
+              title: election.title,
+              description: election.description,
+              status: election.election_status,
+          }))
+        : allElections.map((election) => ({
+              id: String(election.id),
+              title: election.title,
+              description: election.description,
+              status: election.status,
+          }));
+
+    const loading = usesProvidedElections
+        ? props.loading ?? false
+        : loadingAll;
+
+    const error = usesProvidedElections
+        ? props.error ?? null
+        : errorAll;
 
     return (
         <section id="elections">
@@ -52,9 +85,7 @@ export default function ElectionList() {
                 <h2>OPEN ELECTIONS</h2>
             </header>
 
-            {loading && (
-                <p role="status">Loading elections...</p>
-            )}
+            {loading && <p role="status">Loading elections...</p>}
 
             {!loading && error && (
                 <p role="alert">
@@ -62,13 +93,13 @@ export default function ElectionList() {
                 </p>
             )}
 
-            {!loading && !error && elections.length === 0 && (
+            {!loading && !error && items.length === 0 && (
                 <p>No elections available.</p>
             )}
 
-            {!loading && !error && elections.length > 0 && (
+            {!loading && !error && items.length > 0 && (
                 <div className="election-grid">
-                    {elections.map((election) => (
+                    {items.map((election) => (
                         <article
                             className="election-card"
                             key={election.id}

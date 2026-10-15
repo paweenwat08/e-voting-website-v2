@@ -1,12 +1,64 @@
-
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import Navigation from "../../components/Navigation/Navigation";
+import ElectionList from "../../components/dashboard/ElectionList/ElectionList";
+import {
+    getMyVoterEligibilities,
+    type EligibleElection,
+} from "../../services/VoterEligibility";
 import "./Account.css";
 
 export default function Account() {
     const { user, isLoggedIn, isLoading, logout } = useAuth();
     const navigate = useNavigate();
+
+    const [elections, setElections] = useState<EligibleElection[]>([]);
+    const [loadingElections, setLoadingElections] = useState(true);
+    const [electionError, setElectionError] = useState("");
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        if (!isLoggedIn || !user) {
+            setElections([]);
+            setLoadingElections(false);
+            return;
+        }
+
+        let cancelled = false;
+
+        async function loadElections() {
+            try {
+                setLoadingElections(true);
+                setElectionError("");
+
+                const data = await getMyVoterEligibilities();
+
+                if (!cancelled) {
+                    setElections(data);
+                }
+            } catch (error) {
+                console.error("Failed to load eligible elections:", error);
+
+                if (!cancelled) {
+                    setElectionError(
+                        "Unable to load your eligible elections. Please try again."
+                    );
+                }
+            } finally {
+                if (!cancelled) {
+                    setLoadingElections(false);
+                }
+            }
+        }
+
+        void loadElections();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [isLoading, isLoggedIn, user?.id]);
 
     const handleLogout = async () => {
         try {
@@ -22,7 +74,7 @@ export default function Account() {
             <>
                 <Navigation action="DASHBOARD" />
                 <main className="account-page">
-                    <p>Loading your account...</p>
+                    <p role="status">Loading your account...</p>
                 </main>
             </>
         );
@@ -53,7 +105,9 @@ export default function Account() {
                 <section className="account-heading">
                     <p className="account-eyebrow">MY ACCOUNT</p>
                     <h1>My Profile</h1>
-                    <p>Manage your account and review your voter information.</p>
+                    <p>
+                        Manage your account and review your voter information.
+                    </p>
                 </section>
 
                 <section className="account-card">
@@ -85,17 +139,19 @@ export default function Account() {
                 </section>
 
                 <section className="account-card">
-                    <div className="account-section-title">
-                        <span className="material-symbols-outlined">
-                            how_to_vote
-                        </span>
-                        <h2>Elections you can vote</h2>
-                    </div>
-                    {/* create a list of elections that user can vote using eligibility  -> use electionList */} 
+                    <h2>Elections you can vote</h2>
+                    <ElectionList
+                        elections={elections}
+                        loading={loadingElections}
+                        error={electionError || null}
+                    />
                 </section>
 
                 <section className="account-actions">
-                    <Link to="/" className="account-button account-button-secondary">
+                    <Link
+                        to="/"
+                        className="account-button account-button-secondary"
+                    >
                         Back to Home
                     </Link>
 
