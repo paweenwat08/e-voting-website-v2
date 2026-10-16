@@ -582,7 +582,6 @@ export const createVoterEligibility = async (
     };
 };
 
-
 export const findVoterEligibility = async (
     identityId: string,
     electionId: string
