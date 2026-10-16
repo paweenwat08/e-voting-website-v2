@@ -56,3 +56,60 @@ export async function getElectionById(
 
   return data.election;
 }
+
+interface ElectionMutationResponse {
+  success: boolean;
+  message: string;
+  election: Election;
+}
+
+async function electionMutation(
+  path: string,
+  method: "POST" | "PATCH",
+  body?: {
+    title: string;
+    description: string;
+    startAt: string;
+    endAt: string;
+  }
+): Promise<Election> {
+  const response = await fetch(`${API_BASE_URL}/elections${path}`, {
+    method,
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+
+  const data: ElectionMutationResponse = await response.json();
+
+  if (!response.ok || !data.success) {
+    throw new Error(
+      data.message ?? `Request failed: ${response.status}`
+    );
+  }
+
+  return data.election;
+}
+
+export async function createElection(input: {
+  title: string;
+  description: string;
+  startAt: string;
+  endAt: string;
+}): Promise<Election> {
+  return electionMutation("/create", "POST", input);
+}
+
+export async function openElection(
+  electionId: number
+): Promise<Election> {
+  return electionMutation(`/${electionId}/open`, "PATCH");
+}
+
+export async function closeElection(
+  electionId: number
+): Promise<Election> {
+  return electionMutation(`/${electionId}/close`, "PATCH");
+}
