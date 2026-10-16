@@ -171,9 +171,6 @@ export default function AdminDashboard() {
                 {/* User Management */}
                 <UserManagement
                     refreshKey={usersRefreshKey}
-                    onEdit={(user) => {
-                        console.log("Edit user:", user);
-                    }}
                 />
             </main>
         </>

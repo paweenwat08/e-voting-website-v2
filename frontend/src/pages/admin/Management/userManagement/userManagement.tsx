@@ -6,14 +6,10 @@ import {
 } from "../../../../services/adminUserService";
 
 interface Props {
-    onEdit: (user: AdminUser) => void;
     refreshKey: number;
 }
 
-export default function UserManagement({
-    onEdit,
-    refreshKey,
-}: Props) {
+export default function UserManagement({ refreshKey }: Props) {
     const [users, setUsers] = useState<AdminUser[]>([]);
     const [query, setQuery] = useState("");
     const [loading, setLoading] = useState(false);
