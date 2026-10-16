@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
     searchAdminUsers,
     type AdminUser,
-} from "../../../services/adminUserService";
+} from "../../../../services/adminUserService";
 
 interface Props {
     onEdit: (user: AdminUser) => void;

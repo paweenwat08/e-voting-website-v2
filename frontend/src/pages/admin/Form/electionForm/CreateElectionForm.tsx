@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createElection } from "../../../services/electionService";
+import { createElection } from "../../../../services/electionService";
 import './CreateElectionForm.css'
 
 interface Props {

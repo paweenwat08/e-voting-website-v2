@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../../contexts/AuthContext";
 
-import Navigation from "../../components/Navigation/Navigation";
+import Navigation from "../../../components/Navigation/Navigation";
 
 import {
     getAllElections,
     type Election,
-} from "../../services/electionService";
+} from "../../../services/electionService";
 
-import CreateUserForm from "./userForm/CreateUserForm";
-import CreateElectionForm from "./electionForm/CreateElectionForm";
-import ElectionManagement from "./electionManagement/electionManagement";
-import UserManagement from "./userManagement/userManagement";
+import CreateUserForm from "../Form/userForm/CreateUserForm";
+import CreateElectionForm from "../Form/electionForm/CreateElectionForm";
+import ElectionManagement from "../Management/electionManagement/electionManagement";
+import UserManagement from "../Management/userManagement/userManagement";
 
 import "./AdminDashboard.css";
 

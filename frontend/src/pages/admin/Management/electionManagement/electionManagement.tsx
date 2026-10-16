@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { Election } from "../../../services/electionService";
+import type { Election } from "../../../../services/electionService";
 
 interface Props {
     elections: Election[];

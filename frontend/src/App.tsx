@@ -9,8 +9,9 @@ import Login from "./pages/login/Login";
 import CandidateSelection from "./pages/vote/CandidateSelection";
 import VoteConfirmation from "./pages/vote/VoteConfirmation";
 import Account from "./pages/account/Account";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminElectionEdit from "./pages/electionEdit/ElectionEdit";
+import AdminDashboard from "./pages/admin/Dashboard/AdminDashboard";
+import AdminElectionEdit from "./pages/admin/Edit/electionEdit/ElectionEdit";
+import AdminUserEdit from "./pages/admin/Edit/userEdit/userEdit";
 
 function App() {
   return (
@@ -47,6 +48,10 @@ function App() {
           <Route
             path="/admin/elections/:electionId/edit"
             element={<AdminElectionEdit />}
+          />
+          <Route
+            path="/admin/user/:id/edit"
+            element={<AdminUserEdit />}
           />
 
           <Route

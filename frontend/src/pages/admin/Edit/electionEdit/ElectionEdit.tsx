@@ -6,17 +6,17 @@ import {
     useParams,
 } from "react-router-dom";
 
-import { useAuth } from "../../contexts/AuthContext";
-import Navigation from "../../components/Navigation/Navigation";
+import { useAuth } from "../../../../contexts/AuthContext";
+import Navigation from "../../../../components/Navigation/Navigation";
 
-import { getElectionById } from "../../services/electionService";
+import { getElectionById } from "../../../../services/electionService";
 import {
     updateElection,
     openElection,
     closeElection,
-} from "../../services/electionService";
+} from "../../../../services/electionService";
 
-import type { Election } from "../../types/Election";
+import type { Election } from "../../../../types/Election";
 
 import './ElectionEdit.css'
 

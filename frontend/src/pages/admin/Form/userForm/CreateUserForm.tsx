@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
     createAdminUser,
     type CreateUserInput,
-} from "../../../services/adminUserService";
+} from "../../../../services/adminUserService";
 import './CreateUserForm.css'
 
 interface Props {
