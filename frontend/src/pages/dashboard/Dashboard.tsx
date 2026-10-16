@@ -8,7 +8,7 @@ import HowToVote from "../../components/dashboard/HowToVote/HowToVote";
 import ElectionRules from "../../components/dashboard/ElectionRules/ElectionRules";
 import FAQ from "../../components/dashboard/FAQ/FAQ";
 
-import './test.css';
+import './Dashboard.css';
 
 function Dashboard() {
     return (
