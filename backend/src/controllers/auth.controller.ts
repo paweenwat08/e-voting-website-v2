@@ -58,7 +58,16 @@ const registerUser = async (
     return res.status(201).json({
       success: true,
       message: "User created successfully",
-      user
+      user: {
+        id: user.id,
+        user_id: user.user_id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        role: user.role,
+        status: user.status,
+        created_at: user.created_at,
+        updated_at: user.updated_at
+      }
     });
 
   } catch (error) {
@@ -72,94 +81,94 @@ const registerUser = async (
 };
 
 const loginUser = async (
-    req: Request,
-    res: Response
+  req: Request,
+  res: Response
 ) => {
-    try {
-        const { userId, password } = req.body;
+  try {
+    const { userId, password } = req.body;
 
-        // Validate request body
-        if (
-            typeof userId !== "string" ||
-            typeof password !== "string" ||
-            userId.trim() === "" ||
-            password === ""
-        ) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid login credentials"
-            });
-        }
-
-        // Authenticate user
-        const identity = await authenticateUser(
-            userId,
-            password
-        );
-
-        if (!identity) {
-
-            try {
-                await createAuditLog(
-                    "LOGIN_FAILED",
-                    null,
-                    {
-                        userId: userId.trim()
-                    }
-                );
-            } catch (auditError) {
-                console.error(
-                    "Failed to create login audit log:",
-                    auditError
-                );
-            }
-
-            return res.status(401).json({
-                success: false,
-                message: "Invalid login credentials"
-            });
-        }
-
-        // Create session
-        const { sessionToken, session } =
-            await createSession(identity.id);
-
-        // Set session cookie
-        res.cookie("session", sessionToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            expires: session.expires_at
-        });
-
-        try {
-            await createAuditLog(
-                "LOGIN_SUCCESS",
-                identity.id
-            );
-        } catch (auditError) {
-            console.error(
-                "Failed to create login audit log:",
-                auditError
-            );
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "Login successful"
-        });
-
-    } catch (error) {
-        console.error(
-            "Login error:",
-            error
-        );
-
-        return res.status(500).json({
-            success: false,
-            message: "Internal Server Error"
-        });
+    // Validate request body
+    if (
+      typeof userId !== "string" ||
+      typeof password !== "string" ||
+      userId.trim() === "" ||
+      password === ""
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid login credentials"
+      });
     }
+
+    // Authenticate user
+    const identity = await authenticateUser(
+      userId,
+      password
+    );
+
+    if (!identity) {
+
+      try {
+        await createAuditLog(
+          "LOGIN_FAILED",
+          null,
+          {
+            userId: userId.trim()
+          }
+        );
+      } catch (auditError) {
+        console.error(
+          "Failed to create login audit log:",
+          auditError
+        );
+      }
+
+      return res.status(401).json({
+        success: false,
+        message: "Invalid login credentials"
+      });
+    }
+
+    // Create session
+    const { sessionToken, session } =
+      await createSession(identity.id);
+
+    // Set session cookie
+    res.cookie("session", sessionToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      expires: session.expires_at
+    });
+
+    try {
+      await createAuditLog(
+        "LOGIN_SUCCESS",
+        identity.id
+      );
+    } catch (auditError) {
+      console.error(
+        "Failed to create login audit log:",
+        auditError
+      );
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful"
+    });
+
+  } catch (error) {
+    console.error(
+      "Login error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    });
+  }
 };
 
 const getCurrentUser = async (
@@ -271,10 +280,57 @@ const logoutUser = async (
   }
 };
 
+const searchUsers = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const query =
+            typeof req.query.q === "string"
+                ? req.query.q.trim()
+                : "";
+
+        const result = await connection.query(
+            `
+            SELECT
+                id,
+                user_id,
+                firstname,
+                lastname,
+                role,
+                status,
+                created_at,
+                updated_at
+            FROM identities
+            WHERE
+                $1 = ''
+                OR user_id ILIKE '%' || $1 || '%'
+                OR firstname ILIKE '%' || $1 || '%'
+                OR lastname ILIKE '%' || $1 || '%'
+            ORDER BY id ASC
+            LIMIT 50
+            `,
+            [query]
+        );
+
+        return res.status(200).json({
+            success: true,
+            users: result.rows
+        });
+    } catch (error) {
+        console.error("Search users error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+};
 
 export {
   registerUser,
   loginUser,
   getCurrentUser,
-  logoutUser
+  logoutUser,
+  searchUsers
 };
