@@ -1,0 +1,71 @@
+.create-election-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.create-election-form h2 {
+    margin: 0 0 8px;
+}
+
+.create-election-form label {
+    color: #334155;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.create-election-form input,
+.create-election-form textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.create-election-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.create-election-form input:focus,
+.create-election-form textarea:focus {
+    outline: 2px solid #93c5fd;
+    outline-offset: 1px;
+    border-color: #2563eb;
+}
+
+.create-election-form button {
+    margin-top: 8px;
+    padding: 12px 16px;
+    color: #fff;
+    background: #2563eb;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.create-election-form button:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.create-election-form button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.create-election-form [role="alert"] {
+    color: #b91c1c;
+}
+
+.create-election-form [role="status"] {
+    color: #166534;
+}
+
+.create-election-form p {
+    margin: 4px 0;
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+}

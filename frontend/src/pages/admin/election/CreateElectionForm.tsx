@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createElection } from "../../../services/electionService";
+import './CreateElectionForm.css'
 
 interface Props {
     onSuccess: () => Promise<void>;
@@ -68,7 +69,7 @@ export default function CreateElectionForm({ onSuccess }: Props) {
 
     return (
         <form
-            className="admin-create-form"
+            className="create-election-form"
             onSubmit={handleSubmit}
         >
             <h2>Create Election</h2>

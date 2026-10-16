@@ -122,9 +122,9 @@ export default function AdminDashboard() {
 
                 {/* Admin actions */}
                 <section className="admin-elections">
-                    <div className="admin-create-election">
+                    <div className="admin-create">
                         <details>
-                            <summary>+ Create Election</summary>
+                            <summary>Create Election</summary>
 
                             <CreateElectionForm
                                 onSuccess={loadElections}
@@ -132,7 +132,7 @@ export default function AdminDashboard() {
                         </details>
 
                         <details>
-                            <summary>+ Add User</summary>
+                            <summary>Add User</summary>
 
                             <CreateUserForm
                                 onSuccess={() => {}}

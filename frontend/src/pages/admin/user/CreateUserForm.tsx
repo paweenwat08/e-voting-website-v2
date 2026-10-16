@@ -3,6 +3,7 @@ import {
     createAdminUser,
     type CreateUserInput,
 } from "../../../services/adminUserService";
+import './CreateUserForm.css'
 
 interface Props {
     onSuccess: () => void;
@@ -55,7 +56,7 @@ export default function CreateUserForm({ onSuccess }: Props) {
 
     return (
         <form
-            className="admin-create-form"
+            className="create-user-form"
             onSubmit={handleSubmit}
         >
             <h2>Add User</h2>
