@@ -94,12 +94,29 @@ async function electionMutation(
 }
 
 export async function createElection(input: {
-  title: string;
-  description: string;
-  startAt: string;
-  endAt: string;
+    title: string;
+    description: string;
+    startAt: string;
+    endAt: string;
 }): Promise<Election> {
-  return electionMutation("/create", "POST", input);
+    const response = await fetch(`${API_BASE_URL}/elections/create`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(input),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+        throw new Error(
+            data.message ?? `Failed to create election: ${response.status}`
+        );
+    }
+
+    return data.election as Election;
 }
 
 export async function openElection(
