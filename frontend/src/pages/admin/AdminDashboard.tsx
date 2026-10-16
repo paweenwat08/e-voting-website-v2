@@ -3,13 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 
 import Navigation from "../../components/Navigation/Navigation";
+
 import {
     getAllElections,
     type Election,
 } from "../../services/electionService";
 
-import CreateUserForm from "./user/CreateUserForm";
-import CreateElectionForm from "./election/CreateElectionForm";
+import CreateUserForm from "./userForm/CreateUserForm";
+import CreateElectionForm from "./electionForm/CreateElectionForm";
+import ElectionManagement from "./electionManagement/electionManagement";
+import UserManagement from "./userManagement/userManagement";
 
 import "./AdminDashboard.css";
 
@@ -18,10 +21,12 @@ export default function AdminDashboard() {
     const navigate = useNavigate();
 
     const [elections, setElections] = useState<Election[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [electionsLoading, setElectionsLoading] = useState(true);
+    const [electionsError, setElectionsError] = useState("");
 
-    // Check whether the current user is an admin.
+    // Increment this after creating a user to refresh User Management.
+    const [usersRefreshKey, setUsersRefreshKey] = useState(0);
+
     useEffect(() => {
         if (isLoading) return;
 
@@ -37,7 +42,6 @@ export default function AdminDashboard() {
         }
     }, [user, isLoading, navigate]);
 
-    // Load elections only after admin authorization is confirmed.
     useEffect(() => {
         if (isLoading || user?.role !== "admin") return;
 
@@ -46,28 +50,33 @@ export default function AdminDashboard() {
 
     async function loadElections() {
         try {
-            setLoading(true);
-            setError("");
+            setElectionsLoading(true);
+            setElectionsError("");
 
             const data = await getAllElections();
             setElections(data);
         } catch (err) {
-            setError(
+            setElectionsError(
                 err instanceof Error
                     ? err.message
                     : "Failed to load elections."
             );
         } finally {
-            setLoading(false);
+            setElectionsLoading(false);
         }
     }
 
-    // Count total, draft, open, and closed elections.
     const counts = {
         total: elections.length,
-        draft: elections.filter((e) => e.status === "draft").length,
-        open: elections.filter((e) => e.status === "open").length,
-        closed: elections.filter((e) => e.status === "closed").length,
+        draft: elections.filter(
+            (election) => election.status === "draft"
+        ).length,
+        open: elections.filter(
+            (election) => election.status === "open"
+        ).length,
+        closed: elections.filter(
+            (election) => election.status === "closed"
+        ).length,
     };
 
     if (isLoading || !user || user.role !== "admin") {
@@ -81,9 +90,15 @@ export default function AdminDashboard() {
             <main className="admin-dashboard">
                 <header className="admin-header">
                     <div>
-                        <p className="admin-eyebrow">ADMINISTRATION</p>
+                        <p className="admin-eyebrow">
+                            ADMINISTRATION
+                        </p>
+
                         <h1>Admin Dashboard</h1>
-                        <p>Manage elections and monitor their status.</p>
+
+                        <p>
+                            Manage elections and monitor their status.
+                        </p>
                     </div>
 
                     <Link
@@ -120,8 +135,8 @@ export default function AdminDashboard() {
                     </article>
                 </section>
 
-                {/* Admin actions */}
-                <section className="admin-elections">
+                {/* Create actions */}
+                <section className="admin-section">
                     <div className="admin-create">
                         <details>
                             <summary>Create Election</summary>
@@ -135,100 +150,31 @@ export default function AdminDashboard() {
                             <summary>Add User</summary>
 
                             <CreateUserForm
-                                onSuccess={() => {}}
+                                onSuccess={() => {
+                                    setUsersRefreshKey(
+                                        (current) => current + 1
+                                    );
+                                }}
                             />
                         </details>
                     </div>
-
-                    {/* Election management */}
-                    <div className="admin-section-heading">
-                        <div>
-                            <h2>Election Management</h2>
-                            <p>Review and manage existing elections.</p>
-                        </div>
-
-                        <button
-                            type="button"
-                            onClick={() => void loadElections()}
-                            disabled={loading}
-                        >
-                            Refresh
-                        </button>
-                    </div>
-
-                    {loading && (
-                        <p role="status">Loading elections...</p>
-                    )}
-
-                    {!loading && error && (
-                        <p role="alert">
-                            Unable to load elections: {error}
-                        </p>
-                    )}
-
-                    {!loading && !error && elections.length === 0 && (
-                        <p>No elections found.</p>
-                    )}
-
-                    {!loading && !error && elections.length > 0 && (
-                        <div className="admin-table-wrapper">
-                            <table className="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Election</th>
-                                        <th>Start</th>
-                                        <th>End</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {elections.map((election) => (
-                                        <tr key={election.id}>
-                                            <td>
-                                                <strong>
-                                                    {election.title}
-                                                </strong>
-                                                <p>{election.description}</p>
-                                            </td>
-
-                                            <td>
-                                                {new Date(
-                                                    election.startAt
-                                                ).toLocaleString()}
-                                            </td>
-
-                                            <td>
-                                                {new Date(
-                                                    election.endAt
-                                                ).toLocaleString()}
-                                            </td>
-
-                                            <td>
-                                                <span
-                                                    className={`admin-status status-${election.status}`}
-                                                >
-                                                    {election.status.toUpperCase()}
-                                                </span>
-                                            </td>
-
-                                            <td>
-                                                <div className="admin-row-actions">
-                                                    <Link
-                                                        to={`/admin/elections/${election.id}/edit`}
-                                                    >
-                                                        Edit
-                                                    </Link>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
                 </section>
+
+                {/* Election Management */}
+                <ElectionManagement
+                    elections={elections}
+                    loading={electionsLoading}
+                    error={electionsError}
+                    onRefresh={loadElections}
+                />
+
+                {/* User Management */}
+                <UserManagement
+                    refreshKey={usersRefreshKey}
+                    onEdit={(user) => {
+                        console.log("Edit user:", user);
+                    }}
+                />
             </main>
         </>
     );
