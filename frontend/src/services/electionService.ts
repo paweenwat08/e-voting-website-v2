@@ -1,104 +1,50 @@
-import type { Candidate } from "../types/Candidate";
+import type {
+    Election,
+    ElectionInput,
+    ElectionsResponse,
+    ElectionDetailResponse,
+    ElectionMutationResponse,
+} from "../types/Election";
+
+export type { Election } from "../types/Election";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-export interface Election {
-  id: number;
-  title: string;
-  description: string;
-  startAt: string;
-  endAt: string;
-  status: "draft" | "scheduled" | "open" | "closed";
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface ElectionsResponse {
-  success: boolean;
-  elections: Election[];
-}
-
-interface ElectionDetailResponse {
-  success: boolean;
-  election: Election & {
-    candidates: Candidate[];
-  };
-}
-
 export async function getAllElections(): Promise<Election[]> {
-  const response = await fetch(`${API_BASE_URL}/elections`);
+    const response = await fetch(`${API_BASE_URL}/elections`);
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch elections: ${response.status}`);
-  }
+    if (!response.ok) {
+        throw new Error(`Failed to fetch elections: ${response.status}`);
+    }
 
-  const data: ElectionsResponse = await response.json();
+    const data: ElectionsResponse = await response.json();
 
-  return data.elections;
+    return data.elections;
 }
 
 export async function getElectionById(
-  electionId: number
+    electionId: number
 ): Promise<ElectionDetailResponse["election"]> {
-  const response = await fetch(
-    `${API_BASE_URL}/elections/${electionId}`
-  );
-
-  if (response.status === 404) {
-    throw new Error("NOT_FOUND");
-  }
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch election: ${response.status}`);
-  }
-
-  const data: ElectionDetailResponse = await response.json();
-
-  return data.election;
-}
-
-interface ElectionMutationResponse {
-  success: boolean;
-  message: string;
-  election: Election;
-}
-
-async function electionMutation(
-  path: string,
-  method: "POST" | "PATCH",
-  body?: {
-    title: string;
-    description: string;
-    startAt: string;
-    endAt: string;
-  }
-): Promise<Election> {
-  const response = await fetch(`${API_BASE_URL}/elections${path}`, {
-    method,
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    ...(body ? { body: JSON.stringify(body) } : {}),
-  });
-
-  const data: ElectionMutationResponse = await response.json();
-
-  if (!response.ok || !data.success) {
-    throw new Error(
-      data.message ?? `Request failed: ${response.status}`
+    const response = await fetch(
+        `${API_BASE_URL}/elections/${electionId}`
     );
-  }
 
-  return data.election;
+    if (response.status === 404) {
+        throw new Error("NOT_FOUND");
+    }
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch election: ${response.status}`);
+    }
+
+    const data: ElectionDetailResponse = await response.json();
+
+    return data.election;
 }
 
-export async function createElection(input: {
-    title: string;
-    description: string;
-    startAt: string;
-    endAt: string;
-}): Promise<Election> {
+export async function createElection(
+    input: ElectionInput
+): Promise<Election> {
     const response = await fetch(`${API_BASE_URL}/elections/create`, {
         method: "POST",
         credentials: "include",
@@ -108,7 +54,7 @@ export async function createElection(input: {
         body: JSON.stringify(input),
     });
 
-    const data = await response.json();
+    const data: ElectionMutationResponse = await response.json();
 
     if (!response.ok || !data.success) {
         throw new Error(
@@ -116,17 +62,64 @@ export async function createElection(input: {
         );
     }
 
-    return data.election as Election;
+    return data.election;
+}
+
+async function electionMutation(
+    path: string,
+    method: "PATCH"
+): Promise<Election> {
+    const response = await fetch(`${API_BASE_URL}/elections${path}`, {
+        method,
+        credentials: "include",
+    });
+
+    const data: ElectionMutationResponse = await response.json();
+
+    if (!response.ok || !data.success) {
+        throw new Error(
+            data.message ?? `Request failed: ${response.status}`
+        );
+    }
+
+    return data.election;
 }
 
 export async function openElection(
-  electionId: number
+    electionId: number
 ): Promise<Election> {
-  return electionMutation(`/${electionId}/open`, "PATCH");
+    return electionMutation(`/${electionId}/open`, "PATCH");
 }
 
 export async function closeElection(
-  electionId: number
+    electionId: number
 ): Promise<Election> {
-  return electionMutation(`/${electionId}/close`, "PATCH");
+    return electionMutation(`/${electionId}/close`, "PATCH");
+}
+
+export async function updateElection(
+    electionId: number,
+    input: ElectionInput
+): Promise<Election> {
+    const response = await fetch(
+        `${API_BASE_URL}/elections/${electionId}`,
+        {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(input),
+        }
+    );
+
+    const data: ElectionMutationResponse = await response.json();
+
+    if (!response.ok || !data.success) {
+        throw new Error(
+            data.message ?? `Failed to update election: ${response.status}`
+        );
+    }
+
+    return data.election;
 }

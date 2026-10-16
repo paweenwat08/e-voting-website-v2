@@ -1,3 +1,4 @@
+
 import { Router } from "express";
 
 import authMiddleware from "../middleware/auth.middleware.js";
@@ -5,6 +6,7 @@ import roleMiddleware from "../middleware/role.middleware.js";
 
 import {
     createElectionController,
+    updateElectionController,
     openElectionController,
     closeElectionController,
     getAllElectionsController,
@@ -32,6 +34,13 @@ router.patch(
     authMiddleware,
     roleMiddleware("admin"),
     closeElectionController
+);
+
+router.patch(
+    "/:electionId",
+    authMiddleware,
+    roleMiddleware("admin"),
+    updateElectionController
 );
 
 router.get("/", getAllElectionsController);

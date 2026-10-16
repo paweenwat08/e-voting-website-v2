@@ -136,7 +136,17 @@ export default function Account() {
                             <strong>{user.role}</strong>
                         </div>
                     </div>
+
                     <div className="account-actions">
+                        {user.role === "admin" && (
+                            <Link
+                                to="/admin"
+                                className="account-button account-button-admin"
+                            >
+                                Admin Dashboard
+                            </Link>
+                        )}
+
                         <button
                             type="button"
                             className="account-button account-button-danger"

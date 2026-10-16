@@ -10,6 +10,7 @@ import CandidateSelection from "./pages/vote/CandidateSelection";
 import VoteConfirmation from "./pages/vote/VoteConfirmation";
 import Account from "./pages/account/Account";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminElectionEdit from "./pages/electionEdit/ElectionEdit";
 
 function App() {
   return (
@@ -41,6 +42,11 @@ function App() {
           <Route
             path="/vote/:electionId"
             element={<CandidateSelection />}
+          />
+
+          <Route
+            path="/admin/elections/:electionId/edit"
+            element={<AdminElectionEdit />}
           />
 
           <Route

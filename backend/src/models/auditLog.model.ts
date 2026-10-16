@@ -3,6 +3,7 @@ export type AuditEventType =
     | "LOGIN_FAILED"
     | "ADMIN_ACTION"
     | "ELECTION_CREATED"
+    | "ELECTION_UPDATED"
     | "ELECTION_OPENED"
     | "ELECTION_CLOSED"
     | "VOTE_CAST"

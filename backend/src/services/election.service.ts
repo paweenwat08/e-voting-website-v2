@@ -137,3 +137,43 @@ export const getElectionById = async (
 
     return result.rows[0] ?? null;
 };
+
+export const updateElection = async (
+    electionId: string,
+    title: string,
+    description: string,
+    startAt: Date,
+    endAt: Date
+) => {
+    const result = await connection.query(
+        `
+        UPDATE elections
+        SET
+            title = $2,
+            description = $3,
+            start_at = $4,
+            end_at = $5,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = $1
+          AND status IN ('draft', 'scheduled')
+        RETURNING
+            id,
+            title,
+            description,
+            start_at AS "startAt",
+            end_at AS "endAt",
+            status,
+            created_at AS "createdAt",
+            updated_at AS "updatedAt"
+        `,
+        [
+            electionId,
+            title.trim(),
+            description.trim(),
+            startAt,
+            endAt
+        ]
+    );
+
+    return result.rows[0] ?? null;
+};

@@ -1,0 +1,315 @@
+
+.admin-election-edit {
+    --admin-primary: #2563eb;
+    --admin-primary-hover: #1d4ed8;
+    --admin-text: #172033;
+    --admin-muted: #64748b;
+    --admin-border: #e2e8f0;
+    --admin-surface: #ffffff;
+    --admin-background: #f8fafc;
+    --admin-danger: #dc2626;
+    --admin-success: #15803d;
+
+    width: min(100% - 40px, 1000px);
+    margin: 0 auto;
+    padding: 36px 0 56px;
+    color: var(--admin-text);
+    font-family: inherit;
+}
+
+.admin-election-edit *,
+.admin-election-edit *::before,
+.admin-election-edit *::after {
+    box-sizing: border-box;
+}
+
+.admin-election-edit__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.admin-election-edit__header a {
+    display: inline-block;
+    margin-bottom: 16px;
+    color: var(--admin-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.admin-election-edit__header a:hover {
+    text-decoration: underline;
+}
+
+.admin-election-edit__header h1 {
+    margin: 0 0 8px;
+    font-size: clamp(1.7rem, 4vw, 2.25rem);
+    line-height: 1.2;
+    font-weight: 750;
+    letter-spacing: -0.035em;
+}
+
+.admin-election-edit__header p {
+    margin: 0;
+    color: var(--admin-muted);
+    font-size: 0.9rem;
+}
+
+.admin-election-edit__status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 7px 12px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.admin-election-edit__status--draft {
+    color: #475569;
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.admin-election-edit__status--scheduled {
+    color: #92400e;
+    background: #fef3c7;
+    border-color: #fde68a;
+}
+
+.admin-election-edit__status--open {
+    color: #166534;
+    background: #dcfce7;
+    border-color: #bbf7d0;
+}
+
+.admin-election-edit__status--closed {
+    color: #991b1b;
+    background: #fee2e2;
+    border-color: #fecaca;
+}
+
+/* Notifications */
+
+.admin-election-edit__message {
+    margin: 0 0 20px;
+    padding: 13px 16px;
+    border: 1px solid;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.admin-election-edit__message--error {
+    color: #991b1b;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.admin-election-edit__message--success {
+    color: #166534;
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+/* Edit form */
+
+.admin-election-edit__form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 28px;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgb(15 23 42 / 4%);
+}
+
+.admin-election-edit__form label {
+    margin-top: 8px;
+    color: #334155;
+    font-size: 0.9rem;
+    font-weight: 650;
+}
+
+.admin-election-edit__form input,
+.admin-election-edit__form textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px;
+    color: var(--admin-text);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 0.95rem;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.admin-election-edit__form input {
+    min-height: 46px;
+}
+
+.admin-election-edit__form textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.admin-election-edit__form input:focus,
+.admin-election-edit__form textarea:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 3px rgb(37 99 235 / 13%);
+}
+
+.admin-election-edit__form input:disabled,
+.admin-election-edit__form textarea:disabled {
+    color: #64748b;
+    background: #f1f5f9;
+    cursor: not-allowed;
+}
+
+/* Buttons */
+
+.admin-election-edit button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 11px 18px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 0.92rem;
+    font-weight: 650;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.admin-election-edit button:focus-visible {
+    outline: 3px solid rgb(37 99 235 / 30%);
+    outline-offset: 3px;
+}
+
+.admin-election-edit button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.admin-election-edit button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.admin-election-edit__form button[type="submit"] {
+    justify-self: start;
+    margin-top: 18px;
+    color: #ffffff;
+    background: var(--admin-primary);
+}
+
+.admin-election-edit__form button[type="submit"]:hover:not(:disabled) {
+    background: var(--admin-primary-hover);
+}
+
+/* Voting controls */
+
+.admin-election-edit__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    padding: 24px 28px;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 16px;
+}
+
+.admin-election-edit__actions h2 {
+    flex: 1 1 100%;
+    margin: 0 0 6px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.admin-election-edit__actions button {
+    color: #ffffff;
+    background: var(--admin-primary);
+}
+
+.admin-election-edit__actions button:hover:not(:disabled) {
+    background: var(--admin-primary-hover);
+}
+
+.admin-election-edit__actions button:last-child {
+    margin-right: 0;
+}
+
+/* Loading and unavailable states */
+
+.admin-election-edit > p[role="alert"] {
+    color: var(--admin-danger);
+}
+
+.admin-election-edit > button {
+    color: #ffffff;
+    background: var(--admin-primary);
+}
+
+.admin-election-edit > button:hover:not(:disabled) {
+    background: var(--admin-primary-hover);
+}
+
+/* Responsive */
+
+@media (max-width: 640px) {
+    .admin-election-edit {
+        width: min(100% - 28px, 1000px);
+        padding-top: 24px;
+    }
+
+    .admin-election-edit__header {
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .admin-election-edit__form {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+
+    .admin-election-edit__actions {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+
+    .admin-election-edit__form button[type="submit"] {
+        width: 100%;
+    }
+
+    .admin-election-edit__actions button {
+        flex: 1 1 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-election-edit *,
+    .admin-election-edit *::before,
+    .admin-election-edit *::after {
+        transition: none !important;
+    }
+}

@@ -6,8 +6,6 @@ import Navigation from "../../components/Navigation/Navigation";
 import {
     getAllElections,
     createElection,
-    openElection,
-    closeElection,
     type Election,
 } from "../../services/electionService";
 
@@ -20,8 +18,6 @@ export default function AdminDashboard() {
     const [elections, setElections] = useState<Election[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [actionError, setActionError] = useState("");
-    const [actionLoading, setActionLoading] = useState<number | null>(null);
 
     // Create election form
     const [showCreateForm, setShowCreateForm] = useState(false);
@@ -125,35 +121,6 @@ export default function AdminDashboard() {
             );
         } finally {
             setCreateLoading(false);
-        }
-    }
-
-    async function handleStatusChange(election: Election) {
-        try {
-            setActionLoading(election.id);
-            setActionError("");
-
-            const updatedElection =
-                election.status === "open"
-                    ? await closeElection(election.id)
-                    : await openElection(election.id);
-
-            // Preserve existing fields and update only the status.
-            setElections((current) =>
-                current.map((item) =>
-                    item.id === election.id
-                        ? { ...item, status: updatedElection.status }
-                        : item
-                )
-            );
-        } catch (err) {
-            setActionError(
-                err instanceof Error
-                    ? err.message
-                    : "Failed to update election status."
-            );
-        } finally {
-            setActionLoading(null);
         }
     }
 
@@ -335,10 +302,6 @@ export default function AdminDashboard() {
                         </p>
                     )}
 
-                    {actionError && (
-                        <p role="alert">{actionError}</p>
-                    )}
-
                     {!loading && !error && elections.length === 0 && (
                         <p>No elections found.</p>
                     )}
@@ -388,35 +351,9 @@ export default function AdminDashboard() {
 
                                             <td>
                                                 <div className="admin-row-actions">
-                                                    <Link
-                                                        to={`/elections/${election.id}`}
-                                                    >
-                                                        View
+                                                    <Link to={`/admin/elections/${election.id}/edit`}>
+                                                        Edit
                                                     </Link>
-
-                                                    {(election.status === "draft" ||
-                                                        election.status === "scheduled" ||
-                                                        election.status === "open") && (
-                                                        <button
-                                                            type="button"
-                                                            onClick={() =>
-                                                                void handleStatusChange(
-                                                                    election
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                actionLoading !== null
-                                                            }
-                                                        >
-                                                            {actionLoading ===
-                                                            election.id
-                                                                ? "Updating..."
-                                                                : election.status ===
-                                                                    "open"
-                                                                  ? "Close"
-                                                                  : "Open"}
-                                                        </button>
-                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
