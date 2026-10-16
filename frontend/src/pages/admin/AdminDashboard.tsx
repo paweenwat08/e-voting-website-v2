@@ -5,9 +5,11 @@ import { useAuth } from "../../contexts/AuthContext";
 import Navigation from "../../components/Navigation/Navigation";
 import {
     getAllElections,
-    createElection,
     type Election,
 } from "../../services/electionService";
+
+import CreateUserForm from "./user/CreateUserForm";
+import CreateElectionForm from "./election/CreateElectionForm";
 
 import "./AdminDashboard.css";
 
@@ -18,17 +20,6 @@ export default function AdminDashboard() {
     const [elections, setElections] = useState<Election[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-
-    // Create election form
-    const [showCreateForm, setShowCreateForm] = useState(false);
-    const [createLoading, setCreateLoading] = useState(false);
-    const [createError, setCreateError] = useState("");
-    const [createSuccess, setCreateSuccess] = useState("");
-
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [startAt, setStartAt] = useState("");
-    const [endAt, setEndAt] = useState("");
 
     // Check whether the current user is an admin.
     useEffect(() => {
@@ -71,59 +62,7 @@ export default function AdminDashboard() {
         }
     }
 
-    async function handleCreateElection(
-        e: React.FormEvent<HTMLFormElement>
-    ) {
-        e.preventDefault();
-
-        setCreateError("");
-        setCreateSuccess("");
-
-        const startDate = new Date(startAt);
-        const endDate = new Date(endAt);
-
-        if (
-            Number.isNaN(startDate.getTime()) ||
-            Number.isNaN(endDate.getTime())
-        ) {
-            setCreateError("Please enter valid dates and times.");
-            return;
-        }
-
-        if (startDate >= endDate) {
-            setCreateError("Start time must be before end time.");
-            return;
-        }
-
-        try {
-            setCreateLoading(true);
-
-            await createElection({
-                title: title.trim(),
-                description: description.trim(),
-                startAt: startDate.toISOString(),
-                endAt: endDate.toISOString(),
-            });
-
-            setTitle("");
-            setDescription("");
-            setStartAt("");
-            setEndAt("");
-            setShowCreateForm(false);
-            setCreateSuccess("Election created successfully.");
-
-            await loadElections();
-        } catch (err) {
-            setCreateError(
-                err instanceof Error
-                    ? err.message
-                    : "Failed to create election."
-            );
-        } finally {
-            setCreateLoading(false);
-        }
-    }
-
+    // Count total, draft, open, and closed elections.
     const counts = {
         total: elections.length,
         draft: elections.filter((e) => e.status === "draft").length,
@@ -181,99 +120,24 @@ export default function AdminDashboard() {
                     </article>
                 </section>
 
+                {/* Admin actions */}
                 <section className="admin-elections">
-                    {/* Create election */}
                     <div className="admin-create-election">
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setShowCreateForm((current) => !current);
-                                setCreateError("");
-                                setCreateSuccess("");
-                            }}
-                        >
-                            {showCreateForm
-                                ? "Cancel"
-                                : "+ Create Election"}
-                        </button>
+                        <details>
+                            <summary>+ Create Election</summary>
 
-                        {createSuccess && (
-                            <p role="status">{createSuccess}</p>
-                        )}
+                            <CreateElectionForm
+                                onSuccess={loadElections}
+                            />
+                        </details>
 
-                        {showCreateForm && (
-                            <form
-                                className="admin-create-form"
-                                onSubmit={handleCreateElection}
-                            >
-                                <h2>Create Election</h2>
+                        <details>
+                            <summary>+ Add User</summary>
 
-                                <label htmlFor="election-title">
-                                    Election title
-                                </label>
-                                <input
-                                    id="election-title"
-                                    type="text"
-                                    value={title}
-                                    onChange={(e) =>
-                                        setTitle(e.target.value)
-                                    }
-                                    maxLength={200}
-                                    required
-                                />
-
-                                <label htmlFor="election-description">
-                                    Description
-                                </label>
-                                <textarea
-                                    id="election-description"
-                                    value={description}
-                                    onChange={(e) =>
-                                        setDescription(e.target.value)
-                                    }
-                                    required
-                                />
-
-                                <label htmlFor="election-start">
-                                    Start date and time
-                                </label>
-                                <input
-                                    id="election-start"
-                                    type="datetime-local"
-                                    value={startAt}
-                                    onChange={(e) =>
-                                        setStartAt(e.target.value)
-                                    }
-                                    required
-                                />
-
-                                <label htmlFor="election-end">
-                                    End date and time
-                                </label>
-                                <input
-                                    id="election-end"
-                                    type="datetime-local"
-                                    value={endAt}
-                                    onChange={(e) =>
-                                        setEndAt(e.target.value)
-                                    }
-                                    required
-                                />
-
-                                {createError && (
-                                    <p role="alert">{createError}</p>
-                                )}
-
-                                <button
-                                    type="submit"
-                                    disabled={createLoading}
-                                >
-                                    {createLoading
-                                        ? "Creating..."
-                                        : "Create Election"}
-                                </button>
-                            </form>
-                        )}
+                            <CreateUserForm
+                                onSuccess={() => {}}
+                            />
+                        </details>
                     </div>
 
                     {/* Election management */}
@@ -351,7 +215,9 @@ export default function AdminDashboard() {
 
                                             <td>
                                                 <div className="admin-row-actions">
-                                                    <Link to={`/admin/elections/${election.id}/edit`}>
+                                                    <Link
+                                                        to={`/admin/elections/${election.id}/edit`}
+                                                    >
                                                         Edit
                                                     </Link>
                                                 </div>
