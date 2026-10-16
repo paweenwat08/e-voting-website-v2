@@ -1,70 +1,15 @@
-
 import { useEffect, useState } from "react";
 import {
     getScheduleElections,
     type ScheduleElection,
 } from "../../../services/scheduleService";
+import { weekdays } from "./constants";
+import { 
+    toDateKey,
+    formatDate
+ } from "../../../functions/Date";
+ import { createElectionEvents } from "./ScheduleUtils";
 import "./Schedule.css";
-
-interface ElectionEvent {
-    id: string;
-    date: string;
-    title: string;
-    description?: string;
-}
-
-const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-function toDateKey(year: number, month: number, day: number) {
-    return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-}
-
-function formatDate(date: string) {
-    const [year, month, day] = date.split("-").map(Number);
-
-    return new Date(year, month - 1, day).toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-    });
-}
-
-// Convert API timestamps to local calendar dates.
-function getLocalDateKey(date: string) {
-    const parsedDate = new Date(date);
-
-    return toDateKey(
-        parsedDate.getFullYear(),
-        parsedDate.getMonth(),
-        parsedDate.getDate()
-    );
-}
-
-function createElectionEvents(
-    elections: ScheduleElection[]
-): ElectionEvent[] {
-    return elections.flatMap((election) => {
-        const startDate = getLocalDateKey(election.startAt);
-        const endDate = getLocalDateKey(election.endAt);
-
-        return [
-            {
-                id: `${election.id}-start`,
-                date: startDate,
-                title: `${election.title} — Starts`,
-                description: election.description
-                    ? `${election.description} (Status: ${election.status})`
-                    : `Election starts. Status: ${election.status}`,
-            },
-            {
-                id: `${election.id}-end`,
-                date: endDate,
-                title: `${election.title} — Ends`,
-                description: `Election ends. Status: ${election.status}`,
-            },
-        ];
-    });
-}
 
 export default function Schedule() {
     const [currentMonth, setCurrentMonth] = useState(() => {
