@@ -11,11 +11,7 @@ export const createCandidateEligibility = async (
             election_id,
             status
         )
-        VALUES (
-            $1,
-            $2,
-            'eligible'
-        )
+        VALUES ($1, $2, 'eligible')
         RETURNING
             id,
             identity_id,
@@ -24,10 +20,7 @@ export const createCandidateEligibility = async (
             created_at,
             updated_at
         `,
-        [
-            identityId,
-            electionId
-        ]
+        [identityId, electionId]
     );
 
     return result.rows[0];
@@ -51,10 +44,7 @@ export const findCandidateEligibility = async (
           AND election_id = $2
         LIMIT 1
         `,
-        [
-            identityId,
-            electionId
-        ]
+        [identityId, electionId]
     );
 
     return result.rows[0] ?? null;
@@ -70,19 +60,14 @@ export const checkCandidateEligibility = async (
             id,
             identity_id,
             election_id,
-            status,
-            created_at,
-            updated_at
+            status
         FROM candidate_eligibilities
         WHERE identity_id = $1
           AND election_id = $2
           AND status = 'eligible'
         LIMIT 1
         `,
-        [
-            identityId,
-            electionId
-        ]
+        [identityId, electionId]
     );
 
     return result.rows[0] ?? null;
@@ -136,10 +121,7 @@ export const revokeCandidateEligibility = async (
             created_at,
             updated_at
         `,
-        [
-            identityId,
-            electionId
-        ]
+        [identityId, electionId]
     );
 
     return result.rows[0] ?? null;
@@ -151,26 +133,21 @@ export const createCandidate = async (
     candidateNumber: string,
     description: string | null
 ) => {
-    // 1. Check candidate eligibility
-    const eligibility =
-        await checkCandidateEligibility(
-            identityId,
-            electionId
-        );
+    const eligibility = await checkCandidateEligibility(
+        identityId,
+        electionId
+    );
 
     if (!eligibility) {
         return {
-            success: false,
+            success: false as const,
             reason: "Candidate is not eligible"
         };
     }
 
-    // 2. Check election
     const electionResult = await connection.query(
         `
-        SELECT
-            id,
-            status
+        SELECT id, status
         FROM elections
         WHERE id = $1
         LIMIT 1
@@ -178,79 +155,96 @@ export const createCandidate = async (
         [electionId]
     );
 
-    const election =
-        electionResult.rows[0] ?? null;
+    const election = electionResult.rows[0];
 
     if (!election) {
         return {
-            success: false,
+            success: false as const,
             reason: "Election not found"
         };
     }
 
-    // 3. Check duplicate candidate number
-    const existingCandidateResult =
-        await connection.query(
-            `
-            SELECT
-                id
-            FROM candidates
-            WHERE election_id = $1
-              AND candidate_number = $2
-            LIMIT 1
-            `,
-            [
-                electionId,
-                candidateNumber
-            ]
-        );
-
-    const existingCandidate =
-        existingCandidateResult.rows[0] ?? null;
-
-    if (existingCandidate) {
+    if (
+        election.status !== "draft" &&
+        election.status !== "scheduled"
+    ) {
         return {
-            success: false,
+            success: false as const,
+            reason: "Election is not accepting candidates"
+        };
+    }
+
+    const existingCandidate = await connection.query(
+        `
+        SELECT id
+        FROM candidates
+        WHERE election_id = $1
+          AND candidate_number = $2
+        LIMIT 1
+        `,
+        [electionId, candidateNumber]
+    );
+
+    if (existingCandidate.rows.length > 0) {
+        return {
+            success: false as const,
             reason: "Candidate number already exists"
         };
     }
 
-    // 4. Create candidate
-    const result = await connection.query(
-        `
-        INSERT INTO candidates (
-            identity_id,
-            election_id,
-            candidate_number,
-            description
-        )
-        VALUES (
-            $1,
-            $2,
-            $3,
-            $4
-        )
-        RETURNING
-            id,
-            identity_id,
-            election_id,
-            candidate_number,
-            description,
-            created_at,
-            updated_at
-        `,
-        [
-            identityId,
-            electionId,
-            candidateNumber,
-            description
-        ]
-    );
+    try {
+        const result = await connection.query(
+            `
+            INSERT INTO candidates (
+                identity_id,
+                election_id,
+                candidate_number,
+                description
+            )
+            VALUES ($1, $2, $3, $4)
+            RETURNING
+                id,
+                identity_id,
+                election_id,
+                candidate_number,
+                description,
+                created_at,
+                updated_at
+            `,
+            [
+                identityId,
+                electionId,
+                candidateNumber,
+                description
+            ]
+        );
 
-    return {
-        success: true,
-        candidate: result.rows[0]
-    };
+        return {
+            success: true as const,
+            candidate: result.rows[0]
+        };
+    } catch (error: unknown) {
+        const databaseError = error as {
+            code?: string;
+            constraint?: string;
+        };
+
+        // Handle duplicate candidate numbers even if two requests
+        // attempt to create the same number at nearly the same time.
+        if (
+            databaseError.code === "23505" &&
+            databaseError.constraint?.includes(
+                "candidate"
+            )
+        ) {
+            return {
+                success: false as const,
+                reason: "Candidate number already exists"
+            };
+        }
+
+        throw error;
+    }
 };
 
 export const getCandidatesByElection = async (
