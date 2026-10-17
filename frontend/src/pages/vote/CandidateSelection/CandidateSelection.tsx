@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { getElectionById } from "../../../services/electionService";
 import {
     getCandidatesByElection,
     type Candidate,
-} from '../../../services/candidateService';
-import './CandidateSelection.css';
+} from "../../../services/candidateService";
+import "./CandidateSelection.css";
 
 export default function CandidateSelection() {
     const { electionId } = useParams();
     const navigate = useNavigate();
 
     const [candidates, setCandidates] = useState<Candidate[]>([]);
-    const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
+    const [selectedCandidateId, setSelectedCandidateId] =
+        useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [electionMessage, setElectionMessage] = useState("");
 
     useEffect(() => {
-        if (!electionId) {
+        if (!electionId || !/^\d+$/.test(electionId)) {
             setError("Invalid election ID.");
             setLoading(false);
             return;
@@ -28,20 +31,61 @@ export default function CandidateSelection() {
             try {
                 setLoading(true);
                 setError("");
+                setElectionMessage("");
+                setCandidates([]);
+                setSelectedCandidateId(null);
 
-                const data = await getCandidatesByElection(electionId!);
+                // Check election status before loading candidates.
+                const election = await getElectionById(
+                    Number(electionId)
+                );
 
-                if (!cancelled) {
-                    setCandidates(data);
+                if (cancelled) return;
+
+                switch (election.status) {
+                    case "draft":
+                        setElectionMessage(
+                            "This election is still a draft and is not available for voting."
+                        );
+                        return;
+
+                    case "scheduled":
+                        setElectionMessage(
+                            "This election has not opened yet."
+                        );
+                        return;
+
+                    case "closed":
+                        setElectionMessage(
+                            "This election has ended and is no longer accepting votes."
+                        );
+                        return;
+
+                    case "open":
+                        break;
+
+                    default:
+                        setElectionMessage(
+                            "This election is not available for voting."
+                        );
+                        return;
                 }
+
+                const data = await getCandidatesByElection(
+                    electionId!
+                );
+
+                if (cancelled) return;
+
+                setCandidates(data);
             } catch (err) {
-                if (!cancelled) {
-                    setError(
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to load candidates."
-                    );
-                }
+                if (cancelled) return;
+
+                setError(
+                    err instanceof Error
+                        ? err.message
+                        : "Failed to load candidates."
+                );
             } finally {
                 if (!cancelled) {
                     setLoading(false);
@@ -62,7 +106,8 @@ export default function CandidateSelection() {
         }
 
         const selectedCandidate = candidates.find(
-            (candidate) => String(candidate.id) === selectedCandidateId
+            (candidate) =>
+                String(candidate.id) === selectedCandidateId
         );
 
         if (!selectedCandidate) {
@@ -78,23 +123,58 @@ export default function CandidateSelection() {
         });
     };
 
-    return (
-        <main className="candidate-selection">
-            <header className="candidate-selection__header">
-                <p className="candidate-selection__eyebrow">Election</p>
-                <h1>Select Your Candidate</h1>
-                <p className="candidate-selection__subtitle">Choose one candidate to continue.</p>
-            </header>
-
-            {loading && (
+    if (loading) {
+        return (
+            <main className="candidate-selection">
                 <div className="candidate-selection__message">
-                    Loading candidates...
+                    Checking election status...
                 </div>
-            )}
+            </main>
+        );
+    }
 
-            {!loading && error && (
+    if (electionMessage) {
+        return (
+            <main className="candidate-selection">
+                <header className="candidate-selection__header">
+                    <p className="candidate-selection__eyebrow">
+                        Election
+                    </p>
+
+                    <h1>
+                        {electionMessage.includes("draft")
+                            ? "Election Draft"
+                            : electionMessage.includes("not opened")
+                              ? "Election Not Open Yet"
+                              : electionMessage.includes("ended")
+                                ? "Election Closed"
+                                : "Voting Unavailable"}
+                    </h1>
+
+                    <p className="candidate-selection__subtitle">
+                        {electionMessage}
+                    </p>
+                </header>
+
+                <div className="candidate-selection__actions">
+                    <button
+                        type="button"
+                        className="candidate-selection__continue"
+                        onClick={() => navigate("/")}
+                    >
+                        Back to Home
+                    </button>
+                </div>
+            </main>
+        );
+    }
+
+    if (error) {
+        return (
+            <main className="candidate-selection">
                 <div className="candidate-selection__message candidate-selection__error">
                     <p role="alert">{error}</p>
+
                     <button
                         type="button"
                         className="candidate-selection__retry"
@@ -103,20 +183,35 @@ export default function CandidateSelection() {
                         Retry
                     </button>
                 </div>
-            )}
+            </main>
+        );
+    }
 
-            {!loading && !error && candidates.length === 0 && (
+    return (
+        <main className="candidate-selection">
+            <header className="candidate-selection__header">
+                <p className="candidate-selection__eyebrow">
+                    Election
+                </p>
+
+                <h1>Select Your Candidate</h1>
+
+                <p className="candidate-selection__subtitle">
+                    Choose one candidate to continue.
+                </p>
+            </header>
+
+            {candidates.length === 0 ? (
                 <div className="candidate-selection__message">
                     No candidates available for this election.
                 </div>
-            )}
-
-            {!loading && !error && candidates.length > 0 && (
+            ) : (
                 <>
                     <div className="candidate-selection__list">
                         {candidates.map((candidate) => {
                             const candidateId = String(candidate.id);
-                            const isSelected = selectedCandidateId === candidateId;
+                            const isSelected =
+                                selectedCandidateId === candidateId;
 
                             return (
                                 <button
@@ -124,10 +219,14 @@ export default function CandidateSelection() {
                                     type="button"
                                     aria-pressed={isSelected}
                                     className={`candidate-card ${
-                                        isSelected ? "candidate-card--selected" : ""
+                                        isSelected
+                                            ? "candidate-card--selected"
+                                            : ""
                                     }`}
                                     onClick={() => {
-                                        setSelectedCandidateId(candidateId);
+                                        setSelectedCandidateId(
+                                            candidateId
+                                        );
                                         setError("");
                                     }}
                                 >
