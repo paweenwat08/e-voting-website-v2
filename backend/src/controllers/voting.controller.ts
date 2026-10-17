@@ -76,14 +76,21 @@ const vote = async (
 
         if (!result.success) {
 
-            await createAuditLog(
-                "VOTE_REJECTED",
-                null,
-                {
-                    electionId,
-                    reason: result.reason
-                }
-            );
+            try {
+                await createAuditLog(
+                    "VOTE_REJECTED",
+                    null,
+                    {
+                        electionId,
+                        reason: result.reason
+                    }
+                );
+            } catch (auditError) {
+                console.error(
+                    "Failed to create vote rejection audit log:",
+                    auditError
+                );
+            }
 
             switch (result.reason) {
 
@@ -832,4 +839,4 @@ export {
     getVoterEligibilitiesByElectionController,
     getElectionResultsController,
     getMyVoterEligibilitiesController
-}
+};
