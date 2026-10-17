@@ -11,6 +11,7 @@ export interface UpdateAdminUserInput {
     firstname: string;
     lastname: string;
     role: "voter" | "admin";
+    status: "active" | "disabled";
 }
 
 export interface AdminUser {

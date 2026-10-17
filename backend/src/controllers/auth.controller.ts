@@ -264,7 +264,12 @@ const updateUser = async (
 ) => {
     try {
         const identityId = req.params.userId;
-        const { firstname, lastname, role } = req.body;
+        const {
+            firstname,
+            lastname,
+            role,
+            status,
+        } = req.body;
 
         // Validate user ID and request body
         if (
@@ -273,9 +278,11 @@ const updateUser = async (
             typeof firstname !== "string" ||
             typeof lastname !== "string" ||
             typeof role !== "string" ||
+            typeof status !== "string" ||
             firstname.trim() === "" ||
             lastname.trim() === "" ||
-            !["voter", "admin"].includes(role)
+            !["voter", "admin"].includes(role) ||
+            !["active", "disabled"].includes(status)
         ) {
             return res.status(400).json({
                 success: false,
@@ -289,7 +296,7 @@ const updateUser = async (
             {
                 firstname: firstname.trim(),
                 lastname: lastname.trim(),
-                role: role as "voter" | "admin",
+                status: status as "active" | "disabled",
             }
         );
 

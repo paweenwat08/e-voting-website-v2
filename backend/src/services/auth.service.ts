@@ -3,12 +3,6 @@ import crypto from "node:crypto";
 
 import connection from "../config/database.js";
 
-export interface UpdateUserInput {
-    firstname: string;
-    lastname: string;
-    role: "voter" | "admin";
-}
-
 export const hashPassword = async (
     password: string
 ): Promise<string> => {
@@ -186,6 +180,12 @@ export const searchUsers = async (
     return result.rows;
 };
 
+export interface UpdateUserInput {
+    firstname: string;
+    lastname: string;
+    status: "active" | "disabled";
+}
+
 export const updateUser = async (
     identityId: string,
     input: UpdateUserInput
@@ -196,7 +196,7 @@ export const updateUser = async (
         SET
             firstname = $1,
             lastname = $2,
-            role = $3,
+            status = $3,
             updated_at = NOW()
         WHERE id = $4
         RETURNING
@@ -212,7 +212,7 @@ export const updateUser = async (
         [
             input.firstname.trim(),
             input.lastname.trim(),
-            input.role,
+            input.status,
             identityId,
         ]
     );

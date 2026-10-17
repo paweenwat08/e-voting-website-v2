@@ -1,0 +1,83 @@
+.user-edit-page {
+    width: min(100% - 32px, 760px);
+    margin: 40px auto;
+}
+
+.user-edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.user-edit-header h1 {
+    margin-bottom: 8px;
+}
+
+.user-edit-header p {
+    margin: 0;
+}
+
+.user-edit-form {
+    display: grid;
+    gap: 20px;
+    padding: 24px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+}
+
+.user-edit-field {
+    display: grid;
+    gap: 8px;
+}
+
+.user-edit-field input,
+.user-edit-field select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font: inherit;
+}
+
+.user-edit-field input:read-only {
+    background: #f3f4f6;
+    color: #666;
+}
+
+.user-edit-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.user-edit-actions button {
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+.user-edit-actions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.user-edit-error {
+    color: #b91c1c;
+}
+
+.user-edit-success {
+    color: #15803d;
+}
+
+@media (max-width: 600px) {
+    .user-edit-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .user-edit-form {
+        padding: 16px;
+    }
+}
