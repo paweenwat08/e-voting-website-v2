@@ -1,283 +1,235 @@
-import { Request, Response } from "express";
-import crypto from "node:crypto";
+import type { Request, Response } from "express";
 
 import {
-  authenticateUser,
-  createSession,
-  createUser,
-  findIdentityByUserId
+    authenticateUser,
+    createSession,
+    createUser,
+    findIdentityByUserId,
+    searchUsers as searchUsersService,
+    updateUser as updateUserService,
+    deleteSession,
 } from "../services/auth.service.js";
+
 import { createAuditLog } from "../services/auditLog.service.js";
 
-import connection from "../config/database.js";
-
 const registerUser = async (
-  req: Request,
-  res: Response
+    req: Request,
+    res: Response
 ) => {
-  try {
-    const {
-      userId,
-      firstname,
-      lastname,
-      password
-    } = req.body;
+    try {
+        const {
+            userId,
+            firstname,
+            lastname,
+            password,
+        } = req.body;
 
-    if (
-      typeof userId !== "string" ||
-      typeof firstname !== "string" ||
-      typeof lastname !== "string" ||
-      typeof password !== "string" ||
-      userId.trim() === "" ||
-      firstname.trim() === "" ||
-      lastname.trim() === "" ||
-      password === ""
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid user information"
-      });
+        if (
+            typeof userId !== "string" ||
+            typeof firstname !== "string" ||
+            typeof lastname !== "string" ||
+            typeof password !== "string" ||
+            userId.trim() === "" ||
+            firstname.trim() === "" ||
+            lastname.trim() === "" ||
+            password === ""
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid user information",
+            });
+        }
+
+        const existingUser = await findIdentityByUserId(
+            userId
+        );
+
+        if (existingUser) {
+            return res.status(409).json({
+                success: false,
+                message: "User ID already exists",
+            });
+        }
+
+        const user = await createUser(
+            userId,
+            firstname,
+            lastname,
+            password
+        );
+
+        return res.status(201).json({
+            success: true,
+            message: "User created successfully",
+            user: {
+                id: user.id,
+                user_id: user.user_id,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                role: user.role,
+                status: user.status,
+                created_at: user.created_at,
+                updated_at: user.updated_at,
+            },
+        });
+    } catch (error) {
+        console.error("Create user error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
-
-    const existingUser = await findIdentityByUserId(userId);
-
-    if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: "User ID already exists"
-      });
-    }
-
-    const user = await createUser(
-      userId,
-      firstname,
-      lastname,
-      password
-    );
-
-    return res.status(201).json({
-      success: true,
-      message: "User created successfully",
-      user: {
-        id: user.id,
-        user_id: user.user_id,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        role: user.role,
-        status: user.status,
-        created_at: user.created_at,
-        updated_at: user.updated_at
-      }
-    });
-
-  } catch (error) {
-    console.error("Create user error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error"
-    });
-  }
 };
 
 const loginUser = async (
-  req: Request,
-  res: Response
+    req: Request,
+    res: Response
 ) => {
-  try {
-    const { userId, password } = req.body;
-
-    // Validate request body
-    if (
-      typeof userId !== "string" ||
-      typeof password !== "string" ||
-      userId.trim() === "" ||
-      password === ""
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid login credentials"
-      });
-    }
-
-    // Authenticate user
-    const identity = await authenticateUser(
-      userId,
-      password
-    );
-
-    if (!identity) {
-
-      try {
-        await createAuditLog(
-          "LOGIN_FAILED",
-          null,
-          {
-            userId: userId.trim()
-          }
-        );
-      } catch (auditError) {
-        console.error(
-          "Failed to create login audit log:",
-          auditError
-        );
-      }
-
-      return res.status(401).json({
-        success: false,
-        message: "Invalid login credentials"
-      });
-    }
-
-    // Create session
-    const { sessionToken, session } =
-      await createSession(identity.id);
-
-    // Set session cookie
-    res.cookie("session", sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      expires: session.expires_at
-    });
-
     try {
-      await createAuditLog(
-        "LOGIN_SUCCESS",
-        identity.id
-      );
-    } catch (auditError) {
-      console.error(
-        "Failed to create login audit log:",
-        auditError
-      );
+        const { userId, password } = req.body;
+
+        if (
+            typeof userId !== "string" ||
+            typeof password !== "string" ||
+            userId.trim() === "" ||
+            password === ""
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid login credentials",
+            });
+        }
+
+        const identity = await authenticateUser(
+            userId,
+            password
+        );
+
+        if (!identity) {
+            try {
+                await createAuditLog(
+                    "LOGIN_FAILED",
+                    null,
+                    {
+                        userId: userId.trim(),
+                    }
+                );
+            } catch (auditError) {
+                console.error(
+                    "Failed to create login audit log:",
+                    auditError
+                );
+            }
+
+            return res.status(401).json({
+                success: false,
+                message: "Invalid login credentials",
+            });
+        }
+
+        const { sessionToken, session } =
+            await createSession(identity.id);
+
+        res.cookie("session", sessionToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            expires: session.expires_at,
+        });
+
+        try {
+            await createAuditLog(
+                "LOGIN_SUCCESS",
+                identity.id
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to create login audit log:",
+                auditError
+            );
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Login successful",
+        });
+    } catch (error) {
+        console.error("Login error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
-
-    return res.status(200).json({
-      success: true,
-      message: "Login successful"
-    });
-
-  } catch (error) {
-    console.error(
-      "Login error:",
-      error
-    );
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error"
-    });
-  }
 };
 
 const getCurrentUser = async (
-  req: Request,
-  res: Response
+    req: Request,
+    res: Response
 ) => {
-  try {
-    if (!req.identity) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized"
-      });
+    try {
+        if (!req.identity) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            identity: req.identity,
+        });
+    } catch (error) {
+        console.error("Get current user error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
-
-    return res.status(200).json({
-      success: true,
-      identity: req.identity
-    });
-
-  } catch (error) {
-    console.error("Get current user error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error"
-    });
-  }
 };
 
 const logoutUser = async (
-  req: Request,
-  res: Response
+    req: Request,
+    res: Response
 ) => {
-  try {
-    const cookieHeader = req.headers.cookie;
+    try {
+        const cookieHeader = req.headers.cookie;
 
-    if (!cookieHeader) {
-      res.clearCookie("session", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict"
-      });
+        const sessionCookie = cookieHeader
+            ?.split(";")
+            .map((cookie) => cookie.trim())
+            .find((cookie) => cookie.startsWith("session="));
 
-      return res.status(200).json({
-        success: true,
-        message: "Logout successful"
-      });
+        if (sessionCookie) {
+            const sessionToken = sessionCookie.substring(
+                "session=".length
+            );
+
+            if (sessionToken) {
+                await deleteSession(sessionToken);
+            }
+        }
+
+        res.clearCookie("session", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Logout successful",
+        });
+    } catch (error) {
+        console.error("Logout error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
-
-    // Find session cookie
-    const cookies = cookieHeader
-      .split(";")
-      .map(cookie => cookie.trim());
-
-    const sessionCookie = cookies.find(
-      cookie => cookie.startsWith("session=")
-    );
-
-    if (!sessionCookie) {
-      res.clearCookie("session", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict"
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: "Logout successful"
-      });
-    }
-
-    const sessionToken = sessionCookie
-      .substring("session=".length);
-
-    // Hash token to find the session in database
-    const sessionTokenHash = crypto
-      .createHash("sha256")
-      .update(sessionToken)
-      .digest("hex");
-
-    // Delete current session
-    await connection.query(
-      `
-            DELETE FROM sessions
-            WHERE session_token_hash = $1
-            `,
-      [sessionTokenHash]
-    );
-
-    // Remove cookie from browser
-    res.clearCookie("session", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict"
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "Logout successful"
-    });
-
-  } catch (error) {
-    console.error("Logout error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error"
-    });
-  }
 };
 
 const searchUsers = async (
@@ -290,47 +242,85 @@ const searchUsers = async (
                 ? req.query.q.trim()
                 : "";
 
-        const result = await connection.query(
-            `
-            SELECT
-                id,
-                user_id,
-                firstname,
-                lastname,
-                role,
-                status,
-                created_at,
-                updated_at
-            FROM identities
-            WHERE
-                $1 = ''
-                OR user_id ILIKE '%' || $1 || '%'
-                OR firstname ILIKE '%' || $1 || '%'
-                OR lastname ILIKE '%' || $1 || '%'
-            ORDER BY id ASC
-            LIMIT 50
-            `,
-            [query]
-        );
+        const users = await searchUsersService(query);
 
         return res.status(200).json({
             success: true,
-            users: result.rows
+            users,
         });
     } catch (error) {
         console.error("Search users error:", error);
 
         return res.status(500).json({
             success: false,
-            message: "Internal Server Error"
+            message: "Internal Server Error",
+        });
+    }
+};
+
+const updateUser = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const identityId = req.params.userId;
+        const { firstname, lastname, role } = req.body;
+
+        // Validate user ID and request body
+        if (
+            typeof identityId !== "string" ||
+            !/^\d+$/.test(identityId) ||
+            typeof firstname !== "string" ||
+            typeof lastname !== "string" ||
+            typeof role !== "string" ||
+            firstname.trim() === "" ||
+            lastname.trim() === "" ||
+            !["voter", "admin"].includes(role)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid user information",
+            });
+        }
+
+        // Update user through the service layer
+        const user = await updateUserService(
+            identityId,
+            {
+                firstname: firstname.trim(),
+                lastname: lastname.trim(),
+                role: role as "voter" | "admin",
+            }
+        );
+
+        // Handle user not found
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "User updated successfully",
+            user,
+        });
+    } catch (error) {
+        console.error("Update user error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
         });
     }
 };
 
 export {
-  registerUser,
-  loginUser,
-  getCurrentUser,
-  logoutUser,
-  searchUsers
+    registerUser,
+    loginUser,
+    getCurrentUser,
+    logoutUser,
+    searchUsers,
+    updateUser,
 };

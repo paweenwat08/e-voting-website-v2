@@ -1,6 +1,13 @@
 import bcrypt from "bcrypt";
 import crypto from "node:crypto";
+
 import connection from "../config/database.js";
+
+export interface UpdateUserInput {
+    firstname: string;
+    lastname: string;
+    role: "voter" | "admin";
+}
 
 export const hashPassword = async (
     password: string
@@ -53,7 +60,7 @@ export const createSession = async (
         .digest("hex");
 
     const expiresAt = new Date(
-        Date.now() + 60 * 60 * 1000 //60 นาที
+        Date.now() + 60 * 60 * 1000
     );
 
     const result = await connection.query(
@@ -74,13 +81,13 @@ export const createSession = async (
         [
             identityId,
             sessionTokenHash,
-            expiresAt
+            expiresAt,
         ]
     );
 
     return {
         sessionToken,
-        session: result.rows[0]
+        session: result.rows[0],
     };
 };
 
@@ -145,9 +152,89 @@ export const createUser = async (
             firstname.trim(),
             lastname.trim(),
             passwordHash,
-            role
+            role,
         ]
     );
 
     return result.rows[0];
+};
+
+export const searchUsers = async (
+    query = ""
+) => {
+    const result = await connection.query(
+        `
+        SELECT
+            id,
+            user_id,
+            firstname,
+            lastname,
+            role,
+            status,
+            created_at,
+            updated_at
+        FROM identities
+        WHERE
+            $1 = ''
+            OR user_id ILIKE '%' || $1 || '%'
+            OR firstname ILIKE '%' || $1 || '%'
+            OR lastname ILIKE '%' || $1 || '%'
+        ORDER BY id ASC
+        LIMIT 50
+        `,
+        [query.trim()]
+    );
+
+    return result.rows;
+};
+
+export const updateUser = async (
+    identityId: string,
+    input: UpdateUserInput
+) => {
+    const result = await connection.query(
+        `
+        UPDATE identities
+        SET
+            firstname = $1,
+            lastname = $2,
+            role = $3,
+            updated_at = NOW()
+        WHERE id = $4
+        RETURNING
+            id,
+            user_id,
+            firstname,
+            lastname,
+            role,
+            status,
+            created_at,
+            updated_at
+        `,
+        [
+            input.firstname.trim(),
+            input.lastname.trim(),
+            input.role,
+            identityId,
+        ]
+    );
+
+    return result.rows[0] ?? null;
+};
+
+export const deleteSession = async (
+    sessionToken: string
+): Promise<void> => {
+    const sessionTokenHash = crypto
+        .createHash("sha256")
+        .update(sessionToken)
+        .digest("hex");
+
+    await connection.query(
+        `
+        DELETE FROM sessions
+        WHERE session_token_hash = $1
+        `,
+        [sessionTokenHash]
+    );
 };

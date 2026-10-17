@@ -5,7 +5,8 @@ import {
     getCurrentUser,
     logoutUser,
     registerUser,
-    searchUsers
+    searchUsers,
+    updateUser
 } from "../controllers/auth.controller.js";
 
 import authMiddleware from "../middleware/auth.middleware.js";
@@ -25,6 +26,13 @@ router.get(
     authMiddleware,
     roleMiddleware("admin"),
     searchUsers
+);
+
+router.patch(
+    "/users/:userId",
+    authMiddleware,
+    roleMiddleware("admin"),
+    updateUser
 );
 
 router.route("/login").post(loginUser);
