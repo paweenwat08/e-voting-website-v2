@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
     castVote,
     type Candidate,
 } from "../../../services/candidateService";
-import './VoteConfirmation.css'
+import './VoteConfirmation.css';
 
 interface VoteState {
     candidateId: string;
@@ -30,18 +29,22 @@ export default function VoteConfirmation() {
         candidateId &&
         String(candidate.id) === String(candidateId);
 
+    // หน้าแสดงผลเมื่อข้อมูลไม่ถูกต้อง (Invalid Vote State)
     if (!electionId || !isValidCandidate) {
         return (
-            <main>
+            <main className="vote-confirmation__invalid">
                 <h1>Invalid Vote</h1>
                 <p>Please select a candidate before confirming your vote.</p>
 
-                <button
-                    type="button"
-                    onClick={() => navigate(`/vote/${electionId ?? ""}`)}
-                >
-                    Back to Candidate Selection
-                </button>
+                <div className="vote-confirmation__actions" style={{ justifyContent: "center" }}>
+                    <button
+                        type="button"
+                        className="vote-confirmation__button vote-confirmation__button--back"
+                        onClick={() => navigate(`/vote/${electionId ?? ""}`)}
+                    >
+                        Back to Candidate Selection
+                    </button>
+                </div>
             </main>
         );
     }
@@ -68,38 +71,51 @@ export default function VoteConfirmation() {
     };
 
     return (
-        <main>
-            <section>
-                <p>Vote Confirmation</p>
-
+        <main className="vote-confirmation">
+            {/* Header Section */}
+            <header className="vote-confirmation__header">
+                <p className="vote-confirmation__eyebrow">Vote Confirmation</p>
                 <h1>Confirm Your Vote</h1>
-
-                <p>
+                <p className="vote-confirmation__subtitle">
                     Please review your selection before submitting your ballot.
                 </p>
-            </section>
+            </header>
 
-            <section>
-                <p>Candidate #{candidate.candidate_number}</p>
+            {/* Candidate Card Summary */}
+            <section className="vote-confirmation__card">
+                <p className="vote-confirmation__card-label">You have selected:</p>
+                <div className="vote-confirmation__candidate-number">
+                    #{candidate.candidate_number}
+                </div>
 
-                <h2>
+                <h2 className="vote-confirmation__candidate-name">
                     {candidate.firstname} {candidate.lastname}
                 </h2>
 
-                <p>
+                <p className="vote-confirmation__description">
                     {candidate.description || "No description available."}
                 </p>
             </section>
 
-            <section>
+            {/* Notice Block */}
+            <div className="vote-confirmation__notice">
                 <p>
-                    Once your vote is submitted, you cannot change your selection.
+                    ⚠️ Once your vote is submitted, you cannot change your selection.
                 </p>
+            </div>
 
-                {error && <p role="alert">{error}</p>}
+            {/* Error Message */}
+            {error && (
+                <div className="vote-confirmation__error" role="alert">
+                    {error}
+                </div>
+            )}
 
+            {/* Action Buttons */}
+            <div className="vote-confirmation__actions">
                 <button
                     type="button"
+                    className="vote-confirmation__button vote-confirmation__button--back"
                     onClick={() => navigate(`/vote/${electionId}`)}
                     disabled={submitting}
                 >
@@ -108,12 +124,13 @@ export default function VoteConfirmation() {
 
                 <button
                     type="button"
+                    className="vote-confirmation__button vote-confirmation__button--confirm"
                     onClick={handleConfirm}
                     disabled={submitting}
                 >
                     {submitting ? "Submitting Vote..." : "Confirm Vote"}
                 </button>
-            </section>
+            </div>
         </main>
     );
 }

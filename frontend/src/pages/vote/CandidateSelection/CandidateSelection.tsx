@@ -1,19 +1,17 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
     getCandidatesByElection,
     type Candidate,
-} from '../../../services/candidateService'
-import './CandidateSelection.css'
+} from '../../../services/candidateService';
+import './CandidateSelection.css';
 
 export default function CandidateSelection() {
     const { electionId } = useParams();
     const navigate = useNavigate();
 
     const [candidates, setCandidates] = useState<Candidate[]>([]);
-    const [selectedCandidateId, setSelectedCandidateId] =
-        useState<string | null>(null);
+    const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -81,78 +79,92 @@ export default function CandidateSelection() {
     };
 
     return (
-        <main>
-            <section>
-                <p>Election</p>
+        <main className="candidate-selection">
+            <header className="candidate-selection__header">
+                <p className="candidate-selection__eyebrow">Election</p>
                 <h1>Select Your Candidate</h1>
-                <p>Choose one candidate to continue.</p>
-            </section>
+                <p className="candidate-selection__subtitle">Choose one candidate to continue.</p>
+            </header>
 
-            {loading && <p>Loading candidates...</p>}
+            {loading && (
+                <div className="candidate-selection__message">
+                    Loading candidates...
+                </div>
+            )}
 
             {!loading && error && (
-                <section>
+                <div className="candidate-selection__message candidate-selection__error">
                     <p role="alert">{error}</p>
                     <button
                         type="button"
+                        className="candidate-selection__retry"
                         onClick={() => window.location.reload()}
                     >
                         Retry
                     </button>
-                </section>
+                </div>
             )}
 
             {!loading && !error && candidates.length === 0 && (
-                <p>No candidates available for this election.</p>
+                <div className="candidate-selection__message">
+                    No candidates available for this election.
+                </div>
             )}
 
             {!loading && !error && candidates.length > 0 && (
                 <>
-                    <section>
+                    <div className="candidate-selection__list">
                         {candidates.map((candidate) => {
                             const candidateId = String(candidate.id);
-                            const isSelected =
-                                selectedCandidateId === candidateId;
+                            const isSelected = selectedCandidateId === candidateId;
 
                             return (
                                 <button
                                     key={candidateId}
                                     type="button"
                                     aria-pressed={isSelected}
+                                    className={`candidate-card ${
+                                        isSelected ? "candidate-card--selected" : ""
+                                    }`}
                                     onClick={() => {
                                         setSelectedCandidateId(candidateId);
                                         setError("");
                                     }}
                                 >
-                                    <strong>
+                                    <span className="candidate-card__number">
                                         #{candidate.candidate_number}
-                                    </strong>
+                                    </span>
 
-                                    <h2>
+                                    <h2 className="candidate-card__name">
                                         {candidate.firstname}{" "}
                                         {candidate.lastname}
                                     </h2>
 
-                                    <p>
+                                    <p className="candidate-card__description">
                                         {candidate.description ||
                                             "No description available."}
                                     </p>
 
                                     {isSelected && (
-                                        <span>Selected</span>
+                                        <span className="candidate-card__selected-label">
+                                            Selected
+                                        </span>
                                     )}
                                 </button>
                             );
                         })}
-                    </section>
+                    </div>
 
-                    <button
-                        type="button"
-                        onClick={handleContinue}
-                        disabled={selectedCandidateId === null}
-                    >
-                        Continue
-                    </button>
+                    <div className="candidate-selection__actions">
+                        <button
+                            type="button"
+                            className="candidate-selection__continue"
+                            onClick={handleContinue}
+                            disabled={selectedCandidateId === null}
+                        >
+                            Continue
+                        </button>
+                    </div>
                 </>
             )}
         </main>
