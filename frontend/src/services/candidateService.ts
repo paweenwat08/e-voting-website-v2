@@ -59,3 +59,25 @@ export async function castVote(
         );
     }
 }
+
+export async function checkVoteStatus(
+    electionId: string
+): Promise<boolean> {
+    const response = await fetch(
+        `${API_BASE_URL}/votes/status/${encodeURIComponent(electionId)}`,
+        {
+            method: "GET",
+            credentials: "include",
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+        throw new Error(
+            data.message || "Failed to check vote status."
+        );
+    }
+
+    return data.hasVoted;
+}

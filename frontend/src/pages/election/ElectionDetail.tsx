@@ -12,6 +12,7 @@ import {
 } from "../../services/electionService";
 import { getMyVoterEligibilities } from "../../services/VoterEligibility";
 import type { Candidate } from "../../types/Candidate";
+import { checkVoteStatus } from "../../services/candidateService";
 
 import "./ElectionDetail.css";
 
@@ -32,6 +33,12 @@ export default function ElectionDetail() {
     const [isEligible, setIsEligible] = useState<boolean | null>(null);
     const [loadingEligibility, setLoadingEligibility] = useState(false);
     const [eligibilityError, setEligibilityError] = useState<string | null>(
+        null
+    );
+
+    const [hasVoted, setHasVoted] = useState(false);
+    const [loadingVoteStatus, setLoadingVoteStatus] = useState(false);
+    const [voteStatusError, setVoteStatusError] = useState<string | null>(
         null
     );
 
@@ -117,6 +124,53 @@ export default function ElectionDetail() {
         }
 
         void checkEligibility();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [election, isLoggedIn, isAuthLoading]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        async function loadVoteStatus() {
+            setHasVoted(false);
+            setVoteStatusError(null);
+
+            if (
+                isAuthLoading ||
+                !isLoggedIn ||
+                !election ||
+                election.status !== "open"
+            ) {
+                setLoadingVoteStatus(false);
+                return;
+            }
+
+            try {
+                setLoadingVoteStatus(true);
+
+                const result = await checkVoteStatus(String(election.id));
+
+                if (!cancelled) {
+                    setHasVoted(result);
+                }
+            } catch (err) {
+                if (!cancelled) {
+                    setVoteStatusError(
+                        err instanceof Error
+                            ? err.message
+                            : "Unable to check vote status."
+                    );
+                }
+            } finally {
+                if (!cancelled) {
+                    setLoadingVoteStatus(false);
+                }
+            }
+        }
+
+        void loadVoteStatus();
 
         return () => {
             cancelled = true;
@@ -256,15 +310,23 @@ export default function ElectionDetail() {
                                             </button>
                                         </>
                                     ) : isAuthLoading ||
-                                      loadingEligibility ? (
+                                      loadingEligibility ||
+                                      loadingVoteStatus ? (
                                         <p role="status">
-                                            Checking your voting eligibility...
+                                            Checking your voting status...
                                         </p>
-                                    ) : eligibilityError ? (
+                                    ) : eligibilityError || voteStatusError ? (
                                         <div>
-                                            <h2>Unable to check eligibility</h2>
+                                            <h2>Unable to check voting status</h2>
                                             <p role="alert">
                                                 Please try again later.
+                                            </p>
+                                        </div>
+                                    ) : hasVoted ? (
+                                        <div>
+                                            <h2>You have already voted</h2>
+                                            <p role="status">
+                                                คุณได้ลงคะแนนใน Election นี้แล้ว
                                             </p>
                                         </div>
                                     ) : isEligible === true ? (
