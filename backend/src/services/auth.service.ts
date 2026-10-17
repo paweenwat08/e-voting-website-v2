@@ -1,7 +1,10 @@
+
 import bcrypt from "bcrypt";
 import crypto from "node:crypto";
 
 import connection from "../config/database.js";
+
+import type { UpdateUserInput } from "../types/auth.js";
 
 export const hashPassword = async (
     password: string
@@ -179,12 +182,6 @@ export const searchUsers = async (
 
     return result.rows;
 };
-
-export interface UpdateUserInput {
-    firstname: string;
-    lastname: string;
-    status: "active" | "disabled";
-}
 
 export const updateUser = async (
     identityId: string,

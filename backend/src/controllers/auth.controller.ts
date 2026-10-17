@@ -1,3 +1,4 @@
+
 import type { Request, Response } from "express";
 
 import {
@@ -263,25 +264,24 @@ const updateUser = async (
     res: Response
 ) => {
     try {
-        const identityId = req.params.userId;
-        const {
-            firstname,
-            lastname,
-            role,
-            status,
-        } = req.body;
+        if (!req.identity) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
 
-        // Validate user ID and request body
+        const identityId = req.params.userId;
+        const { firstname, lastname, status } = req.body;
+
         if (
             typeof identityId !== "string" ||
             !/^\d+$/.test(identityId) ||
             typeof firstname !== "string" ||
             typeof lastname !== "string" ||
-            typeof role !== "string" ||
             typeof status !== "string" ||
             firstname.trim() === "" ||
             lastname.trim() === "" ||
-            !["voter", "admin"].includes(role) ||
             !["active", "disabled"].includes(status)
         ) {
             return res.status(400).json({
@@ -290,7 +290,6 @@ const updateUser = async (
             });
         }
 
-        // Update user through the service layer
         const user = await updateUserService(
             identityId,
             {
@@ -300,12 +299,34 @@ const updateUser = async (
             }
         );
 
-        // Handle user not found
         if (!user) {
             return res.status(404).json({
                 success: false,
                 message: "User not found",
             });
+        }
+
+        try {
+            await createAuditLog(
+                "ADMIN_ACTION",
+                Number(req.identity.id),
+                {
+                    action: "USER_UPDATED",
+                    targetIdentityId: user.id,
+                    targetUserId: user.user_id,
+                    updatedFields: [
+                        "firstname",
+                        "lastname",
+                        "status",
+                    ],
+                    newStatus: user.status,
+                }
+            );
+        } catch (auditError) {
+            console.error(
+                "Failed to create user update audit log:",
+                auditError
+            );
         }
 
         return res.status(200).json({
