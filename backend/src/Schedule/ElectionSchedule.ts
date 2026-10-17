@@ -33,3 +33,35 @@ export const closeExpiredElections = async () => {
         isRunning = false;
     }
 };
+
+export const openScheduleElections = async () => {
+    if (isRunning) {
+        return;
+    }
+
+    isRunning = true;
+
+    try {
+        const result = await connection.query(
+            `
+            UPDATE elections
+            SET
+                status = 'open',
+                updated_at = CURRENT_TIMESTAMP
+            WHERE status = 'draft'
+              AND start_at <= CURRENT_TIMESTAMP
+            RETURNING id;
+            `
+        );
+
+        if (result.rowCount && result.rowCount > 0) {
+            console.log(
+                `opened ${result.rowCount} election(s)`
+            );
+        }
+    } catch (error) {
+        console.error("Election scheduler error:", error);
+    } finally {
+        isRunning = false;
+    }
+}
