@@ -63,7 +63,7 @@ export default function UserManagement({ refreshKey }: Props) {
 
             <form onSubmit={handleSearch}>
                 <label htmlFor="user-search">
-                    Search by User ID or name
+                    Search by User ID
                 </label>
 
                 <input
@@ -73,7 +73,7 @@ export default function UserManagement({ refreshKey }: Props) {
                     onChange={(event) =>
                         setQuery(event.target.value)
                     }
-                    placeholder="User ID, first name, or last name"
+                    placeholder="Enter user ID"
                 />
 
                 <button type="submit" disabled={loading}>

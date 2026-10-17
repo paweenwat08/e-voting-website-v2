@@ -177,8 +177,6 @@ export const searchUsers = async (
         WHERE
             $1 = ''
             OR user_id ILIKE '%' || $1 || '%'
-            OR firstname ILIKE '%' || $1 || '%'
-            OR lastname ILIKE '%' || $1 || '%'
         ORDER BY id ASC
         LIMIT 50
         `,

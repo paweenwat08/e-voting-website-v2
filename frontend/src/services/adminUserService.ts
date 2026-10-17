@@ -7,6 +7,35 @@ export interface CreateUserInput {
     password: string;
 }
 
+export interface UpdateAdminUserInput {
+    firstname: string;
+    lastname: string;
+    role: "voter" | "admin";
+}
+
+export interface AdminUser {
+    id: string;
+    user_id: string;
+    firstname: string;
+    lastname: string;
+    role: "voter" | "admin";
+    status: "active" | "disabled";
+    created_at: string;
+    updated_at: string;
+}
+
+async function readResponse(response: Response) {
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+        throw new Error(
+            data.message || "Request failed."
+        );
+    }
+
+    return data;
+}
+
 export async function createAdminUser(
     input: CreateUserInput
 ) {
@@ -22,33 +51,16 @@ export async function createAdminUser(
         }
     );
 
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-        throw new Error(
-            data.message || "Failed to create user."
-        );
-    }
-
-    return data;
+    return readResponse(response);
 }
 
-export interface AdminUser {
-    id: string;
-    user_id: string;
-    firstname: string;
-    lastname: string;
-    role: "voter" | "admin";
-    status: "active" | "disabled";
-    created_at: string;
-    updated_at: string;
-}
-
-export async function searchAdminUsers(query = ""): Promise<AdminUser[]> {
+export async function searchAdminUsers(
+    userId = ""
+): Promise<AdminUser[]> {
     const params = new URLSearchParams();
 
-    if (query.trim()) {
-        params.set("q", query.trim());
+    if (userId.trim()) {
+        params.set("q", userId.trim());
     }
 
     const response = await fetch(
@@ -59,11 +71,28 @@ export async function searchAdminUsers(query = ""): Promise<AdminUser[]> {
         }
     );
 
-    const data = await response.json();
+    const data = await readResponse(response);
 
-    if (!response.ok || !data.success) {
-        throw new Error(data.message || "Failed to search users.");
-    }
+    return data.users as AdminUser[];
+}
 
-    return data.users;
+export async function updateAdminUser(
+    id: string,
+    input: UpdateAdminUserInput
+): Promise<AdminUser> {
+    const response = await fetch(
+        `${API_BASE_URL}/auth/users/${encodeURIComponent(id)}`,
+        {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(input),
+        }
+    );
+
+    const data = await readResponse(response);
+
+    return data.user as AdminUser;
 }
