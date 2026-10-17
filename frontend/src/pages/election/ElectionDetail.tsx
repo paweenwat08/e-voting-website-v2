@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
 import Navigation from "../../components/Navigation/Navigation";
 import ResultsPodium from "../../components/elections/ResultsPodium/ResultsPodium";
 import ElectionRules from "../../components/dashboard/ElectionRules/ElectionRules";
@@ -11,6 +10,7 @@ import {
     getElectionById,
     type Election,
 } from "../../services/electionService";
+import { getMyVoterEligibilities } from "../../services/VoterEligibility";
 import type { Candidate } from "../../types/Candidate";
 
 import "./ElectionDetail.css";
@@ -21,32 +21,35 @@ type ElectionWithCandidates = Election & {
 
 export default function ElectionDetail() {
     const { electionId } = useParams();
+    const navigate = useNavigate();
+    const { isLoggedIn, isLoading: isAuthLoading } = useAuth();
 
     const [election, setElection] =
         useState<ElectionWithCandidates | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const { isLoggedIn, isLoading } = useAuth();
-    const navigate = useNavigate();
+    const [isEligible, setIsEligible] = useState<boolean | null>(null);
+    const [loadingEligibility, setLoadingEligibility] = useState(false);
+    const [eligibilityError, setEligibilityError] = useState<string | null>(
+        null
+    );
 
     useEffect(() => {
         let cancelled = false;
 
-        const loadElection = async () => {
-            if (
-                !electionId ||
-                !/^[1-9]\d*$/.test(electionId)
-            ) {
+        async function loadElection() {
+            if (!electionId || !/^[1-9]\d*$/.test(electionId)) {
                 setError("NOT_FOUND");
                 setLoading(false);
                 return;
             }
 
             try {
-                const data = await getElectionById(
-                    Number(electionId)
-                );
+                setLoading(true);
+                setError(null);
+
+                const data = await getElectionById(Number(electionId));
 
                 if (!cancelled) {
                     setElection(data);
@@ -54,9 +57,7 @@ export default function ElectionDetail() {
             } catch (err) {
                 if (!cancelled) {
                     setError(
-                        err instanceof Error
-                            ? err.message
-                            : "UNKNOWN"
+                        err instanceof Error ? err.message : "UNKNOWN"
                     );
                 }
             } finally {
@@ -64,14 +65,63 @@ export default function ElectionDetail() {
                     setLoading(false);
                 }
             }
-        };
+        }
 
-        loadElection();
+        void loadElection();
 
         return () => {
             cancelled = true;
         };
     }, [electionId]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        async function checkEligibility() {
+            setIsEligible(null);
+            setEligibilityError(null);
+
+            if (isAuthLoading) return;
+
+            if (!isLoggedIn || !election || election.status !== "open") {
+                setLoadingEligibility(false);
+                return;
+            }
+
+            try {
+                setLoadingEligibility(true);
+
+                const eligibilities = await getMyVoterEligibilities();
+
+                if (!cancelled) {
+                    const eligible = eligibilities.some(
+                        (item) =>
+                            String(item.election_id) === String(election.id)
+                    );
+
+                    setIsEligible(eligible);
+                }
+            } catch (err) {
+                if (!cancelled) {
+                    setEligibilityError(
+                        err instanceof Error
+                            ? err.message
+                            : "Unable to check voting eligibility."
+                    );
+                }
+            } finally {
+                if (!cancelled) {
+                    setLoadingEligibility(false);
+                }
+            }
+        }
+
+        void checkEligibility();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [election, isLoggedIn, isAuthLoading]);
 
     const formatDate = (date: string) =>
         new Date(date).toLocaleString("en-GB", {
@@ -97,23 +147,20 @@ export default function ElectionDetail() {
                             {loading
                                 ? "Loading Election..."
                                 : notFound
-                                    ? "Election Not Found"
-                                    : "Unable to Load Election"}
+                                  ? "Election Not Found"
+                                  : "Unable to Load Election"}
                         </h1>
 
                         <p>
                             {loading
                                 ? "Please wait while we load the election details."
                                 : notFound
-                                    ? "The election you are looking for does not exist."
-                                    : "Something went wrong while loading this election. Please try again."}
+                                  ? "The election you are looking for does not exist."
+                                  : "Something went wrong while loading this election. Please try again."}
                         </p>
 
                         {!loading && (
-                            <Link
-                                to="/"
-                                className="btn-primary"
-                            >
+                            <Link to="/" className="btn-primary">
                                 Back to Home
                             </Link>
                         )}
@@ -168,7 +215,11 @@ export default function ElectionDetail() {
                                 </p>
                             </div>
                         </section>
-                        <ResultsPodium candidates={election.candidates} electionStatus={election.status} />
+
+                        <ResultsPodium
+                            candidates={election.candidates}
+                            electionStatus={election.status}
+                        />
                         <CandidatesSection election={election} />
                     </>
                 )}
@@ -178,39 +229,83 @@ export default function ElectionDetail() {
                         <section className="content-section action-block">
                             <div className="election-container">
                                 <div className="vote-action-card">
-                                    <div>
-                                        <h2>Ready to vote?</h2>
-                                        <p>
-                                            You need to log in before
-                                            casting your ballot in
-                                            this election.
+                                    {!isLoggedIn ? (
+                                        <>
+                                            <div>
+                                                <h2>Ready to vote?</h2>
+                                                <p>
+                                                    Log in to check whether
+                                                    you are eligible to vote
+                                                    in this election.
+                                                </p>
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                className="btn-primary btn-large"
+                                                disabled={isAuthLoading}
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/auth/login?redirect=${encodeURIComponent(
+                                                            `/elections/${election.id}`
+                                                        )}`
+                                                    )
+                                                }
+                                            >
+                                                Log In
+                                            </button>
+                                        </>
+                                    ) : isAuthLoading ||
+                                      loadingEligibility ? (
+                                        <p role="status">
+                                            Checking your voting eligibility...
                                         </p>
-                                    </div>
+                                    ) : eligibilityError ? (
+                                        <div>
+                                            <h2>Unable to check eligibility</h2>
+                                            <p role="alert">
+                                                Please try again later.
+                                            </p>
+                                        </div>
+                                    ) : isEligible === true ? (
+                                        <>
+                                            <div>
+                                                <h2>You are eligible to vote</h2>
+                                                <p>
+                                                    You can cast your ballot
+                                                    in this election.
+                                                </p>
+                                            </div>
 
-                                    <button
-                                        type="button"
-                                        className="btn-primary btn-large"
-                                        disabled={isLoading}
-                                        onClick={() => {
-                                            if (isLoading) return;
-
-                                            if (isLoggedIn) {
-                                                navigate(`/vote/${election.id}`);
-                                            } else {
-                                                navigate(
-                                                    `/auth/login?redirect=${encodeURIComponent(
+                                            <button
+                                                type="button"
+                                                className="btn-primary btn-large"
+                                                onClick={() =>
+                                                    navigate(
                                                         `/vote/${election.id}`
-                                                    )}`
-                                                );
-                                            }
-                                        }}
-                                    >
-                                        Cast Your Ballot
-                                    </button>
+                                                    )
+                                                }
+                                            >
+                                                Cast Your Ballot
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <div>
+                                            <h2>You are not eligible to vote</h2>
+                                            <p>
+                                                Your account is not eligible
+                                                to vote in this election.
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </section>
-                        <ResultsPodium candidates={election.candidates} electionStatus={election.status} />
+
+                        <ResultsPodium
+                            candidates={election.candidates}
+                            electionStatus={election.status}
+                        />
                         <CandidatesSection election={election} />
                         <ElectionRules />
                     </>
@@ -226,8 +321,7 @@ export default function ElectionDetail() {
                                     </h2>
 
                                     <p>
-                                        This election is scheduled
-                                        to begin on:
+                                        This election is scheduled to begin on:
                                     </p>
 
                                     <div className="schedule-date-pill">

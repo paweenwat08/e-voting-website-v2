@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthContext";
 import { getElectionById } from "../../../services/electionService";
+import { getMyVoterEligibilities } from "../../../services/VoterEligibility";
 import {
     getCandidatesByElection,
     type Candidate,
@@ -10,6 +12,7 @@ import "./CandidateSelection.css";
 export default function CandidateSelection() {
     const { electionId } = useParams();
     const navigate = useNavigate();
+    const { isLoggedIn, isLoading: isAuthLoading } = useAuth();
 
     const [candidates, setCandidates] = useState<Candidate[]>([]);
     const [selectedCandidateId, setSelectedCandidateId] =
@@ -17,25 +20,26 @@ export default function CandidateSelection() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [electionMessage, setElectionMessage] = useState("");
+    const [checkingEligibility, setCheckingEligibility] = useState(false);
 
     useEffect(() => {
-        if (!electionId || !/^\d+$/.test(electionId)) {
-            setError("Invalid election ID.");
-            setLoading(false);
-            return;
-        }
-
         let cancelled = false;
 
         async function loadCandidates() {
-            try {
-                setLoading(true);
-                setError("");
-                setElectionMessage("");
-                setCandidates([]);
-                setSelectedCandidateId(null);
+            setLoading(true);
+            setError("");
+            setElectionMessage("");
+            setCandidates([]);
+            setSelectedCandidateId(null);
 
-                // Check election status before loading candidates.
+            if (!electionId || !/^[1-9]\d*$/.test(electionId)) {
+                setError("Invalid election ID.");
+                setLoading(false);
+                return;
+            }
+
+            try {
+                // Check election status first.
                 const election = await getElectionById(
                     Number(electionId)
                 );
@@ -71,9 +75,37 @@ export default function CandidateSelection() {
                         return;
                 }
 
-                const data = await getCandidatesByElection(
-                    electionId!
+                // The user must be logged in before checking eligibility.
+                if (isAuthLoading) return;
+
+                if (!isLoggedIn) {
+                    setElectionMessage(
+                        "Please log in before voting in this election."
+                    );
+                    return;
+                }
+
+                // Check whether this user is eligible for this election.
+                setCheckingEligibility(true);
+
+                const eligibilities = await getMyVoterEligibilities();
+
+                if (cancelled) return;
+
+                const isEligible = eligibilities.some(
+                    (item) =>
+                        String(item.election_id) === String(election.id)
                 );
+
+                if (!isEligible) {
+                    setElectionMessage(
+                        "You are not eligible to vote in this election."
+                    );
+                    return;
+                }
+
+                // Load candidates only after eligibility is confirmed.
+                const data = await getCandidatesByElection(electionId);
 
                 if (cancelled) return;
 
@@ -89,8 +121,14 @@ export default function CandidateSelection() {
             } finally {
                 if (!cancelled) {
                     setLoading(false);
+                    setCheckingEligibility(false);
                 }
             }
+        }
+
+        if (isAuthLoading) {
+            setLoading(true);
+            return;
         }
 
         void loadCandidates();
@@ -98,7 +136,7 @@ export default function CandidateSelection() {
         return () => {
             cancelled = true;
         };
-    }, [electionId]);
+    }, [electionId, isLoggedIn, isAuthLoading]);
 
     const handleContinue = () => {
         if (!electionId || selectedCandidateId === null) {
@@ -123,17 +161,34 @@ export default function CandidateSelection() {
         });
     };
 
-    if (loading) {
+    if (loading || isAuthLoading) {
         return (
             <main className="candidate-selection">
-                <div className="candidate-selection__message">
-                    Checking election status...
+                <div
+                    className="candidate-selection__message"
+                    role="status"
+                >
+                    {checkingEligibility
+                        ? "Checking your voting eligibility..."
+                        : "Checking election status..."}
                 </div>
             </main>
         );
     }
 
     if (electionMessage) {
+        const heading = electionMessage.includes("draft")
+            ? "Election Draft"
+            : electionMessage.includes("not opened")
+              ? "Election Not Open Yet"
+              : electionMessage.includes("ended")
+                ? "Election Closed"
+                : electionMessage.includes("not eligible")
+                  ? "Not Eligible to Vote"
+                  : electionMessage.includes("log in")
+                    ? "Login Required"
+                    : "Voting Unavailable";
+
         return (
             <main className="candidate-selection">
                 <header className="candidate-selection__header">
@@ -141,15 +196,7 @@ export default function CandidateSelection() {
                         Election
                     </p>
 
-                    <h1>
-                        {electionMessage.includes("draft")
-                            ? "Election Draft"
-                            : electionMessage.includes("not opened")
-                              ? "Election Not Open Yet"
-                              : electionMessage.includes("ended")
-                                ? "Election Closed"
-                                : "Voting Unavailable"}
-                    </h1>
+                    <h1>{heading}</h1>
 
                     <p className="candidate-selection__subtitle">
                         {electionMessage}
@@ -157,13 +204,29 @@ export default function CandidateSelection() {
                 </header>
 
                 <div className="candidate-selection__actions">
-                    <button
-                        type="button"
-                        className="candidate-selection__continue"
-                        onClick={() => navigate("/")}
-                    >
-                        Back to Home
-                    </button>
+                    {electionMessage.includes("log in") ? (
+                        <button
+                            type="button"
+                            className="candidate-selection__continue"
+                            onClick={() =>
+                                navigate(
+                                    `/auth/login?redirect=${encodeURIComponent(
+                                        `/vote/${electionId}`
+                                    )}`
+                                )
+                            }
+                        >
+                            Log In
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            className="candidate-selection__continue"
+                            onClick={() => navigate("/")}
+                        >
+                            Back to Home
+                        </button>
+                    )}
                 </div>
             </main>
         );
