@@ -1,0 +1,223 @@
+
+/* Candidate Selection Page */
+
+.candidate-selection {
+    width: min(100% - 32px, 1000px);
+    margin: 0 auto;
+    padding: 48px 0;
+    color: #172033;
+}
+
+.candidate-selection__header {
+    margin-bottom: 32px;
+}
+
+.candidate-selection__eyebrow {
+    margin: 0 0 8px;
+    color: #2563eb;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.candidate-selection__header h1 {
+    margin: 0;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 750;
+    line-height: 1.2;
+}
+
+.candidate-selection__subtitle {
+    margin-top: 12px;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+/* Candidate list */
+
+.candidate-selection__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.candidate-card {
+    display: block;
+    width: 100%;
+    padding: 24px;
+    border: 1px solid #dbe2ea;
+    border-radius: 16px;
+    background: #ffffff;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        transform 160ms ease;
+}
+
+.candidate-card:hover {
+    border-color: #93b4ff;
+    box-shadow: 0 8px 24px rgb(15 23 42 / 7%);
+    transform: translateY(-2px);
+}
+
+.candidate-card:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 3px;
+}
+
+.candidate-card--selected {
+    border: 2px solid #2563eb;
+    padding: 23px;
+    background: #eff6ff;
+    box-shadow: 0 0 0 3px rgb(37 99 235 / 10%);
+}
+
+.candidate-card__number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 12px;
+    background: #f1f5f9;
+    color: #334155;
+    font-size: 1.1rem;
+    font-weight: 750;
+}
+
+.candidate-card--selected .candidate-card__number {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.candidate-card__name {
+    margin: 18px 0 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.candidate-card__description {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+}
+
+.candidate-card__selected-label {
+    display: inline-block;
+    margin-top: 18px;
+    color: #1d4ed8;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+/* Continue button */
+
+.candidate-selection__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 28px;
+}
+
+.candidate-selection__continue {
+    min-width: 160px;
+    padding: 13px 22px;
+    border: 0;
+    border-radius: 10px;
+    background: #2563eb;
+    color: #ffffff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 160ms ease;
+}
+
+.candidate-selection__continue:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.candidate-selection__continue:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 3px;
+}
+
+.candidate-selection__continue:disabled {
+    background: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+/* Loading, error and empty states */
+
+.candidate-selection__message {
+    padding: 20px;
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.candidate-selection__error {
+    border-color: #fecaca;
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.candidate-selection__retry {
+    margin-top: 12px;
+    padding: 10px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #172033;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Responsive layout */
+
+@media (max-width: 640px) {
+    .candidate-selection {
+        padding: 32px 0;
+    }
+
+    .candidate-selection__list {
+        grid-template-columns: 1fr;
+    }
+
+    .candidate-card {
+        padding: 20px;
+    }
+
+    .candidate-card--selected {
+        padding: 19px;
+    }
+
+    .candidate-selection__actions {
+        justify-content: stretch;
+    }
+
+    .candidate-selection__continue {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .candidate-card,
+    .candidate-selection__continue {
+        transition: none;
+    }
+
+    .candidate-card:hover {
+        transform: none;
+    }
+}

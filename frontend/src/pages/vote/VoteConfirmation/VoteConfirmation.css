@@ -1,0 +1,217 @@
+
+/* Vote Confirmation */
+
+.vote-confirmation {
+    width: min(100% - 32px, 760px);
+    margin: 0 auto;
+    padding: 48px 0;
+    color: #172033;
+}
+
+.vote-confirmation__header {
+    margin-bottom: 32px;
+}
+
+.vote-confirmation__eyebrow {
+    margin: 0 0 8px;
+    color: #2563eb;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.vote-confirmation__header h1 {
+    margin: 0;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 750;
+    line-height: 1.2;
+}
+
+.vote-confirmation__subtitle {
+    margin-top: 12px;
+    color: #64748b;
+    line-height: 1.7;
+}
+
+/* Candidate summary card */
+
+.vote-confirmation__card {
+    padding: 28px;
+    border: 1px solid #dbe2ea;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 8px 28px rgb(15 23 42 / 5%);
+}
+
+.vote-confirmation__card-label {
+    margin: 0 0 18px;
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.vote-confirmation__candidate-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    height: 48px;
+    padding: 0 12px;
+    border-radius: 12px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 1.2rem;
+    font-weight: 750;
+}
+
+.vote-confirmation__candidate-name {
+    margin: 20px 0 10px;
+    font-size: 1.5rem;
+    font-weight: 750;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.vote-confirmation__description {
+    margin: 0;
+    color: #64748b;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+/* Important notice */
+
+.vote-confirmation__notice {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    background: #fffbeb;
+    color: #92400e;
+    font-size: 0.925rem;
+    line-height: 1.65;
+}
+
+.vote-confirmation__notice p {
+    margin: 0;
+}
+
+/* Error message */
+
+.vote-confirmation__error {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    background: #fef2f2;
+    color: #b91c1c;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+/* Actions */
+
+.vote-confirmation__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.vote-confirmation__button {
+    min-height: 46px;
+    padding: 12px 20px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        background 160ms ease,
+        border-color 160ms ease;
+}
+
+.vote-confirmation__button:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 3px;
+}
+
+.vote-confirmation__button--back {
+    border-color: #cbd5e1;
+    background: #ffffff;
+    color: #334155;
+}
+
+.vote-confirmation__button--back:hover:not(:disabled) {
+    background: #f8fafc;
+}
+
+.vote-confirmation__button--confirm {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.vote-confirmation__button--confirm:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.vote-confirmation__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Invalid vote page */
+
+.vote-confirmation__invalid {
+    width: min(100% - 32px, 560px);
+    margin: 80px auto;
+    padding: 32px;
+    border: 1px solid #dbe2ea;
+    border-radius: 16px;
+    background: #ffffff;
+    color: #172033;
+    text-align: center;
+}
+
+.vote-confirmation__invalid h1 {
+    margin-top: 0;
+}
+
+.vote-confirmation__invalid p {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+    .vote-confirmation {
+        padding: 32px 0;
+    }
+
+    .vote-confirmation__card {
+        padding: 22px;
+    }
+
+    .vote-confirmation__actions {
+        flex-direction: column-reverse;
+    }
+
+    .vote-confirmation__button {
+        width: 100%;
+    }
+
+    .vote-confirmation__invalid {
+        margin-top: 40px;
+        padding: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vote-confirmation__button {
+        transition: none;
+    }
+}
