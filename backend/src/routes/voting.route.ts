@@ -7,7 +7,8 @@ import {
     vote,
     createVoterEligibilityController,
     getVoterEligibilitiesByElectionController,
-    getMyVoterEligibilitiesController
+    getMyVoterEligibilitiesController,
+    checkVoteStatus
 } from "../controllers/voting.controller.js";
 
 const router = Router();
@@ -41,6 +42,13 @@ router.get(
     authMiddleware,
     roleMiddleware("voter"),
     getMyVoterEligibilitiesController
+);
+
+router.get(
+    "/status/:electionId",
+    authMiddleware,
+    roleMiddleware("voter"),
+    checkVoteStatus
 );
 
 export default router;
