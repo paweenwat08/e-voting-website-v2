@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
 import Navigation from "../../components/Navigation/Navigation";
 import ResultsPodium from "../../components/elections/ResultsPodium/ResultsPodium";
@@ -24,6 +26,9 @@ export default function ElectionDetail() {
         useState<ElectionWithCandidates | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const { isLoggedIn, isLoading } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         let cancelled = false;
@@ -92,16 +97,16 @@ export default function ElectionDetail() {
                             {loading
                                 ? "Loading Election..."
                                 : notFound
-                                  ? "Election Not Found"
-                                  : "Unable to Load Election"}
+                                    ? "Election Not Found"
+                                    : "Unable to Load Election"}
                         </h1>
 
                         <p>
                             {loading
                                 ? "Please wait while we load the election details."
                                 : notFound
-                                  ? "The election you are looking for does not exist."
-                                  : "Something went wrong while loading this election. Please try again."}
+                                    ? "The election you are looking for does not exist."
+                                    : "Something went wrong while loading this election. Please try again."}
                         </p>
 
                         {!loading && (
@@ -182,12 +187,26 @@ export default function ElectionDetail() {
                                         </p>
                                     </div>
 
-                                    <Link
-                                        to={`/auth/login?redirect=/vote/${election.id}`}
+                                    <button
+                                        type="button"
                                         className="btn-primary btn-large"
+                                        disabled={isLoading}
+                                        onClick={() => {
+                                            if (isLoading) return;
+
+                                            if (isLoggedIn) {
+                                                navigate(`/vote/${election.id}`);
+                                            } else {
+                                                navigate(
+                                                    `/auth/login?redirect=${encodeURIComponent(
+                                                        `/vote/${election.id}`
+                                                    )}`
+                                                );
+                                            }
+                                        }}
                                     >
                                         Cast Your Ballot
-                                    </Link>
+                                    </button>
                                 </div>
                             </div>
                         </section>
