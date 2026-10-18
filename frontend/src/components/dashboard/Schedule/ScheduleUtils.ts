@@ -1,4 +1,4 @@
-import { getLocalDateKey } from "../../../functions/Date";
+import { getLocalDateKey } from "../../../utils/Date";
 import { type ScheduleElection, } from "../../../services/scheduleService";
 interface ElectionEvent {
     id: string;

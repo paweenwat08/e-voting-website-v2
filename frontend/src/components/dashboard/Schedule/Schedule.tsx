@@ -7,7 +7,7 @@ import { weekdays } from "./constants";
 import { 
     toDateKey,
     formatDate
- } from "../../../functions/Date";
+ } from "../../../utils/Date";
  import { createElectionEvents } from "./ScheduleUtils";
 import "./Schedule.css";
 

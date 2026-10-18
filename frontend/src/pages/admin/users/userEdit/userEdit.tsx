@@ -7,8 +7,8 @@ import Navigation from "../../../../components/Navigation/Navigation";
 import {
     searchAdminUsers,
     updateAdminUser,
-    type AdminUser,
 } from "../../../../services/adminUserService";
+import { type AdminUser } from "../../../../types/Admin";
 
 import "./UserEdit.css";
 
@@ -114,7 +114,6 @@ export default function AdminUserEdit() {
             const updatedUser = await updateAdminUser(id, {
                 firstname: firstname.trim(),
                 lastname: lastname.trim(),
-                role: selectedUser.role,
                 status,
             });
 

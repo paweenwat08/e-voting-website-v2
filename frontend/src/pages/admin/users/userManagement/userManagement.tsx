@@ -2,9 +2,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
     searchAdminUsers,
-    type AdminUser,
 } from "../../../../services/adminUserService";
-
+import { type AdminUser } from "../../../../types/Admin";
 interface Props {
     refreshKey: number;
 }

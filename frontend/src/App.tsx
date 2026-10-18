@@ -10,8 +10,8 @@ import CandidateSelection from "./pages/vote/CandidateSelection/CandidateSelecti
 import VoteConfirmation from "./pages/vote/VoteConfirmation/VoteConfirmation";
 import Account from "./pages/account/Account";
 import AdminDashboard from "./pages/admin/Dashboard/AdminDashboard";
-import AdminElectionEdit from "./pages/admin/Edit/electionEdit/ElectionEdit";
-import AdminUserEdit from "./pages/admin/Edit/userEdit/userEdit";
+import AdminElectionEdit from "./pages/admin/elctions/electionEdit/ElectionEdit";
+import AdminUserEdit from "./pages/admin/users/userEdit/userEdit";
 
 function App() {
   return (

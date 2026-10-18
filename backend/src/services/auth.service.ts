@@ -175,7 +175,6 @@ export const searchUsers = async (
             $1 = ''
             OR user_id ILIKE '%' || $1 || '%'
         ORDER BY id ASC
-        LIMIT 50
         `,
         [query.trim()]
     );

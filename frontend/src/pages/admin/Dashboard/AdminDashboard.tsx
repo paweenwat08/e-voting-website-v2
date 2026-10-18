@@ -9,10 +9,10 @@ import {
     type Election,
 } from "../../../services/electionService";
 
-import CreateUserForm from "../Form/userForm/CreateUserForm";
-import CreateElectionForm from "../Form/electionForm/CreateElectionForm";
-import ElectionManagement from "../Management/electionManagement/electionManagement";
-import UserManagement from "../Management/userManagement/userManagement";
+import CreateUserForm from "../users/userForm/CreateUserForm";
+import CreateElectionForm from "../elctions/electionForm/CreateElectionForm";
+import ElectionManagement from "../elctions/electionManagement/electionManagement";
+import UserManagement from "../users/userManagement/userManagement";
 
 import "./AdminDashboard.css";
 

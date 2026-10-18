@@ -169,6 +169,10 @@ export default function Account() {
                     />
                 </section>
 
+                {/* <section className="account-card">
+                    <button>request wanna be a candidate</button>
+                </section> */}
+
             </main>
         </>
     );
