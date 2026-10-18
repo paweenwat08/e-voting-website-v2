@@ -42,3 +42,15 @@ export interface ElectionEvent {
     title: string;
     description?: string;
 }
+
+export interface EligibleElection {
+    id: string;
+    identity_id: string;
+    election_id: string;
+    eligibility_status: string;
+    created_at: string;
+    updated_at: string;
+    title: string;
+    description: string | null;
+    election_status: string;
+}

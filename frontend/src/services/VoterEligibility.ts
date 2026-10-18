@@ -1,24 +1,8 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from "../constant";
+import type { EligibleElection } from "../types/Election";
+import type { MyEligibilitiesResponse } from "../types/Api";
 
-export interface EligibleElection {
-    id: string;
-    identity_id: string;
-    election_id: string;
-    eligibility_status: string;
-    created_at: string;
-    updated_at: string;
-    title: string;
-    description: string | null;
-    election_status: string;
-}
-
-interface MyEligibilitiesResponse {
-    success: boolean;
-    eligibilities: EligibleElection[];
-}
-
-export async function getMyVoterEligibilities():
-    Promise<EligibleElection[]> {
+export async function getMyVoterEligibilities(): Promise<EligibleElection[]> {
     const response = await fetch(
         `${API_BASE_URL}/votes/eligibility/me`,
         {

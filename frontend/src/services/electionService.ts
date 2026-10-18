@@ -5,10 +5,8 @@ import type {
     ElectionDetailResponse,
     ElectionMutationResponse,
 } from "../types/Election";
-
 export type { Election } from "../types/Election";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from "../constant";
 
 export async function getAllElections(): Promise<Election[]> {
     const response = await fetch(`${API_BASE_URL}/elections`);

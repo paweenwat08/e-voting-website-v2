@@ -1,8 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL;
-
-interface LoginResponse {
-    success: boolean;
-}
+import { API_BASE_URL } from "../constant";
+import type { MeResponse, LoginResponse } from "../types/Api";
+import type { CurrentUser } from "../types/User";
 
 export async function userLogin(
     userId: string,
@@ -28,20 +26,6 @@ export async function userLogin(
     }
 
     return await getCurrentUser();
-}
-
-export interface CurrentUser {
-    id: string;
-    userId: string;
-    firstname: string;
-    lastname: string;
-    role: string;
-    status: string;
-}
-
-interface MeResponse {
-    success: boolean;
-    identity: CurrentUser;
 }
 
 export async function getCurrentUser(): Promise<CurrentUser | null> {

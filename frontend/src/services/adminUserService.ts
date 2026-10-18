@@ -2,29 +2,9 @@ import type {
     UpdateAdminUserInput,
     AdminUser
 } from '../types/Admin'
-
-const API_BASE_URL = import.meta.env.VITE_API_URL;
-
-export interface CreateUserInput {
-    userId: string;
-    firstname: string;
-    lastname: string;
-    password: string;
-}
-
-
-
-async function readResponse(response: Response) {
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-        throw new Error(
-            data.message || "Request failed."
-        );
-    }
-
-    return data;
-}
+import type { CreateUserInput } from '../types/Input';
+import { API_BASE_URL } from '../constant';
+import { readResponse } from './apiUtils';
 
 export async function createAdminUser(
     input: CreateUserInput
