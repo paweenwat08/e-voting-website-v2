@@ -3,10 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { getElectionById } from "../../../services/electionService";
 import { getMyVoterEligibilities } from "../../../services/VoterEligibility";
-import {
-    getCandidatesByElection,
-    type Candidate,
-} from "../../../services/candidateService";
+import { getCandidatesByElection } from "../../../services/candidateService";
+import type { Candidate } from "../../../types/Candidate";
 import "./CandidateSelection.css";
 
 export default function CandidateSelection() {

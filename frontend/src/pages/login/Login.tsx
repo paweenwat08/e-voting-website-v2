@@ -6,7 +6,7 @@ import {
     useSearchParams,
 } from "react-router-dom";
 
-import { userLogin } from "../../services/Login";
+import { userLogin } from "../../services/authService";
 
 import Navigation from "../../components/Navigation/Navigation";
 import "./Login.css";

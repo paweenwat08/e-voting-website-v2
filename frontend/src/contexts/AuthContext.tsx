@@ -6,11 +6,8 @@ import {
     type ReactNode
 } from "react";
 
-import {
-    getCurrentUser,
-    userLogout,
-    type CurrentUser
-} from "../services/Login";
+import { getCurrentUser, userLogout } from "../services/authService";
+import type { CurrentUser } from "../types/User";
 
 interface AuthContextType {
     isLoggedIn: boolean;

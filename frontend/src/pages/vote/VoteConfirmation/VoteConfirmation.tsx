@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import {
-    castVote,
-    type Candidate,
-} from "../../../services/candidateService";
+import { castVote } from "../../../services/votingService";
+import type { Candidate } from "../../../types/Candidate";
 import './VoteConfirmation.css';
 
 interface VoteState {

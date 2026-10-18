@@ -3,10 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import Navigation from "../../components/Navigation/Navigation";
 import ElectionList from "../../components/dashboard/ElectionList/ElectionList";
-import {
-    getMyVoterEligibilities,
-    type EligibleElection,
-} from "../../services/VoterEligibility";
+import { getMyVoterEligibilities } from "../../services/VoterEligibility";
+import type { EligibleElection } from "../../types/Election";
 import "./Account.css";
 
 export default function Account() {

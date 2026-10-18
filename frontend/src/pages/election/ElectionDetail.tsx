@@ -12,7 +12,7 @@ import {
 } from "../../services/electionService";
 import { getMyVoterEligibilities } from "../../services/VoterEligibility";
 import type { Candidate } from "../../types/Candidate";
-import { checkVoteStatus } from "../../services/candidateService";
+import { checkVoteStatus } from "../../services/votingService";
 
 import "./ElectionDetail.css";
 
