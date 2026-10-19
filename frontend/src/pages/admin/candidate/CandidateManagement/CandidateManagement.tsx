@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+
+import { useCallback, useEffect, useState } from "react";
 import { getAllCandidates } from "../../../../services/candidateService";
 import type { Candidate } from "../../../../types/Candidate";
 
@@ -13,72 +14,93 @@ export default function CandidateManagement({
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        let cancelled = false;
+    const loadCandidates = useCallback(async () => {
+        setIsLoading(true);
+        setError("");
 
-        async function loadCandidates() {
-            try {
-                setIsLoading(true);
-                setError("");
-
-                const data = await getAllCandidates();
-
-                if (!cancelled) {
-                    setCandidates(data);
-                }
-            } catch (err) {
-                if (!cancelled) {
-                    setError(
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to load candidates."
-                    );
-                }
-            } finally {
-                if (!cancelled) {
-                    setIsLoading(false);
-                }
-            }
+        try {
+            const data = await getAllCandidates();
+            setCandidates(data);
+        } catch (err) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : "Failed to load candidates."
+            );
+        } finally {
+            setIsLoading(false);
         }
+    }, []);
 
+    useEffect(() => {
         void loadCandidates();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [refreshKey]);
-
-    if (isLoading) {
-        return <p role="status">Loading candidates...</p>;
-    }
-
-    if (error) {
-        return <p role="alert">{error}</p>;
-    }
+    }, [loadCandidates, refreshKey]);
 
     return (
         <section className="admin-section">
-            <h2>Candidate Management</h2>
+            <div className="admin-section-heading">
+                <div>
+                    <h2>Candidate Management</h2>
+                    <p>
+                        Review candidates and the elections they belong to.
+                    </p>
+                </div>
 
-            {candidates.length === 0 ? (
+                <button
+                    type="button"
+                    onClick={() => void loadCandidates()}
+                    disabled={isLoading}
+                >
+                    Refresh
+                </button>
+            </div>
+
+            {isLoading && (
+                <p role="status">Loading candidates...</p>
+            )}
+
+            {!isLoading && error && (
+                <p role="alert">
+                    Unable to load candidates: {error}
+                </p>
+            )}
+
+            {!isLoading && !error && candidates.length === 0 && (
                 <p>No candidates found.</p>
-            ) : (
-                <div className="candidate-list">
-                    {candidates.map((candidate) => (
-                        <article
-                            className="candidate-card"
-                            key={candidate.id}
-                        >
-                            <p>
-                                Candidate number:{" "}
-                                {candidate.candidate_number}
-                            </p>
+            )}
 
-                            {candidate.description && (
-                                <p>{candidate.description}</p>
-                            )}
-                        </article>
-                    ))}
+            {!isLoading && !error && candidates.length > 0 && (
+                <div className="admin-table-wrapper">
+                    <table className="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Candidate</th>
+                                <th>Description</th>
+                                <th>Candidate Number</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {candidates.map((candidate) => (
+                                <tr key={candidate.id}>
+                                    <td>
+                                        <strong>
+                                            {candidate.firstname}{" "}
+                                            {candidate.lastname}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {candidate.description || "—"}
+                                    </td>
+
+                                    <td>
+                                        {candidate.candidate_number}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
         </section>
