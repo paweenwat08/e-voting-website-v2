@@ -6,7 +6,8 @@ import roleMiddleware from "../middleware/role.middleware.js";
 import {
     createCandidateController,
     getCandidatesByElectionController,
-    getCandidateByIdController
+    getCandidateByIdController,
+    getAllCandidatesController
 } from "../controllers/candidate.controller.js";
 
 const router = Router();
@@ -31,6 +32,13 @@ router.get(
     "/:candidateId",
     authMiddleware,
     getCandidateByIdController
+);
+
+router.get(
+    "/",
+    authMiddleware,
+    roleMiddleware("admin"),
+    getAllCandidatesController
 );
 
 export default router;

@@ -32,7 +32,7 @@ export const createCandidate = async (
     ) {
         return {
             success: false as const,
-            reason: "Election is not accepting candidates"
+            reason: "Cannot add candidate if election is opened or closed"
         };
     }
 
@@ -57,22 +57,20 @@ export const createCandidate = async (
     try {
         const result = await connection.query(
             `
-            INSERT INTO candidates (
-                identity_id,
-                election_id,
-                candidate_number,
-                description
-            )
-            VALUES ($1, $2, $3, $4)
-            RETURNING
-                id,
-                identity_id,
-                election_id,
-                candidate_number,
-                description,
-                created_at,
-                updated_at
-            `,
+    INSERT INTO candidates (
+        identity_id,
+        election_id,
+        candidate_number,
+        description
+    )
+    VALUES ($1, $2, $3, $4)
+    RETURNING
+        id,
+        identity_id,
+        election_id,
+        candidate_number,
+        description
+    `,
             [
                 identityId,
                 electionId,
@@ -120,8 +118,6 @@ export const getCandidatesByElection = async (
             c.election_id,
             c.candidate_number,
             c.description,
-            c.created_at,
-            c.updated_at,
             i.firstname,
             i.lastname,
             COUNT(b.id)::int AS votes
@@ -137,8 +133,6 @@ export const getCandidatesByElection = async (
             c.election_id,
             c.candidate_number,
             c.description,
-            c.created_at,
-            c.updated_at,
             i.firstname,
             i.lastname
         ORDER BY c.candidate_number ASC
@@ -174,4 +168,32 @@ export const getCandidateById = async (
     );
 
     return result.rows[0] ?? null;
+};
+
+export const getAllCandidates = async () => {
+    const result = await connection.query(
+        `
+        SELECT
+            c.id,
+            c.identity_id,
+            c.election_id,
+            c.candidate_number,
+            c.description,
+            c.created_at,
+            c.updated_at,
+            i.firstname,
+            i.lastname,
+            e.title AS election_title
+        FROM candidates AS c
+        INNER JOIN identities AS i
+            ON c.identity_id = i.id
+        INNER JOIN elections AS e
+            ON c.election_id = e.id
+        ORDER BY
+            c.election_id ASC,
+            c.candidate_number ASC
+        `
+    );
+
+    return result.rows;
 };

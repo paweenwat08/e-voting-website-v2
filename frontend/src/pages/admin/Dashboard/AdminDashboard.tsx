@@ -9,8 +9,10 @@ import {
     type Election,
 } from "../../../services/electionService";
 
+import CreateCandidateForm from "../candidate/CreateCandidateForm/CreateCandidateForm";
 import CreateUserForm from "../users/userForm/CreateUserForm";
 import CreateElectionForm from "../elctions/electionForm/CreateElectionForm";
+import CandidateManagement from "../candidate/CandidateManagement/CandidateManagement";
 import ElectionManagement from "../elctions/electionManagement/electionManagement";
 import UserManagement from "../users/userManagement/userManagement";
 
@@ -26,6 +28,8 @@ export default function AdminDashboard() {
 
     // Increment this after creating a user to refresh User Management.
     const [usersRefreshKey, setUsersRefreshKey] = useState(0);
+
+    const [CandidatessRefreshKey, setCandidatessRefreshKey] = useState(0);
 
     useEffect(() => {
         if (isLoading) return;
@@ -157,6 +161,17 @@ export default function AdminDashboard() {
                                 }}
                             />
                         </details>
+
+                        <details>
+                            <summary>Add candidate</summary>
+                            <CreateCandidateForm
+                                onSuccess={() => {
+                                    setCandidatessRefreshKey(
+                                        (current) => current + 1
+                                    );
+                                }}
+                            />
+                        </details>
                     </div>
                 </section>
 
@@ -171,6 +186,10 @@ export default function AdminDashboard() {
                 {/* User Management */}
                 <UserManagement
                     refreshKey={usersRefreshKey}
+                />
+
+                <CandidateManagement
+                    refreshKey={CandidatessRefreshKey}
                 />
             </main>
         </>

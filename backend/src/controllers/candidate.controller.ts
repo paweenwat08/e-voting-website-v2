@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-
-import connection from "../config/database.js";
+import { searchUsers } from "../services/auth.service.js";
 import { createAuditLog } from "../services/auditLog.service.js";
 
 import {
     createCandidate,
     getCandidatesByElection,
-    getCandidateById
+    getCandidateById,
+    getAllCandidates
 } from "../services/candidate.service.js";
 
 export const createCandidateController = async (
@@ -22,16 +22,16 @@ export const createCandidateController = async (
         }
 
         const {
-            identityId,
+            userId,
             electionId,
             candidateNumber,
             description
         } = req.body;
 
         if (
-            identityId === undefined ||
-            identityId === null ||
-            String(identityId).trim() === "" ||
+            userId === undefined ||
+            userId === null ||
+            String(userId).trim() === "" ||
             electionId === undefined ||
             electionId === null ||
             String(electionId).trim() === "" ||
@@ -41,7 +41,7 @@ export const createCandidateController = async (
         ) {
             return res.status(400).json({
                 success: false,
-                message: "identityId, electionId and candidateNumber are required"
+                message: "userId, electionId and candidateNumber are required"
             });
         }
 
@@ -56,7 +56,7 @@ export const createCandidateController = async (
             });
         }
 
-        const normalizedIdentityId = String(identityId).trim();
+        const normalizeduserId = String(userId).trim();
         const normalizedElectionId = String(electionId).trim();
         const normalizedCandidateNumber = String(candidateNumber).trim();
 
@@ -65,8 +65,21 @@ export const createCandidateController = async (
                 ? description.trim()
                 : null;
 
+        const identities = await searchUsers(normalizeduserId);
+
+        const identity = identities.find(
+            (item) => String(item.user_id) === normalizeduserId
+        );
+
+        if (!identity) {
+            return res.status(404).json({
+                success: false,
+                message: "Identity not found for this user"
+            });
+        }
+
         const result = await createCandidate(
-            normalizedIdentityId,
+            String(identity.id),
             normalizedElectionId,
             normalizedCandidateNumber,
             normalizedDescription
@@ -117,7 +130,7 @@ export const createCandidateController = async (
                 req.identity.id,
                 {
                     action: "CREATE_CANDIDATE",
-                    identityId: normalizedIdentityId,
+                    userId: normalizeduserId,
                     electionId: normalizedElectionId,
                     candidateNumber: normalizedCandidateNumber
                 }
@@ -238,3 +251,30 @@ export const getCandidateByIdController = async (
 
 };
 
+export const getAllCandidatesController = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        if (!req.identity) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+
+        const candidates = await getAllCandidates();
+
+        return res.status(200).json({
+            success: true,
+            candidates,
+        });
+    } catch (error) {
+        console.error("Get all candidates error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+};
