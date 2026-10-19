@@ -21,7 +21,7 @@ import type { Election } from "../../../../types/Election";
 import './ElectionEdit.css'
 
 export default function AdminElectionEdit() {
-    const { electionId } = useParams<{ electionId: string }>();
+    const { electionId } = useParams();
     const navigate = useNavigate();
     const { user, isLoading: authLoading } = useAuth();
 
@@ -53,11 +53,18 @@ export default function AdminElectionEdit() {
         let cancelled = false;
 
         async function loadElection() {
+            // Guard clause: If electionId is missing/undefined, stop her
+            if (!electionId) {
+                setError("No election ID provided");
+                setIsLoading(false);
+                return;
+            }
+
             try {
                 setIsLoading(true);
                 setError("");
 
-                const data = await getElectionById(Number(electionId));
+                const data = await getElectionById(electionId);
 
                 if (cancelled) return;
 
@@ -139,9 +146,9 @@ export default function AdminElectionEdit() {
             setElection((previous) =>
                 previous
                     ? {
-                          ...previous,
-                          ...updated,
-                      }
+                        ...previous,
+                        ...updated,
+                    }
                     : updated
             );
 
@@ -169,7 +176,7 @@ export default function AdminElectionEdit() {
 
             await openElection(Number(electionId));
 
-            const refreshed = await getElectionById(Number(electionId));
+            const refreshed = await getElectionById(electionId);
             setElection(refreshed);
             setSuccess("Voting opened successfully");
         } catch (err) {
@@ -195,7 +202,7 @@ export default function AdminElectionEdit() {
 
             await closeElection(Number(electionId));
 
-            const refreshed = await getElectionById(Number(electionId));
+            const refreshed = await getElectionById(electionId);
             setElection(refreshed);
             setSuccess("Voting closed successfully");
         } catch (err) {
@@ -334,7 +341,7 @@ export default function AdminElectionEdit() {
                     <h2>Voting controls</h2>
 
                     {election.status === "draft" ||
-                    election.status === "scheduled" ? (
+                        election.status === "scheduled" ? (
                         <button
                             type="button"
                             onClick={handleOpenElection}

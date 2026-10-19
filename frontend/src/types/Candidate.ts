@@ -12,6 +12,7 @@ export interface Candidate {
     // ข้อมูลสำหรับแสดงผล
     votes?: number;
     image?: string;
+    election_title?: string;
 }
 
 export interface CandidateInput {

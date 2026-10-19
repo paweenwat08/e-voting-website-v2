@@ -38,9 +38,7 @@ export default function CandidateSelection() {
 
             try {
                 // Check election status first.
-                const election = await getElectionById(
-                    Number(electionId)
-                );
+                const election = await getElectionById(electionId);
 
                 if (cancelled) return;
 

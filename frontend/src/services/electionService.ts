@@ -21,7 +21,7 @@ export async function getAllElections(): Promise<Election[]> {
 }
 
 export async function getElectionById(
-    electionId: number
+    electionId: string
 ): Promise<ElectionDetailResponse["election"]> {
     const response = await fetch(
         `${API_BASE_URL}/elections/${electionId}`

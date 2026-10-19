@@ -56,7 +56,7 @@ export default function ElectionDetail() {
                 setLoading(true);
                 setError(null);
 
-                const data = await getElectionById(Number(electionId));
+                const data = await getElectionById(electionId);
 
                 if (!cancelled) {
                     setElection(data);

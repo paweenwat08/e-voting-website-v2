@@ -75,7 +75,7 @@ export default function CandidateManagement({
                         <thead>
                             <tr>
                                 <th>Candidate</th>
-                                <th>Description</th>
+                                <th>Election</th>
                                 <th>Candidate Number</th>
                             </tr>
                         </thead>
@@ -85,18 +85,15 @@ export default function CandidateManagement({
                                 <tr key={candidate.id}>
                                     <td>
                                         <strong>
-                                            {candidate.firstname}{" "}
-                                            {candidate.lastname}
+                                            {candidate.firstname} {candidate.lastname} (id:{candidate.identity_id})
                                         </strong>
                                     </td>
 
                                     <td>
-                                        {candidate.description || "—"}
+                                        <strong>{candidate.election_title} (id:{candidate.election_id})</strong>
                                     </td>
 
-                                    <td>
-                                        {candidate.candidate_number}
-                                    </td>
+                                    <td>{candidate.candidate_number}</td>
                                 </tr>
                             ))}
                         </tbody>
