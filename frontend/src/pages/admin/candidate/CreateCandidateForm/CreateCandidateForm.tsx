@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { createCandidate } from "../../../../services/candidateService";
-// import "./CreateCandidateForm.css";
+import "./CreateCandidateForm.css";
 
 interface Props {
     onSuccess: () => void;
