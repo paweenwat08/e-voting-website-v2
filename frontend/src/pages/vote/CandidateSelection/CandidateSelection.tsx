@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { getElectionById } from "../../../services/electionService";
-import { getMyVoterEligibilities } from "../../../services/VoterEligibility";
 import { getCandidatesByElection } from "../../../services/candidateService";
 import type { Candidate } from "../../../types/Candidate";
 import "./CandidateSelection.css";
@@ -18,7 +17,6 @@ export default function CandidateSelection() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [electionMessage, setElectionMessage] = useState("");
-    const [checkingEligibility, setCheckingEligibility] = useState(false);
 
     useEffect(() => {
         let cancelled = false;
@@ -71,7 +69,7 @@ export default function CandidateSelection() {
                         return;
                 }
 
-                // The user must be logged in before checking eligibility.
+                // The user must be logged in before loading candidates
                 if (isAuthLoading) return;
 
                 if (!isLoggedIn) {
@@ -81,26 +79,7 @@ export default function CandidateSelection() {
                     return;
                 }
 
-                // Check whether this user is eligible for this election.
-                setCheckingEligibility(true);
-
-                const eligibilities = await getMyVoterEligibilities();
-
-                if (cancelled) return;
-
-                const isEligible = eligibilities.some(
-                    (item) =>
-                        String(item.election_id) === String(election.id)
-                );
-
-                if (!isEligible) {
-                    setElectionMessage(
-                        "You are not eligible to vote in this election."
-                    );
-                    return;
-                }
-
-                // Load candidates only after eligibility is confirmed.
+                // Load candidates
                 const data = await getCandidatesByElection(electionId);
 
                 if (cancelled) return;
@@ -117,7 +96,6 @@ export default function CandidateSelection() {
             } finally {
                 if (!cancelled) {
                     setLoading(false);
-                    setCheckingEligibility(false);
                 }
             }
         }
@@ -164,9 +142,7 @@ export default function CandidateSelection() {
                     className="candidate-selection__message"
                     role="status"
                 >
-                    {checkingEligibility
-                        ? "Checking your voting eligibility..."
-                        : "Checking election status..."}
+                    "Checking election status..."
                 </div>
             </main>
         );

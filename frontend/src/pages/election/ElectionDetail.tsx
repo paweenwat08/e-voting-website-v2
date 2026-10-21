@@ -10,7 +10,6 @@ import {
     getElectionById,
     type Election,
 } from "../../services/electionService";
-import { getMyVoterEligibilities } from "../../services/VoterEligibility";
 import type { Candidate } from "../../types/Candidate";
 import { checkVoteStatus } from "../../services/votingService";
 
@@ -29,12 +28,6 @@ export default function ElectionDetail() {
         useState<ElectionWithCandidates | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    const [isEligible, setIsEligible] = useState<boolean | null>(null);
-    const [loadingEligibility, setLoadingEligibility] = useState(false);
-    const [eligibilityError, setEligibilityError] = useState<string | null>(
-        null
-    );
 
     const [hasVoted, setHasVoted] = useState(false);
     const [loadingVoteStatus, setLoadingVoteStatus] = useState(false);
@@ -80,55 +73,6 @@ export default function ElectionDetail() {
             cancelled = true;
         };
     }, [electionId]);
-
-    useEffect(() => {
-        let cancelled = false;
-
-        async function checkEligibility() {
-            setIsEligible(null);
-            setEligibilityError(null);
-
-            if (isAuthLoading) return;
-
-            if (!isLoggedIn || !election || election.status !== "open") {
-                setLoadingEligibility(false);
-                return;
-            }
-
-            try {
-                setLoadingEligibility(true);
-
-                const eligibilities = await getMyVoterEligibilities();
-
-                if (!cancelled) {
-                    const eligible = eligibilities.some(
-                        (item) =>
-                            String(item.election_id) === String(election.id)
-                    );
-
-                    setIsEligible(eligible);
-                }
-            } catch (err) {
-                if (!cancelled) {
-                    setEligibilityError(
-                        err instanceof Error
-                            ? err.message
-                            : "Unable to check voting eligibility."
-                    );
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoadingEligibility(false);
-                }
-            }
-        }
-
-        void checkEligibility();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [election, isLoggedIn, isAuthLoading]);
 
     useEffect(() => {
         let cancelled = false;
@@ -310,12 +254,11 @@ export default function ElectionDetail() {
                                             </button>
                                         </>
                                     ) : isAuthLoading ||
-                                      loadingEligibility ||
                                       loadingVoteStatus ? (
                                         <p role="status">
                                             Checking your voting status...
                                         </p>
-                                    ) : eligibilityError || voteStatusError ? (
+                                    ) : voteStatusError ? (
                                         <div>
                                             <h2>Unable to check voting status</h2>
                                             <p role="alert">
@@ -329,7 +272,7 @@ export default function ElectionDetail() {
                                                 คุณได้ลงคะแนนใน Election นี้แล้ว
                                             </p>
                                         </div>
-                                    ) : isEligible === true ? (
+                                    ) : (
                                         <>
                                             <div>
                                                 <h2>You are eligible to vote</h2>
@@ -351,14 +294,6 @@ export default function ElectionDetail() {
                                                 Cast Your Ballot
                                             </button>
                                         </>
-                                    ) : (
-                                        <div>
-                                            <h2>You are not eligible to vote</h2>
-                                            <p>
-                                                Your account is not eligible
-                                                to vote in this election.
-                                            </p>
-                                        </div>
                                     )}
                                 </div>
                             </div>
