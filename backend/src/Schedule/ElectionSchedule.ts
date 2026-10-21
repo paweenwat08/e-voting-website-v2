@@ -2,7 +2,7 @@ import connection from "../config/database.js";
 
 let isRunning = false;
 
-export const closeExpiredElections = async () => {
+const closeExpiredElections = async () => {
     if (isRunning) {
         return;
     }
@@ -34,7 +34,7 @@ export const closeExpiredElections = async () => {
     }
 };
 
-export const openScheduleElections = async () => {
+const openScheduleElections = async () => {
     if (isRunning) {
         return;
     }
@@ -65,3 +65,12 @@ export const openScheduleElections = async () => {
         isRunning = false;
     }
 }
+
+export const runElectionSchedules = async () => {
+    try {
+        await openScheduleElections();
+        await closeExpiredElections();
+    } catch (error) {
+        console.error("Election schedule error:", error);
+    }
+};
