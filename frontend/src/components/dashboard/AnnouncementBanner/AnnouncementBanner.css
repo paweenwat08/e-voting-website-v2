@@ -6,7 +6,7 @@
 .announcement-banner {
     position: relative;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px; /* ขยายจาก 1200px เป็น 1400px หรือค่าที่ต้องการ */
     margin: 0 auto;
     padding: 24px;
     box-sizing: border-box;
@@ -16,7 +16,6 @@
 
 .announcement-content {
     width: 100%;
-    aspect-ratio: 16 / 7;
     overflow: hidden;
     border-radius: 16px;
     background: #f5f5f2;

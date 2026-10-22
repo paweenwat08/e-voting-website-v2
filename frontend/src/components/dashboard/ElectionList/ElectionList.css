@@ -1,4 +1,8 @@
 /* Card grid - ปรับ Grid ให้ยืดหยุ่นและแสดงผลสวยงามขึ้น */
+
+#elections {
+    background: #f5f5f2;
+}
 #elections .election-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -129,12 +133,6 @@
 
 #elections .election-view-link:hover {
     text-decoration: underline;
-}
-
-
-/**/
-#elections {
-    background: white;
 }
 
 #elections > div {
