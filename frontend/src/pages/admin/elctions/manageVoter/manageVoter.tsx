@@ -193,7 +193,7 @@ export default function ElectionEligibilityManagement() {
                         </tbody>
                     </table>
                     {actionMessage && (
-                        <p role="status">{actionMessage}</p>
+                        <p id="manage-voter-status" role="status">{actionMessage}</p>
                     )}
                 </div>
             )}
