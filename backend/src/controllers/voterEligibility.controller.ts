@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
 import { 
     checkVoterEligibility,
-    addVoterEligibility
+    addVoterEligibility,
+    getElectionEligibilityUsers
  } from "../services/voterEligibility.service.js";
 import { createAuditLog } from "../services/auditLog.service.js";
 
@@ -127,6 +128,51 @@ export const createVoterEligibilityController = async (
         }
 
         console.error("Create voter eligibility error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+};
+
+export const getElectionEligibilityUsersController = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const { electionId } = req.params;
+
+        if (
+            typeof electionId !== "string" ||
+            !/^[1-9]\d*$/.test(electionId)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid election ID",
+            });
+        }
+
+        const query =
+            typeof req.query.q === "string"
+                ? req.query.q.trim()
+                : "";
+
+        const users = await getElectionEligibilityUsers(
+            electionId,
+            query
+        );
+
+        return res.status(200).json({
+            success: true,
+            electionId,
+            users,
+        });
+    } catch (error) {
+        console.error(
+            "Get election eligibility users error:",
+            error
+        );
 
         return res.status(500).json({
             success: false,

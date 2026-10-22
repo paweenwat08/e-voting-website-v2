@@ -98,3 +98,35 @@ export const addVoterEligibility = async (
 
     return result.rows[0];
 };
+
+export const getElectionEligibilityUsers  = async (
+    electionId: string,
+    query = ""
+) => {
+    const result = await connection.query(
+        `
+        SELECT
+            i.id,
+            i.user_id,
+            i.firstname,
+            i.lastname,
+            i.role,
+            i.status,
+            i.created_at,
+            i.updated_at,
+            EXISTS (
+                SELECT 1
+                FROM voter_eligibilities ve
+                WHERE ve.identity_id = i.id
+                  AND ve.election_id = $1
+            ) AS is_eligible
+        FROM identities i
+        WHERE
+            ($2 = '' OR i.user_id ILIKE '%' || $2 || '%')
+        ORDER BY i.id ASC
+        `,
+        [electionId, query.trim()]
+    );
+
+    return result.rows;
+};

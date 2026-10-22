@@ -3,7 +3,8 @@ import authMiddleware from "../middleware/auth.middleware.js";
 import roleMiddleware from "../middleware/role.middleware.js";
 import {
     checkVoterEligibilityController,
-    createVoterEligibilityController
+    createVoterEligibilityController,
+    getElectionEligibilityUsersController
 } from "../controllers/voterEligibility.controller.js";
 
 const router = Router();
@@ -15,12 +16,18 @@ router.get(
     checkVoterEligibilityController
 );
 
-// Admin กำหนดสิทธิเลือกตั้ง
 router.post(
     "/",
     authMiddleware,
     roleMiddleware("admin"),
     createVoterEligibilityController
+);
+
+router.get(
+    "/:electionId/users",
+    authMiddleware,
+    roleMiddleware("admin"),
+    getElectionEligibilityUsersController
 );
 
 export default router;
