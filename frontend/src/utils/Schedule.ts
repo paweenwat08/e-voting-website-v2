@@ -1,5 +1,5 @@
-import { getLocalDateKey } from "../../../utils/Date";
-import { type ScheduleElection, } from "../../../services/scheduleService";
+import { getLocalDateKey } from "./Date";
+import type { Election } from "../types/Election";
 interface ElectionEvent {
     id: string;
     date: string;
@@ -8,7 +8,7 @@ interface ElectionEvent {
 }
 
 export function createElectionEvents(
-    elections: ScheduleElection[]
+    elections: Election[]
 ): ElectionEvent[] {
     return elections.flatMap((election) => {
         const startDate = getLocalDateKey(election.startAt);

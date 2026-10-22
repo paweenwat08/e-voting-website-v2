@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-    getScheduleElections,
-    type ScheduleElection,
-} from "../../../services/scheduleService";
+import { getScheduleElections } from "../../../services/scheduleService";
+import type { Election } from "../../../types/Election";
 import { weekdays } from "./constants";
 import { 
     toDateKey,
     formatDate
  } from "../../../utils/Date";
- import { createElectionEvents } from "./ScheduleUtils";
+ import { createElectionEvents } from "../../../utils/Schedule";
 import "./Schedule.css";
 
 export default function Schedule() {
@@ -26,7 +24,7 @@ export default function Schedule() {
         );
     });
 
-    const [elections, setElections] = useState<ScheduleElection[]>([]);
+    const [elections, setElections] = useState<Election[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 

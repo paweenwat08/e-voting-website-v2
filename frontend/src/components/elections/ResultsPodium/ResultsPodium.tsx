@@ -14,7 +14,7 @@ export default function ResultsPodium({
   electionStatus,
 }: ResultsPodiumProps) {
   const sortedCandidates = [...candidates].sort(
-    (a, b) => b.votes - a.votes
+    (a, b) => (b.votes ?? 0) - (a.votes ?? 0)
   );
 
   if (sortedCandidates.length === 0) {
