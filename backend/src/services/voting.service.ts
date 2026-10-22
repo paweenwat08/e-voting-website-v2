@@ -93,47 +93,6 @@ export const consumeVotingAuthorization = async (
     return result.rows[0] ?? null;
 };
 
-export const canVote = async (
-    identityId: string,
-    electionId: string
-) => {
-
-    // Check voting authorization
-    const authorizationResult = await connection.query(
-        `
-        SELECT
-            id,
-            identity_id,
-            election_id,
-            status,
-            consumed_at,
-            created_at,
-            updated_at
-        FROM voting_authorizations
-        WHERE identity_id = $1
-          AND election_id = $2
-        LIMIT 1
-        `,
-        [
-            identityId,
-            electionId
-        ]
-    );
-
-    const authorization =
-        authorizationResult.rows[0] ?? null;
-
-    if (!authorization) {
-        return false;
-    }
-
-    if (authorization.status !== "unused") {
-        return false;
-    }
-
-    return true;
-};
-
 export const castVote = async (
     identityId: string,
     electionId: string,
@@ -363,40 +322,7 @@ export const castVote = async (
         // 7. Consume voting authorization
         // ==========================================
 
-        const consumeResult = await connection.query(
-            `
-            UPDATE voting_authorizations
-            SET
-                status = 'consumed',
-                consumed_at = CURRENT_TIMESTAMP,
-                updated_at = CURRENT_TIMESTAMP
-            WHERE id = $1
-              AND status = 'unused'
-            RETURNING
-                id,
-                identity_id,
-                election_id,
-                status,
-                consumed_at,
-                created_at,
-                updated_at
-            `,
-            [
-                votingAuthorization.id
-            ]
-        );
-
-        const consumedAuthorization =
-            consumeResult.rows[0] ?? null;
-
-        if (!consumedAuthorization) {
-            await connection.query("ROLLBACK");
-
-            return {
-                success: false,
-                reason: "Failed to consume voting authorization"
-            };
-        }
+        consumeVotingAuthorization(identityId, electionId)
 
         // ==========================================
         // 8. Commit
@@ -422,7 +348,6 @@ export const castVote = async (
         return {
             success: true,
             ballot,
-            authorization: consumedAuthorization
         };
 
     } catch (error) {
