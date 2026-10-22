@@ -11,6 +11,7 @@ export interface AdminUser {
     lastname: string;
     role: "voter" | "admin";
     status: "active" | "disabled";
+    is_eligible?: boolean;
     created_at: string;
     updated_at: string;
 }

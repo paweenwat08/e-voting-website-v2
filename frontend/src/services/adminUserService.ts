@@ -46,6 +46,29 @@ export async function searchAdminUsers(
     return data.users as AdminUser[];
 }
 
+export async function getElectionEligibilityUsers(
+    electionId: string,
+    query = ""
+): Promise<AdminUser[]> {
+    const params = new URLSearchParams();
+
+    if (query.trim()) {
+        params.set("q", query.trim());
+    }
+
+    const response = await fetch(
+        `${API_BASE_URL}/eligibility/${electionId}/users?${params.toString()}`,
+        {
+            method: "GET",
+            credentials: "include",
+        }
+    );
+
+    const data = await readResponse(response);
+
+    return data.users as AdminUser[];
+}
+
 export async function updateAdminUser(
     id: string,
     input: UpdateAdminUserInput

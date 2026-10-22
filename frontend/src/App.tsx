@@ -12,6 +12,7 @@ import Account from "./pages/account/Account";
 import AdminDashboard from "./pages/admin/Dashboard/AdminDashboard";
 import AdminElectionEdit from "./pages/admin/elctions/electionEdit/ElectionEdit";
 import AdminUserEdit from "./pages/admin/users/userEdit/userEdit";
+import ElectionEligibilityManagement from "./pages/admin/elctions/manageVoter/manageVoter";
 
 function App() {
   return (
@@ -53,7 +54,10 @@ function App() {
             path="/admin/user/:id/edit"
             element={<AdminUserEdit />}
           />
-
+          <Route
+            path="/admin/elections/:electionId/eligibility"
+            element={<ElectionEligibilityManagement />}
+          />
           <Route
             path="/vote/:electionId/confirm"
             element={<VoteConfirmation />}
