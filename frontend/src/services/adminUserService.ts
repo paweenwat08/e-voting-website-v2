@@ -69,6 +69,28 @@ export async function getElectionEligibilityUsers(
     return data.users as AdminUser[];
 }
 
+export async function grantVoterEligibility(
+    electionId: string,
+    identityId: string
+): Promise<void> {
+    const response = await fetch(
+        `${API_BASE_URL}/eligibility`,
+        {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                electionId,
+                identityId,
+            }),
+        }
+    );
+
+    await readResponse(response);
+}
+
 export async function updateAdminUser(
     id: string,
     input: UpdateAdminUserInput
