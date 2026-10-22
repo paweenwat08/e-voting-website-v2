@@ -313,8 +313,9 @@ const getElectionByIdController = async (
                     ...election,
                     totalVotes: result.totalVotes,
                     candidates: (result.candidates ?? []).map(
-                        (candidate) => ({
+                        ({ candidate_id, ...candidate }) => ({
                             ...candidate,
+                            id: candidate_id,
                             votes: Number(candidate.total_votes),
                         })
                     ),
@@ -334,8 +335,11 @@ const getElectionByIdController = async (
             "Results are available only after the election closes"
         ) {
 
-            const candidates = await getCandidatesByElection(
-                electionId
+            const candidates = (await getCandidatesByElection(electionId)).map(
+                ({ id, ...candidate }) => ({
+                    ...candidate,
+                    id,
+                })
             );
 
             const totalVotes = candidates.reduce(

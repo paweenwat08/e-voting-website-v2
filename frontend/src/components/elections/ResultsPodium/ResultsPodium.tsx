@@ -25,14 +25,11 @@ export default function ResultsPodium({
   const top2 = sortedCandidates[1];
   const top3 = sortedCandidates[2];
 
-  const podiumOrder = [
-    { candidate: top2, rank: 2 },
-    { candidate: top1, rank: 1 },
-    { candidate: top3, rank: 3 },
-  ].filter(
-    (item): item is { candidate: Candidate; rank: number } =>
-      item.candidate !== undefined
-  );
+  const podiumOrder: { candidate: Candidate; rank: number }[] = [];
+
+  if (top2) podiumOrder.push({ candidate: top2, rank: 2 });
+  if (top1) podiumOrder.push({ candidate: top1, rank: 1 });
+  if (top3) podiumOrder.push({ candidate: top3, rank: 3 });
 
   const otherCandidates = sortedCandidates.slice(3);
   const isClosed = electionStatus === "closed";
