@@ -7,8 +7,7 @@ import {
     castVote,
     findVotingAuthorization,
     createVotingAuthorization,
-    canVote,
-    getElectionResults
+    canVote
 } from "../services/voting.service.js";
 
 const vote = async (
@@ -307,6 +306,51 @@ const getAuthorization = async (
     }
 };
 
+const checkCanVote = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        if (!req.identity) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+
+        const electionId =
+            String(req.params.electionId);
+
+        if (electionId.trim() === "") {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid election ID"
+            });
+        }
+
+        const allowed = await canVote(
+            String(req.identity.id),
+            electionId
+        );
+
+        return res.status(200).json({
+            success: true,
+            canVote: allowed
+        });
+
+    } catch (error) {
+        console.error(
+            "Check can vote error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+}
+
 const checkVoteStatus = async (req: Request, res: Response) => {
     try {
         if (!req.identity) {
@@ -348,5 +392,6 @@ export {
     vote,
     createAuthorization,
     getAuthorization,
+    checkCanVote,
     checkVoteStatus
 };

@@ -6,12 +6,12 @@ import {
     openElection,
     closeElection,
     getAllElections,
-    getElectionById
+    getElectionById,
+    getElectionResults
 } from "../services/election.service.js";
 
 import { createAuditLog } from "../services/auditLog.service.js";
 import { getCandidatesByElection } from "../services/candidate.service.js";
-import { getElectionResults } from "../services/voting.service.js";
 
 const createElectionController = async (
     req: Request,
@@ -272,6 +272,7 @@ const getAllElectionsController = async (
     }
 };
 
+// include candidates and total votes each
 const getElectionByIdController = async (
     req: Request,
     res: Response
