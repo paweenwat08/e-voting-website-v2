@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
-import { 
+import {
     checkVoterEligibility,
     addVoterEligibility,
     getElectionEligibilityUsers
- } from "../services/voterEligibility.service.js";
+} from "../services/voterEligibility.service.js";
 import { createAuditLog } from "../services/auditLog.service.js";
 
 export const checkVoterEligibilityController = async (
@@ -80,8 +80,8 @@ export const createVoterEligibilityController = async (
         }
 
         const eligibility = await addVoterEligibility(
-            identityId,
-            electionId
+            electionId,
+            identityId
         );
 
         try {
