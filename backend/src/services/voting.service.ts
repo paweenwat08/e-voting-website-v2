@@ -175,11 +175,7 @@ export const castVote = async (
 
         const eligibilityResult = await connection.query(
             `
-            SELECT
-                id,
-                identity_id,
-                election_id,
-                status
+            SELECT 1
             FROM voter_eligibilities
             WHERE identity_id = $1
               AND election_id = $2
