@@ -1,0 +1,67 @@
+/* ==========================================================================
+   User Search Input Styles
+   Targeting: #user-search-container
+   ========================================================================== */
+
+#user-search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+    max-width: 380px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#user-search-container label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #334155;
+    letter-spacing: 0.01em;
+}
+
+#user-search-container input[type="search"] {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    color: #0f172a;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Placeholder Styling */
+#user-search-container input[type="search"]::placeholder {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+/* Hover State */
+#user-search-container input[type="search"]:hover {
+    border-color: #94a3b8;
+}
+
+/* Focus State (เมื่อคลิกพิมพ์) */
+#user-search-container input[type="search"]:focus {
+    border-color: #2563eb;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* ตกแต่งปุ่ม 'x' (Clear button) ใน Browser Chrome/Safari/Edge */
+#user-search-container input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'><path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/></svg>") no-repeat center;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+#user-search-container input[type="search"]::-webkit-search-cancel-button:hover {
+    opacity: 1;
+}

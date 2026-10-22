@@ -4,6 +4,8 @@ import {
     searchAdminUsers,
 } from "../../../../services/adminUserService";
 import { type AdminUser } from "../../../../types/Admin";
+import './userManagement.css'
+
 interface Props {
     refreshKey: number;
 }
@@ -36,13 +38,6 @@ export default function UserManagement({ refreshKey }: Props) {
         void loadUsers("");
     }, [refreshKey]);
 
-    function handleSearch(
-        event: React.FormEvent<HTMLFormElement>
-    ) {
-        event.preventDefault();
-        void loadUsers(query);
-    }
-
     return (
         <section className="admin-section">
             <div className="admin-section-heading">
@@ -60,7 +55,7 @@ export default function UserManagement({ refreshKey }: Props) {
                 </button>
             </div>
 
-            <form onSubmit={handleSearch}>
+            <div id="user-search-container">
                 <label htmlFor="user-search">
                     Search by User ID
                 </label>
@@ -69,16 +64,14 @@ export default function UserManagement({ refreshKey }: Props) {
                     id="user-search"
                     type="search"
                     value={query}
-                    onChange={(event) =>
-                        setQuery(event.target.value)
-                    }
+                    onChange={(event) => {
+                        const value = event.target.value;
+                        setQuery(value);
+                        void loadUsers(value);
+                    }}
                     placeholder="Enter user ID"
                 />
-
-                <button type="submit" disabled={loading}>
-                    {loading ? "Searching..." : "Search"}
-                </button>
-            </form>
+            </div>
 
             {loading && (
                 <p role="status">Loading users...</p>

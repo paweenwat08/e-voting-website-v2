@@ -53,6 +53,7 @@ export default function ElectionManagement({
                         <thead>
                             <tr>
                                 <th>Election</th>
+                                <th>ID</th>
                                 <th>Start</th>
                                 <th>End</th>
                                 <th>Status</th>
@@ -71,6 +72,12 @@ export default function ElectionManagement({
                                         <p>
                                             {election.description}
                                         </p>
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {election.id}
+                                        </strong>
                                     </td>
 
                                     <td>

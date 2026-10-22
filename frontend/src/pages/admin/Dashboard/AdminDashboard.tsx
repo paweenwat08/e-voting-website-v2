@@ -175,7 +175,6 @@ export default function AdminDashboard() {
                     </div>
                 </section>
 
-                {/* Election Management */}
                 <ElectionManagement
                     elections={elections}
                     loading={electionsLoading}
@@ -183,13 +182,12 @@ export default function AdminDashboard() {
                     onRefresh={loadElections}
                 />
 
-                {/* User Management */}
-                <UserManagement
-                    refreshKey={usersRefreshKey}
-                />
-
                 <CandidateManagement
                     refreshKey={CandidatessRefreshKey}
+                />
+
+                <UserManagement
+                    refreshKey={usersRefreshKey}
                 />
             </main>
         </>
