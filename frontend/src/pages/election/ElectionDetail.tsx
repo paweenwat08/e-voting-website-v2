@@ -12,6 +12,7 @@ import {
 } from "../../services/electionService";
 import type { Candidate } from "../../types/Candidate";
 import { checkVoteStatus } from "../../services/votingService";
+import CandidateAvatar from "../../components/elections/CandidateAvatar/CandidateAvatar";
 
 import "./ElectionDetail.css";
 
@@ -145,16 +146,16 @@ export default function ElectionDetail() {
                             {loading
                                 ? "Loading Election..."
                                 : notFound
-                                  ? "Election Not Found"
-                                  : "Unable to Load Election"}
+                                    ? "Election Not Found"
+                                    : "Unable to Load Election"}
                         </h1>
 
                         <p>
                             {loading
                                 ? "Please wait while we load the election details."
                                 : notFound
-                                  ? "The election you are looking for does not exist."
-                                  : "Something went wrong while loading this election. Please try again."}
+                                    ? "The election you are looking for does not exist."
+                                    : "Something went wrong while loading this election. Please try again."}
                         </p>
 
                         {!loading && (
@@ -254,7 +255,7 @@ export default function ElectionDetail() {
                                             </button>
                                         </>
                                     ) : isAuthLoading ||
-                                      loadingVoteStatus ? (
+                                        loadingVoteStatus ? (
                                         <p role="status">
                                             Checking your voting status...
                                         </p>
@@ -368,6 +369,13 @@ function CandidatesSection({
                                 className="candidate-card"
                             >
                                 <div className="candidate-header">
+                                    <CandidateAvatar
+                                        src={
+                                            candidate.image ||
+                                            "/images/candidates/default-avatar.png"
+                                        }
+                                        name={candidate.firstname}
+                                    />
                                     <span className="cand-num">
                                         #{candidate.candidate_number}
                                     </span>

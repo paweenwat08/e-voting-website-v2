@@ -1,0 +1,34 @@
+/* Scoped under candidates-grid to protect global avatar components */
+.candidates-grid .candidate-avatar {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.candidates-grid .candidate-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Optional rank modifiers scoped correctly */
+.candidates-grid .candidate-avatar.rank-1 {
+  border-color: #f59e0b; /* Gold */
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+.candidates-grid .candidate-avatar.rank-2 {
+  border-color: #9ca3af; /* Silver */
+}
+
+.candidates-grid .candidate-avatar.rank-3 {
+  border-color: #d97706; /* Bronze */
+}

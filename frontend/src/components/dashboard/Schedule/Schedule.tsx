@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { getScheduleElections } from "../../../services/scheduleService";
+import { useState } from "react";
 import type { Election } from "../../../types/Election";
 import { weekdays } from "./constants";
 import { 
@@ -9,7 +8,17 @@ import {
  import { createElectionEvents } from "../../../utils/Schedule";
 import "./Schedule.css";
 
-export default function Schedule() {
+interface Props {
+    elections: Election[];
+    loading: boolean;
+    error: string | null;
+}
+
+export default function Schedule({
+    elections,
+    loading,
+    error,
+}: Props) {
     const [currentMonth, setCurrentMonth] = useState(() => {
         const today = new Date();
         return new Date(today.getFullYear(), today.getMonth(), 1);
@@ -23,45 +32,6 @@ export default function Schedule() {
             today.getDate()
         );
     });
-
-    const [elections, setElections] = useState<Election[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        let cancelled = false;
-
-        async function fetchElections() {
-            try {
-                setLoading(true);
-                setError(null);
-
-                const data = await getScheduleElections();
-
-                if (!cancelled) {
-                    setElections(data);
-                }
-            } catch (err) {
-                if (!cancelled) {
-                    setError(
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to load election schedule."
-                    );
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            }
-        }
-
-        void fetchElections();
-
-        return () => {
-            cancelled = true;
-        };
-    }, []);
 
     const events = createElectionEvents(elections);
 

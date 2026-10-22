@@ -1,5 +1,4 @@
 import type { Candidate } from "../../../types/Candidate";
-import CandidateAvatar from "../CandidateAvatar/CandidateAvatar";
 
 interface OtherCandidatesProps {
   candidates: Candidate[];
@@ -21,17 +20,6 @@ export default function OtherCandidates({
           return (
             <article key={candidate.id} className="other-card">
               <span className="other-rank">#{rank}</span>
-
-              <div className="other-avatar-sm">
-                <CandidateAvatar
-                  src={
-                    candidate.image ||
-                    "/images/candidates/default-avatar.png"
-                  }
-                  name={candidate.firstname}
-                  rank={rank}
-                />
-              </div>
 
               <div className="other-main-info">
                 <div className="other-name-row">

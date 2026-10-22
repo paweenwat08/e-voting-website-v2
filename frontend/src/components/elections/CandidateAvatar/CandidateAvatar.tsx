@@ -1,7 +1,9 @@
+import './CandidateAvatar.css'
+
 interface CandidateAvatarProps {
   src: string;
   name: string;
-  rank: number;
+  rank?: number;
 }
 
 export default function CandidateAvatar({
