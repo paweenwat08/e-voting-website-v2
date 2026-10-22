@@ -177,13 +177,12 @@ export default function ElectionEligibilityManagement() {
                                             <span>Already eligible</span>
                                         ) : user.status === "active" && user.role === "voter" ? (
                                             <button
+                                                id="grant-eligibility-btn"
                                                 type="button"
                                                 disabled={grantingId !== null}
                                                 onClick={() => void handleGrantEligibility(user.id)}
                                             >
-                                                {grantingId === user.id
-                                                    ? "Granting..."
-                                                    : "Grant Eligibility"}
+                                                {grantingId === user.id ? "Granting..." : "Grant Eligibility"}
                                             </button>
                                         ) : (
                                             <span>Unavailable</span>
