@@ -86,12 +86,6 @@ export const createCandidateController = async (
         );
 
         if (!result.success) {
-            if (result.reason === "Candidate is not eligible") {
-                return res.status(403).json({
-                    success: false,
-                    message: result.reason
-                });
-            }
 
             if (result.reason === "Election not found") {
                 return res.status(404).json({
