@@ -100,6 +100,12 @@ export default function ElectionManagement({
                                             >
                                                 Edit
                                             </Link>
+                                            /
+                                            <Link
+                                                to={`/admin/elections/${election.id}/eligibility`}
+                                            >
+                                                Manage Voters
+                                            </Link>
                                         </div>
                                     </td>
                                 </tr>

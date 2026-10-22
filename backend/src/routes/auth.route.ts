@@ -5,7 +5,7 @@ import {
     getCurrentUser,
     logoutUser,
     registerUser,
-    searchUsers,
+    searchUsersController,
     updateUser
 } from "../controllers/auth.controller.js";
 
@@ -25,7 +25,7 @@ router.get(
     "/users",
     authMiddleware,
     roleMiddleware("admin"),
-    searchUsers
+    searchUsersController
 );
 
 router.patch(

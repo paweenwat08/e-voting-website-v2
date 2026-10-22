@@ -6,7 +6,7 @@ import {
     createSession,
     createUser,
     findIdentityByUserId,
-    searchUsers as searchUsersService,
+    searchUsers,
     updateUser as updateUserService,
     deleteSession,
 } from "../services/auth.service.js";
@@ -233,7 +233,7 @@ const logoutUser = async (
     }
 };
 
-const searchUsers = async (
+const searchUsersController = async (
     req: Request,
     res: Response
 ) => {
@@ -243,7 +243,7 @@ const searchUsers = async (
                 ? req.query.q.trim()
                 : "";
 
-        const users = await searchUsersService(query);
+        const users = await searchUsers(query);
 
         return res.status(200).json({
             success: true,
@@ -349,6 +349,6 @@ export {
     loginUser,
     getCurrentUser,
     logoutUser,
-    searchUsers,
+    searchUsersController,
     updateUser,
 };
