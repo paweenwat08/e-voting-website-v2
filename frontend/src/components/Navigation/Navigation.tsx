@@ -11,7 +11,7 @@ export default function Navigation({ action }: NavigationProps) {
     const { isLoggedIn, isLoading } = useAuth();
 
     return (
-        <header>
+        <header id="navigation-header">
             <Link to="/" className="navigation-brand">
                 <span className="material-symbols-outlined">
                     how_to_vote

@@ -73,9 +73,7 @@ export default function Schedule({
     return (
         <section id="schedule">
             <header className="calendar-heading">
-                <p className="calendar-eyebrow">SAVE THE DATE</p>
                 <h2>The Road to Election Day</h2>
-                <p>Keep track of important election dates and events.</p>
             </header>
 
             {loading && (
