@@ -1,5 +1,12 @@
-import { type Candidate, type CandidateInput } from "../types/Candidate";
+import type { Candidate } from "../types/Candidate";
 import { API_BASE_URL } from "../constant";
+
+interface CandidateInput {
+    userId: string;
+    electionId: string;
+    candidateNumber: string;
+    description?: string | null;
+}
 
 export async function getCandidatesByElection(
     electionId: string

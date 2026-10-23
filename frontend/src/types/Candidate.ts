@@ -14,10 +14,3 @@ export interface Candidate {
     image?: string;
     election_title?: string;
 }
-
-export interface CandidateInput {
-    userId: string;
-    electionId: string;
-    candidateNumber: string;
-    description?: string | null;
-}

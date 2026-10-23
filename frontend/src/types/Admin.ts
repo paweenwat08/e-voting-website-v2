@@ -1,9 +1,3 @@
-export interface UpdateAdminUserInput {
-    firstname: string;
-    lastname: string;
-    status: "active" | "disabled";
-}
-
 export interface AdminUser {
     id: string;
     user_id: string;

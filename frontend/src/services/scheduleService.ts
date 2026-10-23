@@ -1,6 +1,10 @@
 import { API_BASE_URL } from "../constant";
 import type { Election } from "../types/Election";
-import type { ElectionsScheduleResponse } from "../types/Api";
+
+interface ElectionsScheduleResponse {
+    success: boolean;
+    elections: Election[];
+}
 
 export async function getScheduleElections(): Promise<Election[]> {
     const response = await fetch(`${API_BASE_URL}/elections`);

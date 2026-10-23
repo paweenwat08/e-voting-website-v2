@@ -1,10 +1,15 @@
 import type {
-    UpdateAdminUserInput,
     AdminUser
 } from '../types/Admin'
 import type { CreateUserInput } from '../types/Input';
 import { API_BASE_URL } from '../constant';
 import { readResponse } from './apiUtils';
+
+interface UpdateAdminUserInput {
+    firstname: string;
+    lastname: string;
+    status: "active" | "disabled";
+}
 
 export async function createAdminUser(
     input: CreateUserInput

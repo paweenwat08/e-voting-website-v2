@@ -1,6 +1,14 @@
 import { API_BASE_URL } from "../constant";
-import type { MeResponse, LoginResponse } from "../types/Api";
 import type { CurrentUser } from "../types/User";
+
+interface MeResponse {
+    success: boolean;
+    identity: CurrentUser;
+}
+
+interface LoginResponse {
+    success: boolean;
+}
 
 export async function userLogin(
     userId: string,
