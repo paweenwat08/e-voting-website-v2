@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 
 import { useAuth } from "../../../../contexts/AuthContext";
-import Navigation from "../../../../components/Navigation/Navigation";
 
 import { getElectionById } from "../../../../services/electionService";
 import {
@@ -219,7 +218,6 @@ export default function AdminElectionEdit() {
     if (authLoading || isLoading) {
         return (
             <>
-                <Navigation action="DASHBOARD" />
                 <main className="admin-election-edit">
                     <p>Loading election...</p>
                 </main>
@@ -230,7 +228,6 @@ export default function AdminElectionEdit() {
     if (!user || user.role !== "admin") {
         return (
             <>
-                <Navigation action="DASHBOARD" />
                 <main className="admin-election-edit">
                     <h1>Access denied</h1>
                     <p>Administrator access is required.</p>
@@ -243,7 +240,6 @@ export default function AdminElectionEdit() {
     if (!election) {
         return (
             <>
-                <Navigation action="DASHBOARD" />
                 <main className="admin-election-edit">
                     <h1>Election unavailable</h1>
                     {error && <p role="alert">{error}</p>}
@@ -257,8 +253,6 @@ export default function AdminElectionEdit() {
 
     return (
         <>
-            <Navigation action="DASHBOARD" />
-
             <main className="admin-election-edit">
                 <header className="admin-election-edit__header">
                     <div>

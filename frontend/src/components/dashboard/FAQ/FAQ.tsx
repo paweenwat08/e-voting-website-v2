@@ -54,12 +54,12 @@ export default function FAQ() {
                     </div>
                     
                     <div className="faq-contact">
-                        <a href="mailto:elections@northwoodhs.edu" className="email-link">
+                        <a href="mailto:council:son.edu" className="email-link">
                             <svg className="mail-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                                 <polyline points="22,6 12,13 2,6"></polyline>
                             </svg>
-                            elections@northwoodhs.edu
+                            council@son.edu
                         </a>
                     </div>
                 </div>

@@ -6,7 +6,7 @@ export default function Footer() {
             <div className="footer-main">
 
                 <div className="footer-brand">
-                    <strong>NORTHWOOD HIGH SCHOOL</strong>
+                    <strong>SON HIGH SCHOOL</strong>
                     <h2>STUDENT VOTE '26</h2>
 
                     <p>
@@ -36,7 +36,7 @@ export default function Footer() {
                 <div className="footer-contact">
                     <h3>ELECTION BOARD</h3>
 
-                    <p>elections@northwoodhs.edu</p>
+                    <p>council@son.edu</p>
                     <p>Room 102 · 425 Cedar Avenue</p>
                     <p>Mon–Fri · 7:45 AM–4:00 PM</p>
                 </div>
@@ -45,7 +45,7 @@ export default function Footer() {
 
             <div className="footer-bottom">
                 <p>
-                    © 2026 Northwood High School · Student Election Board
+                    © 2026 SON High School · Student Election Board
                 </p>
 
                 <div>
