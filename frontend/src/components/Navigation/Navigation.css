@@ -1,4 +1,4 @@
-navigation-header {
+#navigation-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -8,7 +8,7 @@ navigation-header {
     font-weight: 600;
 }
 
-navigation-header > a {
+#navigation-header > a {
     padding: 0;
     display: flex;
     text-decoration: none;
@@ -18,21 +18,21 @@ navigation-header > a {
     font-size: 10px;
 }
 
-navigation-header > nav {
+#navigation-header > nav {
     display: flex;
     gap: 20px;
 }
-navigation-header > nav > a {
+#navigation-header > nav > a {
     text-decoration: none;
     color: black;
     padding: 11px 13px;
     transition-duration: 30ms;
 }
-navigation-header > nav > a:hover {
+#navigation-header > nav > a:hover {
     color: #474747;
 }
 
-navigation-header > nav > a:last-child {
+#navigation-header > nav > a:last-child {
     background-color: #050564;
     color: white;
     border-radius: 50px;
@@ -43,10 +43,10 @@ navigation-header > nav > a:last-child {
     gap: 5px;
     transition-duration: 30ms;
 }
-navigation-header > nav > a:last-child:hover {
+#navigation-header > nav > a:last-child:hover {
     background-color: #0707a6;
 }
 
-navigation-header > nav > a:last-child > .material-symbols-outlined {
+#navigation-header > nav > a:last-child > .material-symbols-outlined {
     font-size: 15px;
 }
