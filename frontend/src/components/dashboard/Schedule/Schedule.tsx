@@ -46,10 +46,6 @@ export default function Schedule({
         ...Array.from({ length: daysInMonth }, (_, index) => index + 1),
     ];
 
-    const selectedEvents = events.filter(
-        (event) => event.date === selectedDate
-    );
-
     const monthEvents = events
         .filter((event) => {
             const [eventYear, eventMonth] = event.date.split("-").map(Number);
@@ -92,25 +88,6 @@ export default function Schedule({
                         <p className="calendar-eyebrow">EVENT DETAILS</p>
 
                         <h3>{formatDate(selectedDate)}</h3>
-
-                        {selectedEvents.length > 0 ? (
-                            <div className="selected-events">
-                                {selectedEvents.map((event) => (
-                                    <article key={event.id}>
-                                        <span className="event-indicator" />
-                                        <h4>{event.title}</h4>
-                                        <p>
-                                            {event.description ??
-                                                "No additional details available."}
-                                        </p>
-                                    </article>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="no-events">
-                                No scheduled events for this day.
-                            </p>
-                        )}
 
                         <div className="upcoming-events">
                             <h4>THIS MONTH</h4>

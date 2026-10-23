@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SCHEDULE & CALENDAR COMPONENT STYLES
+   SCHEDULE & CALENDAR COMPONENT STYLES (Fixed)
    ========================================================================== */
 
 #schedule {
@@ -26,18 +26,20 @@
     text-align: center;
 }
 
-/* Layout Setup */
+/* Layout Setup - ปรับให้ยืดความสูงเท่ากัน (stretch) หรือจัดกึ่งกลางแนวตั้งให้ดูสมดุล */
 .calendar-layout {
     display: grid;
     grid-template-columns: 360px minmax(0, 1fr);
     gap: 32px;
-    align-items: start;
+    align-items: stretch; /* ปรับจาก start เป็น stretch ให้ความสูงกล่องเท่ากัน */
 }
 
 /* --------------------------------------------------------------------------
    LEFT PANEL: EVENT DETAILS & UPCOMING
    -------------------------------------------------------------------------- */
 .calendar-details {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -55,54 +57,6 @@
     letter-spacing: -0.01em;
 }
 
-/* Event Cards */
-.selected-events {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.selected-events article {
-    position: relative;
-    padding: 18px 20px;
-    background: #f8fafc;
-    border: 1px solid #f1f5f9;
-    border-radius: 14px;
-    transition: all 0.2s ease;
-}
-
-.selected-events article:hover {
-    background: #ffffff;
-    border-color: #cbd5e1;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transform: translateY(-1px);
-}
-
-.event-indicator {
-    display: block;
-    width: 28px;
-    height: 4px;
-    margin-bottom: 12px;
-    background: linear-gradient(90deg, #ef4444, #f87171);
-    border-radius: 99px;
-}
-
-.selected-events h4 {
-    margin: 0 0 6px;
-    font-size: 15px;
-    font-weight: 700;
-    color: #0f172a;
-    line-height: 1.4;
-}
-
-.selected-events p,
-.no-events {
-    margin: 0;
-    color: #64748b;
-    font-size: 13.5px;
-    line-height: 1.6;
-}
-
 .no-events {
     padding: 24px;
     background: #f8fafc;
@@ -113,12 +67,16 @@
 
 /* Upcoming Events List */
 .upcoming-events {
-    margin-top: 28px;
+    margin-top: auto; /* ดันลงมาด้านล่างสุดกรณีพื้นที่เหลือ */
     border-top: 1px dashed #e2e8f0;
     padding-top: 24px;
     display: flex;
     flex-direction: column;
     gap: 6px;
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
 
 .upcoming-events > h4 {
@@ -128,10 +86,12 @@
     color: #94a3b8;
     font-weight: 800;
     text-transform: uppercase;
+    flex-shrink: 0;
 }
 
 .upcoming-event {
     display: flex;
+    flex-shrink: 0;
     width: 100%;
     align-items: center;
     gap: 14px;
@@ -183,6 +143,8 @@
    RIGHT PANEL: CALENDAR MAIN
    -------------------------------------------------------------------------- */
 .calendar-main {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -261,7 +223,7 @@
     aspect-ratio: 1 / 1;
 }
 
-/* Day Tile Styles */
+/* Day Tile Styles - ปรับการจัดวางภายในให้ช่องเท่ากันเป๊ะ */
 .calendar-day {
     position: relative;
     display: flex;
@@ -270,8 +232,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 6px;
+    gap: 2px;
+    padding: 4px;
     color: #334155;
     background: #ffffff;
     border: 1px solid #f1f5f9;
@@ -281,8 +243,9 @@
 }
 
 .calendar-day-number {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 1;
 }
 
 /* Normal Hover State */
@@ -304,22 +267,21 @@
     border-color: #fca5a5;
 }
 
-/* Today Tag Accent */
+/* Today Tag Accent - เปลี่ยนจาก Absolute มาจัดวางแบบ Flow ปกติเพื่อไม่ให้ทับตัวเลข */
 .calendar-day.today {
     border-color: #93c5fd;
     box-shadow: inset 0 0 0 1px #93c5fd;
 }
 
 .calendar-today-label {
-    position: absolute;
-    top: 4px;
-    font-size: 8px;
+    font-size: 7px;
     font-weight: 800;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
     color: #2563eb;
+    line-height: 1;
 }
 
-/* Selected Day State (Overlays all others) */
+/* Selected Day State */
 .calendar-day.selected {
     color: #ffffff !important;
     background: #0f172a !important;
@@ -337,14 +299,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 3px;
+    gap: 2px;
     height: 6px;
+    margin-top: 2px;
 }
 
 .calendar-event-dot {
     display: inline-block;
-    width: 5px;
-    height: 5px;
+    width: 4px;
+    height: 4px;
     background: #ef4444;
     border-radius: 50%;
 }
@@ -358,7 +321,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 24px 0 0;
+    margin: auto 0 0 0; /* ดันลงล่างสุดของกล่อง Main เสมอ */
     padding-top: 18px;
     border-top: 1px solid #f1f5f9;
     color: #64748b;
