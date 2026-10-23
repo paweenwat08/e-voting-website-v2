@@ -33,6 +33,6 @@ export const faqs: FAQItem[] = [
     {
         id: 6,
         question: "When are results official?",
-        answer: "The Election Board verifies totals and posts certified results at 5:00 PM on Oct 16.",
+        answer: "The Election Board verifies totals and posts certified results at 5:00 PM on Oct 23.",
     },
 ];
