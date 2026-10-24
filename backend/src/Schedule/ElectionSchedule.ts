@@ -22,11 +22,6 @@ const closeExpiredElections = async () => {
             `
         );
 
-        if (result.rowCount && result.rowCount > 0) {
-            console.log(
-                `Closed ${result.rowCount} expired election(s)`
-            );
-        }
     } catch (error) {
         console.error("Election scheduler error:", error);
     } finally {
@@ -53,12 +48,6 @@ const openScheduleElections = async () => {
             RETURNING id;
             `
         );
-
-        if (result.rowCount && result.rowCount > 0) {
-            console.log(
-                `opened ${result.rowCount} election(s)`
-            );
-        }
     } catch (error) {
         console.error("Election scheduler error:", error);
     } finally {
