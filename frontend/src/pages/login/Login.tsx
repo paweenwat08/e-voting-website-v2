@@ -53,10 +53,10 @@ export default function Login() {
     };
 
     const characters = [
-        "/images/characters/character-1.png",
-        "/images/characters/character-2.png",
-        "/images/characters/character-3.png",
-        "/images/characters/character-4.png",
+        "/images/characters/character-1.svg",
+        "/images/characters/character-2.svg",
+        "/images/characters/character-3.svg",
+        "/images/characters/character-4.svg",
     ];
 
     const [character] = useState(() => {
