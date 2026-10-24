@@ -1,7 +1,6 @@
 import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
 import {
-    Link,
     useNavigate,
     useSearchParams,
 } from "react-router-dom";
@@ -149,13 +148,6 @@ export default function Login() {
                                 </span>
                             </button>
                         </form>
-
-                        <p className="login-register">
-                            Don't have an account?{" "}
-                            <Link to="/registry">
-                                Register
-                            </Link>
-                        </p>
                     </div>
                 </section>
             </main>

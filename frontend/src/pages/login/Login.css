@@ -132,22 +132,6 @@
     outline-offset: 3px;
 }
 
-/* Registry link */
-
-.login-card > a {
-    display: block;
-    margin-top: 28px;
-    color: #2563eb;
-    font-size: 0.9rem;
-    text-align: center;
-    text-decoration: none;
-}
-
-.login-card > a:hover {
-    color: #173b72;
-    text-decoration: underline;
-}
-
 /* Mobile */
 
 @media (max-width: 800px) {
