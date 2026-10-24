@@ -1,4 +1,4 @@
-# eVoting V2
+# eVoting V2 (DRAFT)
 
 > An upgraded school election voting website, developed as a learning project.
 
@@ -82,4 +82,8 @@ GitHub: https://github.com/paweenwat08/e-voting-website-v2
 
 ## Not neccesary , you can ignore this
 
-this is an upgraded voting election website, i made version 1 for school senior project. after that i decided to improve my election website alone. I studied fullstack developer, backend, api, security, etc. from Youtube videos, i put efforts into this project. I am happy that i completed the project, even though most of code are genereated by AI, but i tried to read all lines (css not included) to make sure everything was correct and fixed. It might still be bugs or the structure might be broken somewhere inside the project. i created this for learning purpose. i learn faster when i create something. i love when people comment if this is good or bad, it helps me improve and motivates me , in a good way. soo u guys feel free to comment. with love:)
+This is an upgraded E-voting election website. I made a version 1 for School senior project, then I decided to improve my project alone. I studied Frontend, Backend, Api, Security, Database, etc. from Youtube, I put much efforts into this project. 
+I am happy that I actually completed the project. I tried to give up many times. Most of code are genereated by AI, I tried to read all lines (css not included) to make sure everything was correct, safe and fixed. It might still be Bugs or the Structure might be broken somewhere inside the project. 
+I created this for Learning purpose. I love when people comment about my work, it improves and motivates me, in a good way. Soo u guys feel free to comment.
+Many features are removed, plan was changed many times because I couldn't make it. I will learn more until I understand everything and then, I will make a version 3.
+with love:)
