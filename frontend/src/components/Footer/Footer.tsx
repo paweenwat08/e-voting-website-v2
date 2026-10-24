@@ -27,7 +27,7 @@ export default function Footer() {
                 <nav className="footer-nav">
                     <h3>RESOURCES</h3>
 
-                    <a href="##election-rules">Rules</a>
+                    <a href="/">Rules</a>
                     <a href="/">Accessibility</a>
                     <a href="/">Student hub</a>
                     <a href="/">Contact board</a>
