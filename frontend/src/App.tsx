@@ -30,7 +30,6 @@ function App() {
             path="/auth/login"
             element={<Login />}
           />
-
           <Route
             path="/auth/account"
             element={<Account />}
@@ -40,12 +39,6 @@ function App() {
             path="/admin"
             element={<AdminDashboard />}
           />
-
-          <Route
-            path="/vote/:electionId"
-            element={<CandidateSelection />}
-          />
-
           <Route
             path="/admin/elections/:electionId/edit"
             element={<AdminElectionEdit />}
@@ -57,6 +50,11 @@ function App() {
           <Route
             path="/admin/elections/:electionId/eligibility"
             element={<ElectionEligibilityManagement />}
+          />
+
+          <Route
+            path="/vote/:electionId"
+            element={<CandidateSelection />}
           />
           <Route
             path="/vote/:electionId/confirm"
