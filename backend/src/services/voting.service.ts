@@ -174,29 +174,17 @@ export const castVote = async (
         // ==========================================
 
         const eligibilityResult = await connection.query(
-            `
-            SELECT 1
-            FROM voter_eligibilities
-            WHERE identity_id = $1
-              AND election_id = $2
-            LIMIT 1
-            `,
-            [
-                identityId,
-                electionId
-            ]
+            `SELECT id
+                FROM voter_eligibilities
+                WHERE identity_id = $1
+                AND election_id = $2`,
+            [identityId, electionId]
         );
 
-        const eligibility =
-            eligibilityResult.rows[0] ?? null;
+        const eligibility = eligibilityResult.rows[0];
 
         if (!eligibility) {
-            await connection.query("ROLLBACK");
-
-            return {
-                success: false,
-                reason: "Voter is not eligible"
-            };
+            throw new Error("Voter is not eligible for this election");
         }
 
         if (eligibility.status !== "eligible") {
