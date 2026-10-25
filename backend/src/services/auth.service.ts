@@ -2,7 +2,7 @@
 import bcrypt from "bcrypt";
 import crypto from "node:crypto";
 
-import connection from "../config/database.js";
+import pool from "../config/database.js";
 
 import type { UpdateUserInput } from "../types/auth.js";
 
@@ -22,7 +22,7 @@ export const comparePassword = async (
 export const findIdentityByUserId = async (
     userId: string
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         SELECT
             id,
@@ -60,7 +60,7 @@ export const createSession = async (
         Date.now() + 60 * 60 * 1000
     );
 
-    const result = await connection.query(
+    const result = await pool.query(
         `
         INSERT INTO sessions (
             identity_id,
@@ -123,7 +123,7 @@ export const createUser = async (
 ) => {
     const passwordHash = await hashPassword(password);
 
-    const result = await connection.query(
+    const result = await pool.query(
         `
         INSERT INTO identities (
             user_id,
@@ -159,7 +159,7 @@ export const createUser = async (
 export const searchUsers = async (
     query = ""
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         SELECT
             id,
@@ -186,7 +186,7 @@ export const updateUser = async (
     identityId: string,
     input: UpdateUserInput
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         UPDATE identities
         SET
@@ -224,7 +224,7 @@ export const deleteSession = async (
         .update(sessionToken)
         .digest("hex");
 
-    await connection.query(
+    await pool.query(
         `
         DELETE FROM sessions
         WHERE session_token_hash = $1

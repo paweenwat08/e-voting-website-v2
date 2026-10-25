@@ -1,4 +1,4 @@
-import connection from "../config/database.js";
+import pool from "../config/database.js";
 
 export const createCandidate = async (
     identityId: string,
@@ -7,7 +7,7 @@ export const createCandidate = async (
     description: string | null
 ) => {
 
-    const electionResult = await connection.query(
+    const electionResult = await pool.query(
         `
         SELECT id, status
         FROM elections
@@ -36,7 +36,7 @@ export const createCandidate = async (
         };
     }
 
-    const existingCandidate = await connection.query(
+    const existingCandidate = await pool.query(
         `
         SELECT id
         FROM candidates
@@ -55,7 +55,7 @@ export const createCandidate = async (
     }
 
     try {
-        const result = await connection.query(
+        const result = await pool.query(
             `
     INSERT INTO candidates (
         identity_id,
@@ -110,7 +110,7 @@ export const createCandidate = async (
 export const getCandidatesByElection = async (
     electionId: string
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         SELECT
             c.id,
@@ -146,7 +146,7 @@ export const getCandidatesByElection = async (
 export const getCandidateById = async (
     candidateId: string
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         SELECT
             c.id,
@@ -171,7 +171,7 @@ export const getCandidateById = async (
 };
 
 export const getAllCandidates = async () => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         SELECT
             c.id,

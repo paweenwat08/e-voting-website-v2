@@ -1,4 +1,4 @@
-import connection from "../config/database.js";
+import pool from "../config/database.js";
 
 export const createElection = async (
     title: string,
@@ -6,7 +6,7 @@ export const createElection = async (
     startAt: Date,
     endAt: Date
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         INSERT INTO elections (
             title,
@@ -46,7 +46,7 @@ export const createElection = async (
 export const openElection = async (
     electionId: string
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         UPDATE elections
         SET
@@ -73,7 +73,7 @@ export const openElection = async (
 export const closeElection = async (
     electionId: string
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         UPDATE elections
         SET
@@ -98,7 +98,7 @@ export const closeElection = async (
 };
 
 export const getAllElections = async () => {
-    const result = await connection.query(`
+    const result = await pool.query(`
         SELECT
             id,
             title,
@@ -118,7 +118,7 @@ export const getAllElections = async () => {
 export const getElectionById = async (
     electionId: number
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         SELECT
             id,
@@ -145,7 +145,7 @@ export const updateElection = async (
     startAt: Date,
     endAt: Date
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         UPDATE elections
         SET
@@ -180,7 +180,7 @@ export const updateElection = async (
 
 export const getElectionResults = async (electionId: string) => {
     // ตรวจสอบสถานะการเลือกตั้งก่อนเปิดเผยผลคะแนน
-    const electionResult = await connection.query(
+    const electionResult = await pool.query(
         `
         SELECT id, status
         FROM elections
@@ -206,7 +206,7 @@ export const getElectionResults = async (electionId: string) => {
         };
     }
 
-    const result = await connection.query(
+    const result = await pool.query(
         `
         SELECT
             c.id AS candidate_id,

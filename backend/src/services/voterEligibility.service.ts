@@ -1,9 +1,9 @@
-import connection from "../config/database.js";
+import pool from "../config/database.js";
 
 export const getVoterEligibilities = async (
     electionId: string
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         SELECT
             ve.id,
@@ -31,7 +31,7 @@ export const checkVoterEligibility = async (
     identityId: string,
     electionId: string
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         SELECT EXISTS (
             SELECT 1
@@ -51,7 +51,7 @@ export const addVoterEligibility = async (
     identityId: string
 ) => {
     // ตรวจสอบว่า Election มีอยู่จริง
-    const electionResult = await connection.query(
+    const electionResult = await pool.query(
         `SELECT id FROM elections WHERE id = $1`,
         [electionId]
     );
@@ -61,7 +61,7 @@ export const addVoterEligibility = async (
     }
 
     // ตรวจสอบว่า Identity มีอยู่จริง
-    const identityResult = await connection.query(
+    const identityResult = await pool.query(
         `
         SELECT id, status
         FROM identities
@@ -79,7 +79,7 @@ export const addVoterEligibility = async (
     }
 
     // เพิ่มสิทธิเลือกตั้ง
-    const result = await connection.query(
+    const result = await pool.query(
         `
         INSERT INTO voter_eligibilities (
             identity_id,
@@ -103,7 +103,7 @@ export const getElectionEligibilityUsers  = async (
     electionId: string,
     query = ""
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         SELECT
             i.id,

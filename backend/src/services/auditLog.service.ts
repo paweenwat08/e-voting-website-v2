@@ -1,4 +1,4 @@
-import connection from "../config/database.js";
+import pool from "../config/database.js";
 
 import type {
     AuditEventType
@@ -10,7 +10,7 @@ export const createAuditLog = async (
     identityId: number | null = null,
     metadata: Record<string, unknown> | null = null
 ) => {
-    const result = await connection.query(
+    const result = await pool.query(
         `
         INSERT INTO audit_logs (
             event_type,
