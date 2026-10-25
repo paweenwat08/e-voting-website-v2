@@ -1,4 +1,4 @@
-# Architecture Decisions — eVoting V2
+# Architecture Decisions — eVoting V2 [DRAFT]
 
 This document records key technical decisions made during the development of eVoting V2.
 
