@@ -1,17 +1,25 @@
+
 import dotenv from "dotenv";
+import { Pool } from "pg";
 
 dotenv.config({
-    path: "./.env"
+    path: "./.env",
 });
 
-import { Client } from "pg";
-
-const connection = new Client({
+const pool = new Pool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: Number(process.env.DB_PORT),
+
+    max: 10,
+    idleTimeoutMillis: 30_000,
+    connectionTimeoutMillis: 5_000,
 });
 
-export default connection;
+pool.on("error", (error) => {
+    console.error("Unexpected PostgreSQL pool error:", error);
+});
+
+export default pool;
