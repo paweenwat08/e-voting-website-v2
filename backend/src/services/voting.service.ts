@@ -318,7 +318,7 @@ export const castVote = async (
         // 7. Consume voting authorization
         // ==========================================
 
-        consumeVotingAuthorization(identityId, electionId)
+        await consumeVotingAuthorization(identityId, electionId)
 
         // ==========================================
         // 8. Commit
