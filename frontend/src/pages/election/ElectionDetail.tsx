@@ -269,9 +269,6 @@ export default function ElectionDetail() {
                                     ) : hasVoted ? (
                                         <div>
                                             <h2>You have already voted</h2>
-                                            <p role="status">
-                                                คุณได้ลงคะแนนใน Election นี้แล้ว
-                                            </p>
                                         </div>
                                     ) : (
                                         <>
