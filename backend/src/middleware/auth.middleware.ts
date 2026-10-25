@@ -3,7 +3,6 @@ import crypto from "node:crypto";
 
 import pool from "../config/database.js";
 
-
 const authMiddleware = async (
     req: Request,
     res: Response,
@@ -12,7 +11,6 @@ const authMiddleware = async (
     try {
         const cookieHeader = req.headers.cookie;
 
-        // No cookie
         if (!cookieHeader) {
             return res.status(401).json({
                 success: false,
@@ -23,10 +21,10 @@ const authMiddleware = async (
         // Find session cookie
         const cookies = cookieHeader
             .split(";")
-            .map(cookie => cookie.trim());
+            .map((cookie) => cookie.trim());
 
         const sessionCookie = cookies.find(
-            cookie => cookie.startsWith("session=")
+            (cookie) => cookie.startsWith("session=")
         );
 
         if (!sessionCookie) {
@@ -36,7 +34,7 @@ const authMiddleware = async (
             });
         }
 
-        // Get raw session token
+        // Extract raw session token
         const sessionToken = sessionCookie
             .substring("session=".length);
 
@@ -47,13 +45,13 @@ const authMiddleware = async (
             });
         }
 
-        // Hash session token
+        // Hash session token before database lookup
         const sessionTokenHash = crypto
             .createHash("sha256")
             .update(sessionToken)
             .digest("hex");
 
-        // Find valid session
+        // Find a session that has not expired
         const sessionResult = await pool.query(
             `
             SELECT
@@ -62,6 +60,7 @@ const authMiddleware = async (
                 expires_at
             FROM sessions
             WHERE session_token_hash = $1
+              AND expires_at > CURRENT_TIMESTAMP
             LIMIT 1
             `,
             [sessionTokenHash]
@@ -76,25 +75,7 @@ const authMiddleware = async (
             });
         }
 
-        // Check session expiration
-        if (new Date(session.expires_at) <= new Date()) {
-
-            // Delete expired session
-            await pool.query(
-                `
-                DELETE FROM sessions
-                WHERE id = $1
-                `,
-                [session.id]
-            );
-
-            return res.status(401).json({
-                success: false,
-                message: "Session expired"
-            });
-        }
-
-        // Find identity
+        // Find identity associated with the session
         const identityResult = await pool.query(
             `
             SELECT
@@ -120,7 +101,7 @@ const authMiddleware = async (
             });
         }
 
-        // Check identity status
+        // Only active identities may access protected routes
         if (identity.status !== "active") {
             return res.status(403).json({
                 success: false,
@@ -128,7 +109,7 @@ const authMiddleware = async (
             });
         }
 
-        // Attach identity to request
+        // Attach authenticated identity to request
         req.identity = {
             id: identity.id,
             userId: identity.user_id,
@@ -138,7 +119,7 @@ const authMiddleware = async (
             status: identity.status
         };
 
-        next();
+        return next();
 
     } catch (error) {
         console.error("Auth middleware error:", error);
@@ -149,6 +130,5 @@ const authMiddleware = async (
         });
     }
 };
-
 
 export default authMiddleware;
