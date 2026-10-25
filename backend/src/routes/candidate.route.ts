@@ -34,6 +34,7 @@ router.get(
     getCandidateByIdController
 );
 
+//never used , maybe in the future
 router.get(
     "/",
     authMiddleware,
