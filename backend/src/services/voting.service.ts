@@ -70,7 +70,7 @@ export const consumeVotingAuthorization = async (
     const result = await client.query(
         `
         UPDATE voting_authorizations
-        SET status = 'used',
+        SET status = 'consumed',
             consumed_at = CURRENT_TIMESTAMP,
             updated_at = CURRENT_TIMESTAMP
         WHERE identity_id = $1
