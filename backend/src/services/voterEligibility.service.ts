@@ -46,57 +46,94 @@ export const checkVoterEligibility = async (
     return result.rows[0].is_eligible as boolean;
 };
 
+
 export const addVoterEligibility = async (
     electionId: string,
     identityId: string
 ) => {
-    // ตรวจสอบว่า Election มีอยู่จริง
-    const electionResult = await pool.query(
-        `SELECT id FROM elections WHERE id = $1`,
-        [electionId]
-    );
+    const client = await pool.connect();
+    let transactionStarted = false;
 
-    if (electionResult.rowCount === 0) {
-        throw new Error("Election not found");
+    try {
+        await client.query("BEGIN");
+        transactionStarted = true;
+
+        // 1. Check election
+        const electionResult = await client.query(
+            `SELECT id FROM elections WHERE id = $1`,
+            [electionId]
+        );
+
+        if (electionResult.rowCount === 0) {
+            throw new Error("Election not found");
+        }
+
+        // 2. Check identity
+        const identityResult = await client.query(
+            `
+            SELECT id, status
+            FROM identities
+            WHERE id = $1
+            `,
+            [identityId]
+        );
+
+        if (identityResult.rowCount === 0) {
+            throw new Error("Identity not found");
+        }
+
+        if (identityResult.rows[0].status !== "active") {
+            throw new Error("Identity is not active");
+        }
+
+        // 3. Create voter eligibility
+        const eligibilityResult = await client.query(
+            `
+            INSERT INTO voter_eligibilities (
+                identity_id,
+                election_id
+            )
+            VALUES ($1, $2)
+            ON CONFLICT (identity_id, election_id) DO NOTHING
+            RETURNING *
+            `,
+            [identityId, electionId]
+        );
+
+        if (eligibilityResult.rowCount === 0) {
+            throw new Error("Voter is already eligible");
+        }
+
+        // 4. Create voting authorization
+        await client.query(
+            `
+            INSERT INTO voting_authorizations (
+                identity_id,
+                election_id
+            )
+            VALUES ($1, $2)
+            `,
+            [identityId, electionId]
+        );
+
+        // 5. Commit both changes
+        await client.query("COMMIT");
+        transactionStarted = false;
+
+        return eligibilityResult.rows[0];
+    } catch (error) {
+        if (transactionStarted) {
+            try {
+                await client.query("ROLLBACK");
+            } catch (rollbackError) {
+                console.error("Eligibility rollback error:", rollbackError);
+            }
+        }
+
+        throw error;
+    } finally {
+        client.release();
     }
-
-    // ตรวจสอบว่า Identity มีอยู่จริง
-    const identityResult = await pool.query(
-        `
-        SELECT id, status
-        FROM identities
-        WHERE id = $1
-        `,
-        [identityId]
-    );
-
-    if (identityResult.rowCount === 0) {
-        throw new Error("Identity not found");
-    }
-
-    if (identityResult.rows[0].status !== "active") {
-        throw new Error("Identity is not active");
-    }
-
-    // เพิ่มสิทธิเลือกตั้ง
-    const result = await pool.query(
-        `
-        INSERT INTO voter_eligibilities (
-            identity_id,
-            election_id
-        )
-        VALUES ($1, $2)
-        ON CONFLICT (identity_id, election_id) DO NOTHING
-        RETURNING *
-        `,
-        [identityId, electionId]
-    );
-
-    if (result.rowCount === 0) {
-        throw new Error("Voter is already eligible");
-    }
-
-    return result.rows[0];
 };
 
 export const getElectionEligibilityUsers  = async (
