@@ -1,4 +1,4 @@
-import connection from "../config/database.js";
+import pool from "../config/database.js";
 
 let isRunning = false;
 
@@ -10,7 +10,7 @@ const closeExpiredElections = async () => {
     isRunning = true;
 
     try {
-        const result = await connection.query(
+        const result = await pool.query(
             `
             UPDATE elections
             SET
@@ -37,7 +37,7 @@ const openScheduleElections = async () => {
     isRunning = true;
 
     try {
-        const result = await connection.query(
+        const result = await pool.query(
             `
             UPDATE elections
             SET

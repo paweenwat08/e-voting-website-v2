@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import crypto from "node:crypto";
 
-import connection from "../config/database.js";
+import pool from "../config/database.js";
 
 
 const authMiddleware = async (
@@ -54,7 +54,7 @@ const authMiddleware = async (
             .digest("hex");
 
         // Find valid session
-        const sessionResult = await connection.query(
+        const sessionResult = await pool.query(
             `
             SELECT
                 id,
@@ -80,7 +80,7 @@ const authMiddleware = async (
         if (new Date(session.expires_at) <= new Date()) {
 
             // Delete expired session
-            await connection.query(
+            await pool.query(
                 `
                 DELETE FROM sessions
                 WHERE id = $1
@@ -95,7 +95,7 @@ const authMiddleware = async (
         }
 
         // Find identity
-        const identityResult = await connection.query(
+        const identityResult = await pool.query(
             `
             SELECT
                 id,
@@ -121,10 +121,10 @@ const authMiddleware = async (
         }
 
         // Check identity status
-        if (identity.status === "disabled") {
+        if (identity.status !== "active") {
             return res.status(403).json({
                 success: false,
-                message: "Identity is disabled"
+                message: "Identity is not active"
             });
         }
 
